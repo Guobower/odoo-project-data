@@ -1,0 +1,52 @@
+<odoo>
+  <data>
+
+    
+    <record id="date_form_view"   model="ir.ui.view"> 
+        <field name="name">date_form_view</field> 
+        <field name="model">account.invoice</field> 
+        <field name="inherit_id" ref="account.invoice_form"/> 
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='team_id']" position="after">
+              <field name="due_date" />
+            </xpath>
+
+        </field> 
+    </record>
+
+     <record id="discount_form_view"   model="ir.ui.view"> 
+        <field name="name">discount_form_view</field> 
+        <field name="model">account.invoice</field> 
+        <field name="inherit_id" ref="account.invoice_form"/> 
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+              <field name="give_discount" />
+              <field name="percent" attrs="{'invisible':[('give_discount','=',False)]}"/>
+              <field name="days" attrs="{'invisible':[('give_discount','=',False)]}"/>
+            </xpath>
+
+        </field> 
+    </record>
+
+
+    <record id="sale_form_view"   model="ir.ui.view"> 
+      <field name="name">sale_form_view</field> 
+      <field name="model">sale.order</field> 
+      <field name="inherit_id" ref="sale.view_order_form"/> 
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_term_id']" position="after">
+          <field name="give_discount" />
+          <field name="percent" attrs="{'invisible':[('give_discount','=',False)]}"/>
+          <field name="days" attrs="{'invisible':[('give_discount','=',False)]}"/>
+        </xpath>
+
+      </field> 
+    </record>
+
+
+
+
+    
+    
+  </data>
+</odoo>

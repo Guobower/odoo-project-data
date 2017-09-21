@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data>   
+
+        <template id="module_report">
+
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-set="quantity" t-value="0" />
+                        <t t-set="invoice_total" t-value="0" />
+                        <div class="page">
+                            <style>
+                                                        
+                                .report-wrapper
+                                {
+                                    width: 1000px;
+                                    margin: 0px auto;
+                                    background-color:rgb( 249, 244, 243 );
+                                }
+                                .report-header 
+                                {
+                                    margin: 10px 0px 0px;
+                                    display:block;
+                                    text-align:center;
+
+                                }
+                                .clearfloat 
+                                {
+                                    clear: both;
+                                    float: none;                
+                                    border: none;
+                                    display: block;
+
+                                }
+                                .report-heading
+                                {
+                                    border: 1px solid black;
+                                    text-align:center;
+                                    font-weight: bold;
+                                    margin-bottom: 0px;
+                                }
+                                .report-header p
+                                {
+                                    font-size:17px;
+                                    margin:2px;         
+                                }
+                                .details{
+                                    margin: 2px 0px 0px;    
+                                    width: 100%;
+                                }   
+
+
+
+                                .1st,.2nd
+                                {
+
+                                    display: inline-block;
+                                    border: 1px solid black;
+                                    float:left;
+                                    width: 24.5%;
+
+                                }                               
+
+
+                                .one, .two, .three, .four
+                                {
+                                    display: inline-block;
+                                    border: 1px solid black;
+                                    float:left;
+                                    width: 231.5px;
+                                    padding-left: 14.5px;
+                                    margin: 2px 2px 0px;
+                                    margin-bottom: 0px;
+                                    font-size: 15px;
+                                    margin-left: 0px;
+
+                                }
+
+                                .tower-one, 
+                                .tower-two
+                                {
+                                    display: inline-block;
+                                    width: 480.7px;
+                                    border: 1px solid black;
+                                    float: left;
+                                    padding-left: 15.3px;
+                                    margin: 2px;
+                                    font-size: 15px;
+                                    margin-left: 0px;
+                                    margin-bottom: 0px;
+
+                                }
+                                .solid
+                                {
+                                    font-weight: bold;
+                                }
+                                .singler
+                                {
+                                    margin-top: 2px;
+                                    width: 982px;
+                                    border: 1px solid black;
+                                    padding-left: 15px;
+                                    font-size: 15px;
+                                }
+                                
+                                table {
+                                font-family: arial, sans-serif;
+                                border-collapse: collapse;
+                                width: 100%;
+                                font-size: 15px;
+                                margin-top: 10px;
+                                }
+
+                                td, th {
+                                    border: 1px solid black;
+                                    text-align: left;
+                                    padding: 8px;
+
+                                }
+
+                                tr:nth-child(even) {
+                                    background-color: #dddddd;
+                                }
+                                
+                                
+
+                                .total {
+                                    width: 11.5%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                .num {
+                                    width: 11.5%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                 .total1 {
+                                    width: 7.5%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                .num1 {
+                                    width: 11.5%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                .clearf {
+                                    clear: both;
+                                    float: none;
+                                    display: block;
+                                }
+
+
+                                .word {
+                                    width: 31%;
+                                    float: left;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                .words {
+                                    width: 69%;
+                                    float: left;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-left: 7px;
+                                }
+
+                                .bank {
+                                    width: 100%;
+                                    float: left;
+                                    margin-top: 20px;
+                                }
+
+                                .bank .solid{
+                                    width: 12%;
+                                    float: left;
+                                    text-decoration: underline;
+                                }
+
+                                .bank .liquid{
+                                    width: 85%;
+                                    float: left;
+                                }
+
+
+                                .sign {
+                                    width: 100;
+                                    float: left;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    font-weight: bold;
+                                    margin-top: 40px;
+                                    margin-left: 400px;
+                                    padding: 7px;
+                                    text-decoration: underline;
+                                }
+
+                            </style>
+
+                            <div class="report-wrapper">
+                                <div class="report-header">
+                                    <p>
+                                        <h3 >Arian Sports (Pvt) Ltd.</h3>
+                                        <p>1-km off Naul More<br/>Roras Road<br/>Sialkot Pakistan<br />Fax: ***-******* Telephone:***-******</p>
+                                    </p>
+                                    <br class="clearfloat"/>
+                                </div>
+
+                                <div class="report-heading">    
+                                    <p>Performa Invoice</p>
+                                </div>
+
+                                <div class="details">
+                                
+                                    <div class="1sl-line">
+                                
+                                         <div class="one">
+                                
+                                            <p><span class="Solid">PIN* :</span> <span class="liquid"> 25635</span></p>
+                                
+                                         </div>
+
+                                         <div class="two">
+                                
+                                            <p><span class="Solid">Date :</span> <span class="liquid" t-esc="o.date_invoice"> April 25,2016</span></p>
+                                
+                                         </div>
+
+                                         <div class="three">
+                                
+                                            <p><span class="Solid">LOT N* :</span> <span class="liquid"> 5522404</span></p>
+                                
+                                         </div>
+
+                                         <div class="four">
+
+                                            <p><span class="Solid">Total FOB, Price :</span> <span class="liquid"> 5252253</span></p>
+                                        
+                                         </div>
+                                                    
+                                    <br class="clearfloat" />
+
+                                    </div>          
+
+                                    <div class="singler">                
+                                    
+                                         <p><span class="Solid">Customer/Apllicant :</span> <span class="liquid" t-esc="o.partner_id.name"></span></p>
+                                    
+                                    </div>
+                                    
+                            
+                                    
+                                    <div class="Twoer">
+                                    
+                                        <div class="tower-one">
+                                    
+                                            <p><span class="Solid">INCOTERM :</span> <span class="liquid" t-esc="o.partner_id.incoterms.name"></span></p>
+                                    
+                                         </div>
+
+                                         <div class="tower-two">
+                                    
+                                            <p><span class="Solid">Latest Shipment Date (*ETD) :</span> <span class="liquid">  May 3,2017</span></p>
+                                    
+                                         </div>
+                             
+                                    </div>
+                                    
+                                    <br class="clearfloat" />
+                                    
+                                    <div class="singler">
+                                    
+                                         <p><span class="Solid">Payment Term :</span> <span class="liquid"></span></p>
+                                    
+                                    </div>
+                                    
+                                    <div class="Twoer">
+                                    
+                                        <div class="tower-one">
+                                    
+                                            <p><span class="Solid">Partial Shipment :</span> <span class="liquid"> Must Be Something</span></p>
+                                    
+                                         </div>
+                                    
+                                         <div class="tower-two">
+                                    
+                                            <p><span class="Solid">Transhipment :</span> <span class="liquid">  May 3,2017</span></p>
+                                    
+                                         </div>  
+                                    
+                                    </div>
+
+                                    <br class="clearfloat" />
+
+                                    <div class="Twoer">
+                                        <div class="tower-one">
+                                            <p><span class="Solid">LOT N* :</span> <span class="liquid"> 728347283746</span></p>
+                                         </div>
+
+                                         <div class="tower-two">
+                                            <p><span class="liquid">_______</span> <span class="solid"> Pcs</span></p>
+                                         </div>
+                                         
+                                    </div>
+
+                                </div>
+
+                                <br class="clearfloat" />
+
+
+                                <table>
+                                      
+                                  <tr>
+                                    <th>Item</th>
+                                    <th>Description of Goods</th>
+                                    <th>Size</th>
+                                    <th>Qty.</th>
+                                    <th>Unit</th>
+                                    <th>US$</th>
+                                  </tr>
+
+                                    <t t-set= "g_total" t-value= "0"/>
+                                    <t t-foreach="entries" t-as="data">
+
+                                     <t t-set= "total" t-value="0"/>
+                                    
+
+                                  <tr>
+                                    <td>Style:<span t-esc="getdata(data,'style')"></span></td>
+                                    <td>Description:<span t-esc="getdata(data,'desc')"></span></td>
+                                    <td>XS</td>
+                                    <td><span t-esc="getdata(data,'xs_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'xs_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'xs_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'xs_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Color:<span t-esc="getdata(data,'color')"></span></td>
+                                    <td></td>
+                                    <td>S</td>
+                                    <td><span t-esc="getdata(data,'s_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'s_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'s_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'s_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>QTY/CTN: _______</td>
+                                    <td></td>
+                                    <td>M</td>
+                                    <td><span t-esc="getdata(data,'m_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'m_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'m_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'m_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>LOT: _______</td>
+                                    <td></td>
+                                    <td>L</td>
+                                    <td><span t-esc="getdata(data,'l_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'l_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'l_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'l_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>H.S. Code: _______</td>
+                                    <td></td>
+                                    <td>XL</td>
+                                    <td><span t-esc="getdata(data,'xl_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'xl_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'xl_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'xl_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Composition: _______</td>
+                                    <td></td>
+                                    <td>2XL</td>
+                                    <td><span t-esc="getdata(data,'xxl_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'xxl_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'xxl_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'xxl_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>3XL</td>
+                                    <td><span t-esc="getdata(data,'3xl_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'3xl_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'3xl_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'3xl_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>4XL</td>
+                                    <td><span t-esc="getdata(data,'4xl_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'4xl_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'4xl_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'4xl_amount')"></span></td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>5XL</td>
+                                    <td><span t-esc="getdata(data,'5xl_size')"></span>
+                                    <t t-set= "total" t-value= "total+getdata(data,'5xl_size')"/>
+                                    </td>
+                                    <td><span t-esc="getdata(data,'5xl_rate')"></span></td>
+                                    <td><span t-esc="getdata(data,'5xl_amount')"></span></td>
+                                  </tr>
+
+                                  <tr>
+                                    <th>-----------</th>
+                                    <th>Total</th>
+                                    <th>-----------</th>
+                                    <th><span t-esc="total"></span>
+                                    <t t-set= "g_total" t-value= "g_total+total"/>
+                                    </th>
+                                    <th>-----------</th>
+                                    <th>-----------</th>
+                                  </tr>
+                                 
+                              </t>
+                                </table>
+      
+                                <div class="total">
+                                    <p><span t-esc="o.amount_untaxed"></span></p>
+                                </div>
+
+                                 <div class="num">
+                                    <p>Total</p>
+                                </div>
+
+                                <div class="total1">
+                                    <p><span t-esc="g_total"></span></p>
+                                </div>
+
+                                 <div class="num1">
+                                    <p>Total</p>
+                                </div>
+
+                                <br class="clearf"/>
+
+                                <div class="word">
+                                    <p>Total Amount (In letters) </p>
+                                </div>
+
+                                 <div class="words">
+                                    <p><span t-esc="o.number_to_words()"></span></p>
+                                </div>
+
+                                <div class="bank">
+                                    <span class="solid">Bank Details :</span>
+                                    <span class="liquid">habib</span>
+                                </div>
+
+                                <div class="sign">
+                                    <p>STAMP AND SIGNATURE</p>
+                                </div>
+
+
+                                
+
+                            </div>
+
+                        </div><!--end of page-->
+                    </t>
+                </t>
+            </t>
+
+        </template>
+
+    </data>
+
+</openerp>

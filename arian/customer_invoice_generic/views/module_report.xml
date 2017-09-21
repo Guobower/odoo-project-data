@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data>   
+
+        <template id="module_report">
+
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                <t t-foreach="docs" t-as="o">
+
+                        <div class="page">
+                            
+                            <style>
+                                .report-container {
+                                    width: 1000px;
+                                    margin: 0px auto;
+                                }
+                                .report-header {
+                                    width: 100%;
+                                    float: left;
+                                }
+                                .logo,
+                                .address {
+                                    width: 50%;
+                                    float: left;
+                                }
+                                .logo img {
+                                    width: 150px;
+                                }
+                                .address p {
+                                    text-align: right;
+                                    margin: 75px 0px 0px;
+                                }
+                                h2 {
+                                    width: 100%;
+                                    float: left;
+                                    margin: 30px 0px 0px;
+                                    border: 1px solid #000;
+                                    padding: 5px 0px;
+                                    text-align: center;
+                                    border-radius: 1px;
+                                    font-size: 35px;
+                                }
+                                h3 {
+                                    width: 100%;
+                                    float: left;
+                                    margin: 5px 0px 0px;
+                                    text-transform: uppercase;
+                                    border: 1px solid #000;
+                                    padding: 5px 0px;
+                                    text-align: center;
+                                    border-radius: 1px;
+                                    font-size: 16px;
+                                }
+                                table {
+                                    width: 100%;
+                                    float: left;
+                                    border-spacing: 0px;
+                                    margin: 10px 0px 0px;
+                                    border: 1px solid #000;
+                                }
+
+                                table {
+                                    width: 100%;
+                                    border: 2px solid #000;
+                                    border-spacing: 0px;
+                                    margin: 25px 0px 0px;
+                                }
+                                table tr th {
+                                    border-right: 2px solid #000;
+                                    border-bottom: 2px solid #000;
+                                }
+                                table tr th,
+                                table tr td {
+                                    text-align: center;
+                                    padding: 10px 5px;
+                                }
+                                table tr th:last-child {
+                                    border-right: none;
+                                }
+                                table tr {
+                                    background: #ccc;
+                                }
+                                table tr:first-child,
+                                table tr.description {
+                                    background: none;
+                                }
+                                table tr.description td {
+                                    border-bottom: 2px solid #000;
+                                }
+                                table tr:last-child td {
+                                    border-bottom: none;
+                                }
+                                table tr td table {
+                                    border: 1px solid #CCC;
+                                    margin: 0px;
+                                } 
+                                table tr td table tr {
+                                    background: none;
+                                }
+                                table tr td table tr td {
+                                    border-right: 1px solid #CCC;
+                                    border-bottom: 1px solid #CCC !important;
+                                }
+                                table tr td table tr td:last-child {
+                                    border-right: none;
+                                }
+                                
+                                .customer-invoice-info {
+                                    width: 100%;
+                                    float: left;
+                                }
+                                .invoice-heads {
+                                    width: 120px;
+                                    float: left;
+                                    margin: 0px 10px 0px 0px;
+                                }
+                                .invoice-heads p {
+                                    text-align: right;
+                                }
+                                .invoice-values {
+                                    width: 870px;
+                                    float: left;
+                                }
+                                .invoice-values p {
+                                    text-decoration: underline;
+                                }
+                                tr.details {
+                                    background: #aaa;
+                                }
+
+                                .amount {
+                                    width: 17%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    margin-top: 2px;
+                                    font-weight: bold;
+                                }
+
+                                 .rate {
+                                    width: 20%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                }
+
+                                 .quan {
+                                    width: 16%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    margin-top: 2px;
+                                    font-weight: bold;
+                                }
+
+                                 .total {
+                                    width: 17%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                }
+
+                                 .word {
+                                    width: 100%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: right;
+                                    font-weight: bold;
+                                    margin-top: 2px;
+                                    padding-right: 4px;
+                                }
+
+                                .para {
+                                    width: 100%;
+                                    float: right;
+                                    border: 1px solid;
+                                    text-align: left;
+                                    margin-top: 12px;
+                                    padding-left: 2px;
+                                }
+
+
+                            </style>
+
+                            <div class="report-container">
+
+                                <div class="report-header">
+
+                                    <div class="logo">
+                                        <img src="/customer_invoice_generic/static/src/img/logo.jpg" />
+                                    </div>
+
+                                    <div class="address">
+                                        <p><strong>Arian Sports (PVT.) LTD</strong><br /> 1 km off Naul More<br /> Roras Road</p>
+                                    </div>
+
+                                    <h2>Performa Invoice</h2>
+                                    <h3>Order Confirmation</h3>
+
+                                </div>
+
+                                <div class="customer-invoice-info">
+                                    
+                                    <div class="invoice-heads">
+                                        <p>Consignee:</p>
+                                        <p>Performa Inv#:</p>
+                                        <p>Dated:</p>
+                                        <p>Address:</p>
+                                        <p>Customer Ord#:</p>
+                                        <p>Dated:</p>
+                                        <p>Delivery Date:</p>
+                                        <p>Incoterms:</p>
+                                        <p>Payment Terms:</p>
+                                        <p>Via:</p>
+                                    </div>
+
+                                    <div class="invoice-values">
+                                        <p><span t-esc="o.partner_id.name"></span></p>
+                                        <p>PI/2/12</p>
+                                        <p><span t-esc="o.date_invoice"></span></p>
+                                        <p><span t-esc="o.partner_id.street"></span>,<span t-esc="o.partner_id.street2"></span>,<span t-esc="o.partner_id.city"></span>,<span t-esc="o.partner_id.state_id.name"></span>,<span t-esc="o.partner_id.zip"></span>,<span t-esc="o.partner_id.country_id.name"></span></p>
+                                        <p>FBC00715</p>
+                                        <p><span t-esc="o.confirmation_date"></span></p>
+                                        <p><span t-esc="o.delivery_date"></span></p>
+                                        <p><span t-esc="o.partner_id.incoterms.name"></span></p>
+                                        <p><span t-esc="o.payment_term_id.name"></span></p>
+                                        <p><span t-esc="o.ship_via"></span></p>
+                                    </div>
+
+                                </div>
+
+                                <table> 
+                                    <tr>
+                                        <th rowspan='2'>Style</th>
+                                        <th rowspan='2'>Item Description</th>
+                                        <th rowspan='2' colspan='2'>Quantity</th>
+                                        <th>Rate</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-top: 1px solid #000">(EURO)</th>
+                                        <th style="border-top: 1px solid #000">(EURO)</th>
+                                    </tr>
+                                        <t t-set= "g_total" t-value="0"/>
+                                        <t t-set= "euro_1" t-value="0"/>
+                                        <t t-foreach="entries" t-as="data">
+                                            <t t-set= "total" t-value="0"/> 
+
+                                            <tr>
+                                                <td><span t-esc="getdata(data,'style')"></span></td>
+                                                <td><span t-esc="getdata(data,'desc')"></span></td>
+                                                <td><span t-esc="(getdata(data,'s_size'))+(getdata(data,'m_size'))+(getdata(data,'l_size'))+(getdata(data,'xl_size'))+(getdata(data,'xxl_size'))+(getdata(data,'3xl_size'))"></span></td>
+                                                <td><span t-esc="getdata(data,'uom')"></span></td>
+                                                <td><span t-esc="getdata(data,'rate')"></span></td> 
+                                                <td><span t-esc="getdata(data,'amount')"></span>
+                                                <t t-set= "euro_1" t-value= "euro_1+getdata(data,'amount')"/>
+                                                </td>                            
+                                            </tr>
+
+                                            <tr class="description">
+                                                <td colspan="7">
+                                                    <table>
+                                                        <tr>
+                                                            <td>Color/Size</td>
+                                                            <td>S</td>
+                                                            <td>M</td>
+                                                            <td>L</td>
+                                                            <td>XL</td>
+                                                            <td>XXL</td>
+                                                            <td>3XL</td>
+                                                            <td>Total</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>
+                                                                <span t-esc="getdata(data,'color')"></span>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'s_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'s_size')"/>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'m_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'m_size')"/>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'l_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'l_size')"/>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'xl_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'xl_size')"/>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'xxl_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'xxl_size')"/>
+                                                            </td>
+                                                            <td><span t-esc="getdata(data,'3xl_size')"></span>
+                                                            <t t-set= "total" t-value= "total+getdata(data,'3xl_size')"/>
+                                                            </td>
+                                                            <td>
+                                                                <span t-esc="total"></span>
+                                                                <t t-set= "g_total" t-value= "g_total+total"/>
+                                                            </td>
+
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+
+                                        </t>
+                                </table>
+
+                                <div class="amount">
+                                    <p><span t-esc="euro_1"></span></p>
+                                </div>
+
+                                <div class="rate">
+                                    <p>Euro</p>
+                                </div>
+
+                                <div class="quan">
+                                    <p><span t-esc="g_total"></span></p>
+                                </div>
+
+                                <div class="total">
+                                    <p>Total</p>
+                                </div>
+
+
+                                <div class="word">
+                                    <p><span t-esc="o.number_to_words()"></span></p>
+                                </div>
+
+                                <div class="para">
+                                    <p>PLEASE REMIT PROCEEDS THROUGH</p>
+                                    <p>COMMERZBANK AG, INTERNATIONAL BANK RELATIONS, 3.2, 60261 FRANKFURT MAIN, GERMANY SWIFT CODE:COBADEFF</p>
+                                    <p>IBAN# DE 825004 00000 880719000</p>
+                                    <p>FOR CREDIT TO ASKARI BANK LTD, TRADE CENTER BRANCH, KARACHI-PAKISTAN A/C NO.: 400-88-07190-00</p>
+                                    <p>FOR ONWARD CREDIT TO</p>
+                                    <p>IBAN# PK64ASCM0000100100000370</p>
+                                    <p>M/S: ARIAN SPORTS PVT LTD</p>
+                                    <p>WITH ASKARI BANK LTD, PARIS ROAD BRANCH, SIALKOT-PAKISTAN. (SWIFT: ASCMPKKA010)</p>
+                                </div>
+
+
+
+                            </div>
+
+                            
+                        </div><!--end of page-->
+                    </t>
+                </t>
+            </t>
+
+        </template>
+
+    </data>
+
+</openerp>

@@ -1,0 +1,273 @@
+<?xml version="1.0"?> 
+<odoo> 
+
+    <record id="product_form_view_extension" model="ir.ui.view"> 
+        <field name="name">product_form_view_extension</field> 
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name ='categ_id']" position="after">
+                <field name="article_num"/>
+                <field name="customer_ref"/>
+                <field name="bill_ref"/>
+                <field name="prod_customer"/>
+            </xpath>
+
+            <xpath expr="//field[@name ='default_code']" position="replace">
+                <field name="internal_ref" />
+            </xpath>
+
+            <xpath expr="//field[@name ='uom_id']" position="after">
+                <field name="style_no" />
+            </xpath>
+
+            <xpath expr="//field[@name ='barcode']" position="replace">
+            </xpath>
+
+        </field> 
+    </record> 
+
+    <record id="product_form_view_extension2" model="ir.ui.view"> 
+        <field name="name">product_form_view_extension2</field> 
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name ='categ_id']" position="after">
+                <field name="article_num"/>
+                <field name="customer_ref"/>
+                <field name="bill_ref"/>
+                <field name="prod_customer"/>
+            </xpath>
+
+            <xpath expr="//field[@name ='default_code']" position="replace">
+                <field name="internal_ref" />
+            </xpath>
+
+            <xpath expr="//field[@name ='uom_id']" position="after">
+                <field name="style_no" />
+            </xpath>
+
+            <xpath expr="//field[@name ='barcode']" position="replace">
+            </xpath>
+
+        </field> 
+    </record>
+
+    <record id="product_varient_form_packaging" model="ir.ui.view"> 
+        <field name="name">product_varient_form_packaging</field> 
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='sales']" position="after">
+                <page name="packaging" string="Packaging" >
+                    <group name="top">
+                        
+                        <group name="left" string="Master Carton">
+                            <!-- <field name="length" /> -->
+                            <field name="width" />
+                            <field name="weight" />
+                            <field name="size_from" />
+                            <field name="size_to" />
+                            <field name="inner_carton" />
+                        </group>
+
+                        <group name="right" string="Carton Dimension">
+                            <!-- <field name="carton_lenght" /> -->
+                            <field name="carton_width" />
+                            <field name="carton_height" />
+                            <field name="carton_weight" />
+                            <field name="pcs_carton" />
+                        </group>
+
+                    </group>
+                </page>
+            </xpath>
+
+        </field> 
+    </record> 
+
+    <record id="product_form_packaging" model="ir.ui.view"> 
+        <field name="name">product_form_packaging</field> 
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='variants']" position="after">
+                <page name="packaging" string="Packaging" >
+                    <group name="top">
+                        
+                        <group name="left" string="Master Carton">
+                            <!-- <field name="length" /> -->
+                            <field name="carton_master_height" />
+                            <field name="width" />
+                            <field name="weight" />
+                            <field name="size_from" />
+                            <field name="size_to" />
+                            <field name="inner_carton" />
+                        </group>
+
+                        <group name="right" string="Carton Dimension">
+                            <!-- <field name="carton_lenght" /> -->
+                            <field name="carton_width" />
+                            <field name="carton_height" />
+                            <field name="carton_weight" />
+                            <field name="pcs_carton" />
+                        </group>
+
+                    </group>
+                </page>
+
+                <page name="quality" string="Quality Notes" >
+
+                    <group name="description">
+                        <separator string="Description for Material" colspan="4"/>
+                        <field name="material_descrip" colspan="4" nolabel="1" />
+
+                        <separator string="Description for Workmanship" colspan="4"/>
+                        <field name="workmanship_descrip" nolabel="1" colspan="4"/>
+
+                        <separator string="Description for Decor" colspan="4"/>
+                        <field name="decor_descrip" nolabel="1" colspan="4"/>
+
+                        <separator string="Description for Packing" colspan="4"/>
+                        <field name="packing_descrip" nolabel="1" colspan="4"/>
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field> 
+    </record> 
+
+    <record id="tree_view_products" model="ir.ui.view">
+        <field name="name">tree_view_products</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name ='default_code']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='name']" position="before">
+                <field name="prod_customer"/>
+                <field name="internal_ref"/>
+            </xpath>
+
+            <xpath expr="//field[@name ='list_price']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='standard_price']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='type']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='uom_id']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='categ_id']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='internal_ref']" position="after">
+                <field name="categ_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="stock.view_stock_product_template_tree" model="ir.ui.view">
+
+        <field name="active">False</field>
+    </record>
+
+    <record id="tree_view_products_varient" model="ir.ui.view">
+        <field name="name">tree_view_products_varient</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name ='default_code']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='name']" position="after">
+                <field name="prod_customer"/>
+                <field name="internal_ref"/>
+                <field name="categ_id"/>
+            </xpath>
+
+            <xpath expr="//field[@name ='uom_id']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='barcode']" position="replace">
+            </xpath>
+
+            <xpath expr="//field[@name ='lst_price']" position="replace">
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="stock.view_stock_product_tree" model="ir.ui.view">
+        <field name="active">False</field>
+    </record>
+
+    <record id="product_quality_note_form" model="ir.ui.view">
+        <field name="name">product_quality_note_form</field>
+        <field name="model">quality.note</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Quality Note">
+
+            <sheet>
+                <group name="group_left"> 
+                    <field name="prod_customer" />
+                    <field name="m_order" />
+                    <field name="date" />
+                    <field name="style" />
+                    <field name="product" string="Product" domain="[('prod_customer','=',prod_customer)]" />
+                </group>
+            </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="quality_notes_tree_view" model="ir.ui.view">
+        <field name="name">quality_notes_tree_view</field>
+        <field name="model">quality.note</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Quality Notes">
+                    <field name="prod_customer" />
+                    <field name="m_order" />
+                    <field name="date" />
+                    <field name="style" />
+                    <field name="product"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--========================[Action - START]========================-->
+
+    <record model="ir.actions.act_window" id="quality_notes_action">
+        <field name="name">Quality Notes</field>
+        <field name="res_model">quality.note</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--========================[MenuItem - START]========================-->
+
+    <menuitem name="Quality Notes" id="quality_notes_menu" parent="sales_team.menu_sales" action="quality_notes_action" sequence="12"/>
+
+</odoo>

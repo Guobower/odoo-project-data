@@ -1,0 +1,60 @@
+<?xml version="1.0"?> 
+<odoo> 
+
+  <record id="view_form_tax" model="ir.ui.view"> 
+      <field name="name">view_form_tax</field> 
+      <field name="model">tax.withold</field> 
+      <field name="type">form</field> 
+        <field name="arch" type="xml">
+        <form string="Summary">
+          <sheet>
+
+            <group name="top">
+                <group >
+                  <field name="supplier"/>
+                  <field name="date"/>
+                  <field name="amount"/>
+                </group>
+                <group>
+                  <field name="tax"/>
+                  <field name="tax_name"/>
+                  <field name="challan_no"/>
+                </group>/
+              </group>
+
+
+          </sheet>
+
+
+        </form> 
+      </field> 
+  </record>
+
+
+  <record id="view_tree_tax" model="ir.ui.view"> 
+      <field name="name">view_tree_tax</field> 
+      <field name="model">tax.withold</field> 
+      <field name="type">tree</field> 
+      <field name="arch" type="xml"> 
+      <tree> 
+        <field name="supplier"/>
+        <field name="date"/>
+        <field name="challan_no"/>
+      </tree> 
+      </field> 
+    </record>
+
+
+
+  <act_window id="action_tax_withold" 
+  name="Tax" 
+  res_model="tax.withold" 
+  view_mode="tree,form" />
+
+  <menuitem id="menu_tax_withold" name="Tax Withholding" parent="account.menu_finance_receivables" action="action_tax_withold" sequence="8"/>
+
+
+
+
+
+</odoo>

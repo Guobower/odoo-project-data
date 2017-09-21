@@ -1,0 +1,198 @@
+<?xml version="1.0"?> 
+<odoo>
+
+    <template id="assets_backend" name="custom assets" inherit_id="web.assets_backend"> 
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/quote_extend/static/src/css/styles.css"/>
+        </xpath> 
+    </template>
+
+
+    <record id="move_form_view"   model="ir.ui.view"> 
+        <field name="name">move_form_view</field> 
+        <field name="model">sale.order</field> 
+        <field name="inherit_id" ref="sale.view_order_form"/> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='name']" position="after">
+    
+                    <button name="receive" string="Received POD" type="object" class="oe_highlight oe_right space"/>
+
+                    <button name="another" string="Issue The Airway Bill" type="object" class="oe_highlight oe_right margin"/>
+
+            </xpath>
+
+            <!-- <xpath expr="//div[@name='button_box']" position="replace">
+
+
+            </xpath> -->
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+
+                    <field name="crt_no"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+
+                <field name="form"/>
+                <field name="to"/>
+                <field name="fleet_type"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="replace">
+
+                
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="replace">
+                <field name="product_id"/>   
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="replace">
+
+                <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,rec"/>        
+
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+
+                <field name="bill_type"/>        
+
+            </xpath>
+
+            <xpath expr="//page[2]" position="before">
+
+                <page string="Transport Information">                    
+                    <group name="group_top">
+
+                        <group name="group_left">
+                            <field name="suppl_name" domain="[('supplier','=',True)]"/> 
+                            
+                            
+
+                        </group>
+
+                        <group name="group_right">
+                            <field name="inter_num"/> 
+                             
+                               
+                        </group>
+
+                    </group>
+
+                     <group name="group_top">
+
+                        <group string="Driver">
+                            <field name="driver"/>
+                        </group>
+
+                        <group string=".">
+                            <field name="driver_num"/>
+                        </group>
+
+                    </group>
+
+                    <group name="group_top">
+
+                        <group string="Transport Information">
+                            <field name="form_t"/>
+                            <field name="fleet_type"/>
+                        </group>
+
+                        <group string=".">
+                            <field name="to_t"/>
+                            <field name="suppl_freight"/>
+                        </group>
+
+                    </group>
+
+                    <group name="group_top">
+
+                        <group string="Sale And Transport Dates">
+                            <field name="upload_date"/>
+                            <field name="delivery_date"/>
+                        </group>
+
+                        <group string=".">
+                            <field name="return_date"/>
+                        </group>
+
+                    </group>
+
+                    <group name="group_top">
+
+                        <group string="Receiver Information">
+                            <field name="recive_name"/>
+                        </group>
+
+                        <group string=".">
+                            <field name="recive_mob"/>
+                        </group>
+
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field> 
+    </record>
+
+    <record id="account_form_view"   model="ir.ui.view"> 
+        <field name="name">account_form_view</field> 
+        <field name="model">account.invoice</field> 
+        <field name="inherit_id" ref="account.invoice_supplier_form"/> 
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//field[@name='reference']" position="after">
+
+                <field name="customer"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
+                    <field name="crt_no"/>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_line_tax_ids']" position="replace">
+
+                
+            </xpath>
+
+            <xpath expr="//field[@name='amount_tax']" position="replace">
+
+
+            </xpath>
+
+            <xpath expr="//field[@name='tax_line_ids']" position="replace">
+
+
+            </xpath>
+
+
+        </field> 
+    </record>
+
+    
+
+    <!-- <record id="action_quotations" model="ir.actions.act_window">
+        <field name="name">Quotations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+    </record>
+
+    <menuitem id="menu_sale_quotations"
+        parent="sales_team.menu_base_partner"
+        action="action_quotations"
+        sequence="11"/> -->
+
+
+
+
+    
+    
+</odoo>
