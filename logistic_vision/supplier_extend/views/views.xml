@@ -18,8 +18,6 @@
               
             </xpath>
 
-            <!-- checking git -->
-            <!-- new -->
 
             <xpath expr="//field[@name='name']" position="after">
 
@@ -142,7 +140,9 @@
 
             <header>
 
-                <field name="state" widget="statusbar" statusbar_visible="draft,complete"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,val"/>
+
+                <button name="validate" type="object" string="Validate" class="oe_highlight"/>
 
             </header>
 
@@ -153,6 +153,7 @@
 
               <group string="">
 
+                <field name="sr_no"/>
                 <field name="customer" domain="[('customer','=',True)]"/> 
                 <field name="types"/>
                 <field name="eta_date"/>
@@ -163,15 +164,28 @@
 
               </group>
 
-              <group string="">
+              <group string=".">
 
-                <field name="supplier" domain="[('supplier','=',True)]"/> 
-                <field name="services"/>
+                <field name="s_supplier" domain="[('supplier','=',True)]"/> 
                 <field name="book_date"/>
                 <field name="no_of_con"/>
                 <field name="form"/>
                 <field name="to"/>
                 
+              </group>
+
+              <group string="Services">
+
+                <field name="freight"/>
+                <field name="trans"/>                
+
+              </group>
+
+              <group string=".">
+
+                <field name="store"/>
+                <field name="custm"/>                
+
               </group>
 
             </group>
@@ -184,6 +198,8 @@
 
     </record>
 
+  
+
     <record id="view_tree_rates" model="ir.ui.view"> 
       <field name="name">Rates Form</field> 
       <field name="model">freight.forward</field> 
@@ -192,13 +208,20 @@
       <tree> 
        
             <field name="customer"/>
-            <field name="supplier"/>
-            <field name="services"/>
+            <field name="s_supplier"/>
+ 
 
 
       </tree> 
       </field> 
       
+    </record>
+
+    <record id="freight_logics" model="ir.sequence">
+      <field name="name">freight_logics</field>
+      <field name="code">freight.forward</field>
+      <field name="prefix">S</field>
+      <field name="padding">4</field>
     </record>
 
 

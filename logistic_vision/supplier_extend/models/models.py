@@ -112,10 +112,12 @@ class Charges_service(models.Model):
 
 class FreightForwarding(models.Model):
 	_name = 'freight.forward'
+	_rec_name = 'sr_no'
 
 
-	customer = fields.Many2one('res.partner',string="Customer")
-	supplier = fields.Many2one('res.partner',string="Supplier")
+	customer = fields.Many2one('res.partner',string="Customer",required=True)
+	s_supplier = fields.Many2one('res.partner',string="Supplier")
+	sr_no     = fields.Char(string="SR No", readonly=True)
 	book_date = fields.Date(string="Booking Date")
 	eta_date = fields.Date(string="ETA Date")
 	etd_date = fields.Date(string="ETD Date")
@@ -123,17 +125,40 @@ class FreightForwarding(models.Model):
 	no_of_con = fields.Integer(string="No of Containers")
 	form = fields.Many2one('from.qoute',string="From")
 	to = fields.Many2one('to.quote',string="To")
+	freight   = fields.Boolean(string="Freight Forwarding")
+	trans   = fields.Boolean(string="Transportation")
+	store   = fields.Boolean(string="Storage")
+	custm   = fields.Boolean(string="Custom Clearance")
 	types = fields.Selection([
         ('imp','Import'),
         ('exp','Export')
-        ],string="Tpye")
-	services = fields.Selection([
-        ('freight','Freight Forwarding'),
-        ('trans','Transportation'),
-        ('store','Storage'),
-        ('custm','Custom Clearance')
-        ],string="Services")
+        ],string="Type")
 	state = fields.Selection([
 			('draft', 'Draft'),
-			('complete', 'Complete'),
+			('val', 'Validate'),
 			],default='draft')
+
+	@api.model
+	def create(self, vals):
+		vals['sr_no'] = self.env['ir.sequence'].next_by_code('freight.forward')
+		new_record = super(FreightForwarding, self).create(vals)
+
+		return new_record
+
+
+	@api.multi
+	def validate(self):
+		self.state = 'val'
+
+		prev_rec = self.env['sale.order'].search([('freight_fwd','=',self.sr_no)])
+		if prev_rec.state == 'sale':
+			prev_rec.state = 'draft'
+			prev_rec.unlink()
+
+		records = self.env['sale.order'].create({
+				'partner_id':self.customer.id,
+				'suppl_name':self.s_supplier.id,
+				'sales_id': self.id,
+				'freight_fwd': self.sr_no,
+				'state': 'sale'
+				})
