@@ -70,11 +70,34 @@ class ufc_automization(models.Model):
 	order_no                    = fields.Char(index=True, readonly=True)
 	state                       = fields.Selection([
 								('draft', 'Draft'),
-								('val', 'Validate'),
+								('plan', 'Plan'),
+								('bilty', 'Bilty'),
+								('done', 'Done'),
 								('paid', 'Paid'),
 								('cancel', 'Cancel'),
 								],default='draft')
-	# xyz = []
+
+
+	@api.multi
+	def plane(self):
+		self.state = 'plan'
+
+
+	@api.multi
+	def bilty(self):
+		self.state = 'bilty'
+
+
+	@api.multi
+	def done(self):
+		self.state = 'done'
+
+
+	@api.multi
+	def cancel(self):
+		self.state = 'cancel'
+
+
 
 
 	# ===========================giving rec_name with computed_field=======================
@@ -193,6 +216,14 @@ class ufc_automization(models.Model):
 			total_paid = total_paid + x.amount
 		self.fc_paid_amount = total_paid
 		self.remaining = self.purchase_price - self.fc_paid_amount
+
+
+	@api.onchange('remaining')
+	def _onchange_stage(self):
+		if self.customer:
+			if self.remaining == 0.00:
+				self.state = 'paid'
+
 
 
 	@api.multi

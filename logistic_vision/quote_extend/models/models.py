@@ -30,6 +30,7 @@ class transport_info(models.Model):
 	suppl_name    = fields.Many2one('res.partner', string = "Supplier Name",required=True)
 	suppl_freight = fields.Char(string='Supplier Freight')
 	bill_type     = fields.Char(string='Billing Type')
+	freight_fwd   = fields.Char(string='Freight Forwarding')
 	inter_num     = fields.Integer(string="Internal Number")
 	driver        = fields.Char(string = "Driver")
 	driver_num    = fields.Char(string = "Driver Number")
@@ -82,6 +83,27 @@ class transport_info(models.Model):
 					'name' : x.name,
 					'invoice_id' : create_invoice.id
 					})
+
+	@api.multi
+	def create_custm(self):
+		freight = self.env['freight.forward'].search([('sr_no','=',self.freight_fwd),('id','=',self.sales_id.id)])
+		if freight.types == 'imp':
+			prev_rec = self.env['import.logic'].search([('new_id','=',self.id)])
+			prev_rec.unlink()
+
+			records = self.env['import.logic'].create({
+				'customer':self.partner_id.id,
+				'new_id':self.id,
+				})
+
+		if freight.types == 'exp':
+			prev_rec = self.env['export.logic'].search([('exp_id','=',self.id)])
+			prev_rec.unlink()
+
+			records = self.env['export.logic'].create({
+				'customer':self.partner_id.id,
+				'exp_id':self.id,
+				})
 
 
 	@api.onchange('form','to','fleet_type')

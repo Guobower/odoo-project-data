@@ -31,6 +31,7 @@ class Exportlogic(models.Model):
 	bayan_date       = fields.Date(string="Initial Bayan Date")
 	fin_bayan_date   = fields.Date(string="Final Bayan Date")
 	status           = fields.Many2one('import.status',string="Status")
+	exp_id           = fields.Many2one('sale.order', string="Sale Order ID")
 	site             = fields.Many2one('import.site',string="Site")
 	remarks          = fields.Text(string="Remarks")
 	vessel_date 	 = fields.Date(string="Vessel Arrival Date")
@@ -53,6 +54,14 @@ class Exportlogic(models.Model):
 	def change_state(self):
 		if self.custom_exam == True:
 			self.state='custom_exam'
+
+	
+
+		# INSERT INTO dbo.TargetTable(field1, field2, field3)
+		# SELECT field1, field2, field3
+		# FROM SourceDatabase.dbo.SourceTable
+		# WHERE (some condition)
+
 
 
 	@api.onchange('customer')
@@ -202,8 +211,6 @@ class Exportlogic(models.Model):
 		invoice_lines = self.env['account.invoice.line'].search([])
 
 		for line in lisst:
-			print line
-			print "lllllllllllllllllllllllllllllllllllllllllllllll"
 			create_invoice = invoice.create({
 				'journal_id': 1,
 				'partner_id':line.id,
@@ -211,11 +218,9 @@ class Exportlogic(models.Model):
 				'date_invoice' : self.date,
 				'type':"in_invoice",
 				})
+			
 			for x in self.export_link:
 				if x.broker.name == line.name: 
-					print "aaaaaaaaaaa"
-					print x.broker.name
-					print line
 					create_invoice_lines= invoice_lines.create({
 						'product_id':1,
 						'quantity':1,
@@ -404,6 +409,7 @@ class Importlogic(models.Model):
 	date             = fields.Date(string="Date" ,required=True,default=date.today())
 	customer_ref     = fields.Char(string="Customer Ref")
 	site             = fields.Many2one('import.site',string="Site")
+	new_id           = fields.Many2one('sale.order', string="Sale Order ID")
 	shipper_date     = fields.Date(string="DOC Received Date",default=date.today())
 	vessel_date      = fields.Date(string="Vessel Arrival Date")
 	bill_attach      = fields.Binary(string=" ")

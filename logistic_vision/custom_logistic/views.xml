@@ -45,6 +45,7 @@
               <group name="top">
                 <group >
                   <field name="site"/>
+                  <field name="exp_id" invisible="1"/>
                   <field name="customer" domain="[('supplier','=',False)]"/>
                   <field name="bill_bol" invisible="1"/>
                   <field name="cont_bol" invisible="1"/>
@@ -301,6 +302,7 @@
             <group name="top">
                 <group >
                   <field name="site"/>
+                  <field name="new_id" invisible="1"/>
                   <field name="customer" domain="[('supplier','=',False)]"/>
                   <field name="bill_bol" invisible="1"/>
                   <field name="contt_bol" invisible="1"/>
@@ -455,7 +457,7 @@
 
 
   <menuitem id="clear_import" name="Transportation" parent="sales_team.menu_base_partner" sequence="11"/>
-  <menuitem id="sale.menu_sale_order" name="New Order" parent="clear_import" sequence="1"/>
+  <menuitem id="sale.menu_sale_order" name="Transport Order" parent="clear_import" sequence="1"/>
 
   <menuitem id="menu_import" name="Custom Clearance" parent="sales_team.menu_base_partner" sequence="10"/>
 

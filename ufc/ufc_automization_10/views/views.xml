@@ -10,9 +10,21 @@
 
           <header>
 
-              <field name="state" widget="statusbar" statusbar_visible="draft,val,paid,cancel"/>
+              <field name="state" widget="statusbar" statusbar_visible="draft,plan,bilty,done,paid,cancel"/>
 
               <button name="create_supplier_invoice" type="object" string="Slab Rates" class="oe_highlight"/>
+
+              <button name="plane" type="object" string="Plan" class="oe_highlight"
+              attrs="{'invisible':[('state','!=','draft')]}"/>
+
+              <button name="bilty" type="object" string="Bilty" class="oe_highlight" attrs="{'invisible':[('state','!=','plan')]}"/>
+
+              <button name="done" type="object" string="Done" class="oe_highlight" 
+                attrs="{'invisible':[('state','!=','bilty')]}"/>
+
+              <button name="cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible':[('state','=','draft')]}"/>
+
+
             
           </header> 
 
@@ -171,7 +183,7 @@
       <field name="model">ufc.auto</field> 
       <field name="type">tree</field> 
       <field name="arch" type="xml"> 
-      <tree> 
+      <tree string="Pre Invoices" default_order="order_no desc"> 
        
             <field name="customer"/>
             <field name="invoice_date"/>
