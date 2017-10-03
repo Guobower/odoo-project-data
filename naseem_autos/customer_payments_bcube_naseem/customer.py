@@ -3,38 +3,30 @@ from openerp import models, fields, api
 from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
 
-
 class CustomerPayment(models.Model): 
 	_name = 'customer.payment.bcube' 
 	_rec_name = 'number'
 
-	number              = fields.Char()
-	amount              = fields.Float(string="Paid Amount" )
-	date                = fields.Date(string="Date", required = True ,default=fields.Date.context_today) 
-	e_amount            = fields.Float(string="Advance Amount")
-	t_amount            = fields.Float(string="Total Amount")
-	reference           = fields.Char(string="Payment Ref")
-	name                = fields.Char(string="Memo")
-	total               = fields.Float('Total Amount',readonly="1", compute='invoice_total' ,store=True)
-	t_total             = fields.Float('Total Tax',readonly="1", compute='tax_total' ,store=True)
-	period_id           = fields.Many2one('account.period', string="Period")
-	customer_tree       = fields.One2many( 'customer.payment.tree','customer_payment_link')
-	journal_id          = fields.Many2one('account.journal',string="Payment Method" , required=True)
-	tax_link            = fields.One2many('account.invoice.tax','payment_link')
-	partner_id          = fields.Many2one('res.partner',string="Customer / Supplier" , required=True)
-	journal_entry_id    = fields.Many2one('account.move',string="Journal Entry ID")
-	# firm_partner 		= fields.Many2one('res.partner',"Firm Partner" , domain="[('cc_firm_partner','=',True)]")
-	# tagm_entity 		= fields.Many2one('tagm.entity',string='Entity')
-	taxes               = fields.Many2many('account.tax', string="Taxes")
-	# branch              = fields.Many2one('branch', string="Branch")
-	# bill_num            = fields.Char(string="Bill No.")
-	receipts            = fields.Boolean()
-	state               = fields.Selection([
-					('draft', 'Draft'),
-					('post', 'Posted'),
-					], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+	number = fields.Char()
+	amount = fields.Float(string="Paid Amount" )
+	date = fields.Date(string="Date", required = True ,default=fields.Date.context_today) 
+	e_amount = fields.Float(string="Advance Amount")
+	t_amount = fields.Float(string="Total Amount")
+	reference = fields.Char(string="Payment Ref")
+	name = fields.Char(string="Memo")
+	total = fields.Float('Total Amount', compute='invoice_total' ,store=True)
+	t_total = fields.Float('Total Tax', compute='tax_total' ,store=True)
+	period_id = fields.Many2one('account.period', string="Period")
+	customer_tree  = fields.One2many( 'customer.payment.tree','customer_payment_link')
+	journal_id  = fields.Many2one('account.journal',string="Payment Method" , required=True)
+	tax_link = fields.One2many('account.invoice.tax','payment_link')
+	partner_id = fields.Many2one('res.partner',string="Customer / Supplier" , required=True)
+	journal_entry_id = fields.Many2one('account.move',string="Journal Entry ID")
+	taxes = fields.Many2many('account.tax', string="Taxes")
+	receipts = fields.Boolean()
+	state = fields.Selection([('draft', 'Draft'),('post', 'Posted'),], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+	active_user = fields.Char(string="Active User")
 
-	
 	@api.model
 	def create(self, vals):
 		new_record = super(CustomerPayment, self).create(vals)
@@ -42,61 +34,33 @@ class CustomerPayment(models.Model):
 			new_record.number = self.env['ir.sequence'].next_by_code('customer.payment.bcube')
 		else:
 			new_record.number = self.env['ir.sequence'].next_by_code('supplier.payment.bcube')
-		# withold = self.env['tax.withold'].search([])
-		# create_tax_withholding = withold.create({
-		# 		'supplier' : new_record.partner_id.name,
-		# 		'date': new_record.date,
-		# 		'amount':new_record.amount ,
-		# 		'tax': new_record.t_total,
-		# 		'challan_no': new_record.number,
-		# 		})
 
 		return new_record
 
 
-	# @api.onchange('partner_id')
-	# def get_branch(self):
-	# 	users = self.env['res.users'].search([])
-	# 	print "0000000000000000000000000000000"
-	# 	print users
-	# 	if self.partner_id:
-	# 		print "999999999999999999999999999"
-	# 		print users.Branch.id
-	# 		self.branch = users.Branch.id
-	# 		print "ppppppppppppppppppppppppppppp"
-	# 		print self.branch
-
-
-	# @api.multi
-	# def unlink(self):
-	# 	if self.state == "post":
-	# 		raise  ValidationError('Cannot Delete in Posted State')
-	
-	# 	return super(CustomerPayment,self).unlink()
-
-
-	@api.multi
-	def unlink(self):
-		if self.state == "post":
-			raise  ValidationError('Cannot Delete in Posted State')
-		withhold = self.env['tax.withold'].search([('challan_no','=',self.number)])
-		if withhold:
-			withhold.unlink()
-		super(CustomerPayment,self).unlink()
-		return True
-
 	@api.onchange('partner_id')
 	def load_invoice(self):
-				
-		reamount = 0
+		self.active_user = self._uid
 		
 		if self.partner_id:
 			if self.receipts == True:
-				invoices = self.env['account.invoice'].search([('state','=',"paid"),('type','=',"out_invoice"),('partner_id.id','=',self.partner_id.id)])
+				invoices = self.env['account.invoice'].search([('state','=',"open"),('type','=',"out_invoice"),('partner_id.id','=',self.partner_id.id)])
 				invoices = invoices.sorted(key=lambda r:r.date_invoice)
 				extra_amount =  self.partner_id.debit - self.partner_id.credit
+				data = self.env['account.move'].search([('partner_id.id','=',self.partner_id.id)])
+				cre = 0
+				deb = 0
+				value = 0
+				for x in data:
+					for z in x.line_ids:
+						cre = cre + z.credit
+						deb = deb + z.debit
+						value = cre - deb
+				if value > 0:
+					self.e_amount = value
+				self.t_amount = self.amount + self.e_amount				
 			else:
-				invoices = self.env['account.invoice'].search([('state','=',"paid"),('type','=',"in_invoice"),('partner_id.id','=',self.partner_id.id)])
+				invoices = self.env['account.invoice'].search([('state','=',"open"),('type','=',"in_invoice"),('partner_id.id','=',self.partner_id.id)])
 				invoices = invoices.sorted(key=lambda r:r.date_invoice)
 				extra_amount =  self.partner_id.credit - self.partner_id.debit
 
@@ -121,20 +85,15 @@ class CustomerPayment(models.Model):
 					})
 			
 			self.customer_tree = inv
-			inv=[]
-												
+			inv=[]								
 							
 	@api.onchange('amount','e_amount')
 	def Amount(self):
 		self.t_amount=self.amount+self.e_amount
 					
-
-
 	@api.onchange('t_amount','tax_link','partner_id')
 	def onchangeAmount(self):
 
-
-		
 		t_amount = self.t_amount + self.t_total
 
 		if self.customer_tree:
@@ -154,10 +113,6 @@ class CustomerPayment(models.Model):
 				else:
 					line.reconciled_amount = 0
 					line.reconcile=False
-
-
-											
-
 
 	@api.onchange('taxes')
 	def onchange_taxes(self):
@@ -190,33 +145,21 @@ class CustomerPayment(models.Model):
 				if taxx.wh_type == "sales_tax":
 					rate_st = taxx.amount 
 					rate_withholding_st = taxx.child_ids.amount 
-				print rate_income_tax
-				print rate_withholding_st
-				print rate_st
-				print "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 				t_sales_tax = rate_st * t_invoice
-				print "xxxxxxxxxxxxxxxxxxxxx"
-				print t_sales_tax
 				t_sales_tax_withheld = t_sales_tax * rate_withholding_st
-				print t_sales_tax_withheld
 				t_total_amount = t_invoice + t_sales_tax
-				print t_total_amount
 				t_witholding_tax = rate_income_tax * t_total_amount
 				t_total_withheld = t_sales_tax_withheld + t_witholding_tax
 				t_paid = t_total_amount - t_total_withheld
 			if t_paid > 0:
 				t_percentage = t_total_withheld/t_paid
 
-
-
 			for x in self.taxes:
 
 				r.append({
 
-
 					'name':x.name,
 					'account_id':x.account_collected_id.id,
-					# 'amount':(x.amount)*self.amount * (t_percentage + 1),
 					'payment_link':self.id,                   
 
 					})
@@ -224,9 +167,6 @@ class CustomerPayment(models.Model):
 			self.tax_link = r
 			r=[]
 			
-
-
-
 	@api.depends('tax_link')
 	def tax_total(self):
 		self.t_total = 0.0
@@ -235,8 +175,6 @@ class CustomerPayment(models.Model):
 
 		self.t_total                
 
-
-	
 	@api.depends('customer_tree')
 	def invoice_total(self):
 		self.total = 0.0
@@ -245,12 +183,6 @@ class CustomerPayment(models.Model):
 
 		self.total
 
-
-
-
-
-
-
 	@api.multi
 	def journal_entry_with_tax_payments(self,debit_account,credit_account,debit_amount,credit_amount):
 		self.state = 'post'
@@ -258,7 +190,7 @@ class CustomerPayment(models.Model):
 			if x.reconcile == True:
 				x.invoice_id.write({'state':"paid"})
 
-		
+
 
 		journal_entries = self.env['account.move'].search([('id','=',self.journal_entry_id.id)])
 		journal_entries_lines = self.env['account.move.line'].search([])
@@ -268,7 +200,7 @@ class CustomerPayment(models.Model):
 					'date':self.date,
 					'id': self.journal_entry_id.id,
 					'ref' : self.reference,
-					'branch': self.branch.id,
+					# 'branch': self.branch.id,
 					# 'firm_partner':self.firm_partner.id,
 					# 'tagm_entity':self.tagm_entity.id							
 					})
@@ -362,9 +294,27 @@ class CustomerPayment(models.Model):
 					'cash_reg_id' : line.id,
 					'cus_pay_bc_id' : self.id,
 					})
+
+		if self.receipts == True:
+			invoices = self.env['account.invoice'].search([('state','=',"open"),('type','=','out_invoice'),('partner_id.id','=',self.partner_id.id)])
+			for x in invoices:
+				for y in self.customer_tree:
+					if x.number == y.invoice_id.number:
+
+						inv = []
+						inv.append({
+							'date':y.date,
+							'amount':y.reconciled_amount,
+							'pay_id':self.id,
+							'pay_tree_id':x.id,
+							})
+
+						x.pay_tree_id = inv
+						x.residual = x.residual - x.pay_tree_id.amount
+						if x.residual == 0.00:
+							x.write({'state':'paid'})
+
 					
-
-
 	@api.multi
 	def cancel_voucher_bcube(self):
 		self.state = 'draft'
@@ -376,12 +326,15 @@ class CustomerPayment(models.Model):
 
 		for x in self.customer_tree:
 			if x.reconcile == True:
-				print "xxxxxxxxxxxxxxxxxxxxxx"
-				print x.invoice_id.state
-
 				x.invoice_id.write({'state':"open"})
 
-																		
+		invoices = self.env['account.invoice'].search([('state','=',"open"),('type','=','out_invoice'),('partner_id.id','=',self.partner_id.id)])
+		for x in invoices:
+			if x.pay_tree_id.pay_id.number == self.number:
+				x.pay_tree_id.unlink()
+				x.write({'state':"open"})
+
+
 		
 class AccountMoveRemoveValidation(models.Model):
 	_inherit = "account.move"
@@ -401,8 +354,6 @@ class AccountMoveRemoveValidation(models.Model):
 		
 		return True
 
-
-
 class AccountMoveLineInher(models.Model):
 	_inherit = "account.move.line"
 
@@ -418,7 +369,6 @@ class taxtest(models.Model):
 		('income_tax', 'Income Tax'),('sales_tax','Sales Tax'),],
 		 string='Withholding Type',default='income_tax')
 
-
 class CustomerPaymentTree(models.Model):
 
 	_name = 'customer.payment.tree'
@@ -430,14 +380,6 @@ class CustomerPaymentTree(models.Model):
 	reconciled_amount=fields.Float('Reconciled Amount')
 	customer_payment_link=fields.Many2one('customer.payment.bcube')
 	invoice_id=fields.Many2one('account.invoice')
-
-	# @api.model
-	# def create(self, vals):
-	# 	new_record = super(CustomerPaymentTree, self).create(vals)
-		
-	# 	self._check_reconciliation(reconciled_amount,due_amount)
-
-	# 	return new_record
 
 	@api.multi
 	@api.constrains('reconciled_amount','due_amount')
@@ -451,18 +393,11 @@ class CustomerPaymentTree(models.Model):
 		if self.due_amount == self.reconciled_amount:
 			self.reconcile = True
 
-
-
-
-
 class Coustomer_Tax(models.Model):
 	_inherit = 'account.invoice.tax'
 
 	payment_link = fields.Many2one('customer.payment.bcube')
 
-
-			
-################ Class of account.bank.statement ##############
 class ABSModification(models.Model):
 	_inherit = 'account.bank.statement'
 	bcube_pid 			= fields.Many2one('res.partner', 'Partner')
@@ -472,8 +407,6 @@ class ABSModification(models.Model):
 	def _compute_amount(self):
 		self.receipts_amount = sum(line.amount for line in self.randp_ids if line.amount > 0)
 
-
-################ Class of receipts.and.payment ##############
 class ABSModification(models.Model):
 	_name = 'receipts.and.payment'
 	date 				= fields.Date('Date')
@@ -483,10 +416,3 @@ class ABSModification(models.Model):
 	amount  		    = fields.Float('Amount')
 	cash_reg_id		    = fields.Many2one('account.bank.statement','Cash Reg Id', ondelete='cascade')
 	cus_pay_bc_id		= fields.Many2one('customer.payment.bcube','CustomerPayment Id', ondelete='cascade')
-
-
-# class bill_numb(models.Model):
-#     _name = 'bill.number'
-
-#     name = fields.Char(string="Bill Num")
-	

@@ -319,13 +319,21 @@
   <act_window id="action_new_module" 
   name="Pre Invoices" 
   res_model="ufc.auto" 
-  view_mode="tree,form" />
+  view_mode="tree,form"
+  domain="[('state', 'not in', ('draft', 'plan'))]"
+  />
 
-
+    <record model="ir.actions.act_window" id="plan_menu_action">
+      <field name="name">Plan</field>
+      <field name="res_model">ufc.auto</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state', 'in', ('draft', 'plan'))]</field>
+    </record>
 
   <menuitem id="menu_new_module" name="Pre Invoices" parent="account.menu_finance"  sequence="0"/>
  
-<menuitem id="menu_new_module_child" name="Pre Invoices" parent="menu_new_module" action="action_new_module" sequence="0"/>
+<menuitem id="menu_new_module_child0" name="Plan" parent="menu_new_module" action="plan_menu_action" sequence="0" />
+<menuitem id="menu_new_module_child1" name="Pre Invoices" parent="menu_new_module" action="action_new_module" sequence="1"/>
 
     
 

@@ -25,14 +25,16 @@ class MB_Project_Extension(models.Model):
 			print "I am unable to connect to the database"
 		cur = conn.cursor()
 		cur.execute(""" SELECT * FROM account_invoice""")
-		result = cur.fetchall()
-		print result
-		print "-------------------------------------------------9"
-		cr = self.env.cr
-		cr.execute(""" SELECT * FROM account_invoice""")
+		result1 = cur.fetchall()
+		for x in result1:
+			print type(x)
+			print x[0]
+			print "kkkkkkkkkkkkkkkkkkkkkkk"
+			cr = self.env.cr
+			cr.execute(" INSERT INTO account_invoice (id,create_date,journal_id,partner_id,company_id,account_id,reference_type,currency_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(x[0],x[3],5,7,x[16],1,x[26],x[37]))
 		# cr.execute(""" select * from nayyab_Inspiron_N4050.logistic_vision.dbo.account_invoice""")
-		result = cr.fetchall()
-		print result
+		# result = cr.fetchall()
+		# print result
 		print "kkkkkkkkkkkkkkkkkkkkkk"
 
 

@@ -32,6 +32,16 @@ class addrerss_extension(models.Model):
     currency             = fields.Many2one('res.currency',string="Currency")
 
 
+
+    @api.model
+    def create(self, vals):
+        if self.stop_invoice == False:
+            new_record = super(addrerss_extension, self).create(vals)
+
+
+            return new_record
+
+
 class res_partner_bank_extension(models.Model):
     _inherit = 'res.partner.bank'
 
@@ -43,6 +53,9 @@ class account_extension(models.Model):
     _inherit = 'account.account'
 
     acct_type = fields.Selection([('credit','Credit'),('debit','Debit')],string="Account Type")
+
+
+
 
 # class vendors_details(models.Model):
 #     _name = 'ved.details'

@@ -23,16 +23,12 @@
             </xpath>
 
 
-            <xpath expr="//button[@name='action_done']" position="after">
+            <!-- <xpath expr="//button[@name='action_done']" position="after">
     
                     <button name="create_custm" string="Create Custom Clearence" type="object" class="oe_highlight"/>
 
-            </xpath>
-
-            <!-- <xpath expr="//div[@name='button_box']" position="replace">
-
-
             </xpath> -->
+
 
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
 
@@ -65,7 +61,7 @@
             <xpath expr="//field[@name='partner_id']" position="after">
 
                 <field name="bill_type"/>        
-                <field name="freight_fwd"/>              
+                <field name="freight_link"/>              
 
             </xpath>
 

@@ -102,6 +102,7 @@
                     <header>
                     <button name="make_delivery" string="Make Delivery" type="object"  class="btn-primary" attrs="{'invisible': ['|','|',('direct_invoice_check', '=',True),('state', 'in', ('draft','sent','complete'))]}" />
                     <button name="validate_direct_invoice" string="Validate" type="object"  class="btn-primary" attrs="{'invisible': [('direct_invoice_check', '=',False)]}" />
+
                     <button name="action_quotation_send" string="Send by Email" type="object" class="btn-primary" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft'))]}"/>
 
                     <button name="print_quotation" string="Print" type="object" class="btn-primary" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft'))]}"/>
@@ -365,6 +366,9 @@
                 <button name="invoice_print" string="Print Invoice" type="object" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" groups="base.group_user"/>
                 <button name="128" type="action" states="open" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
                 <button name="action_invoice_open" type="object"  string="Validate" class="oe_highlight" groups="account.group_account_invoice" attrs="{'invisible':[('state', 'in', 'open')]}" />
+
+                <!-- <button name="refund_invoice" type="object"  string="Refund Invoice" class="oe_highlight" groups="account.group_account_invoice" attrs="{'invisible':[('state','!=', 'paid')]}"/> -->
+
                 <button name="action_invoice_open" type="object" states="proforma2" string="Validate" groups="account.group_account_invoice"/>
                 <button name="action_invoice_proforma2" type="object" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
 
@@ -498,6 +502,18 @@
                                 <field name="account_id" groups="account.group_account_user"/>
                                 <field name="amount"/>
                                 <field name="currency_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Payment" name="payment">
+                        <field name="pay_tree_id" nolabel='1'>
+                            <tree editable="bottom">
+                                
+                                <field name="date"/>
+                                <field name="pay_id" domain="[('receipts','!=',True)]"/>
+                                <field name="amount"/>
+    
                             </tree>
                         </field>
                     </page>

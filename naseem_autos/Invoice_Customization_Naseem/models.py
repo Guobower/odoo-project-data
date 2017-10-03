@@ -59,6 +59,7 @@ class stock_picking_own(models.Model):
 		], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
 
+
 	@api.multi
 	def submitt_bilty(self):
 		
@@ -142,7 +143,7 @@ class stock_picking_own(models.Model):
 							'customer_price': x.customer_price,
 							'price_subtotal': x.price_subtotal,
 							'promo_code': x.promo_code,
-							'account_id': account_id.id,
+							'account_id': account_id,
 							'name' : x.name,
 							'invoice_id' : create_invoice.id
 							})
@@ -811,7 +812,33 @@ class sale_invoice_customized(models.Model):
 	check_direct_invoice = fields.Boolean('Direct Invoice', default=True)
 	remaining_payment_days =fields.Date('Remaining Payment Days')
 	reference = fields.Char(string="Reference")
+	pay_tree_id = fields.One2many('invoice.payment','pay_tree')
 
+
+	@api.multi
+	def refund_invoice(self):
+		self.residual = 0.00
+
+
+ 
+	@api.model
+	def create(self, vals):
+		new_record = super(sale_invoice_customized, self).create(vals)
+		if new_record.partner_id:
+			new_record.residual = 0
+		records = self.env['account.invoice'].search([])
+		values = 0
+		for x in records:
+			for z in x.invoice_line_ids:
+				if x.partner_id.id == new_record.partner_id.id:
+					values = values + z.price_subtotal
+
+			if values > new_record.partner_id.credit_limit:
+				raise ValidationError("The credit of this Customer exceeding limit")
+			else:
+				pass
+
+		return new_record
 
 
 class sale_invoice_line_extension(models.Model):
@@ -823,4 +850,14 @@ class sale_invoice_line_extension(models.Model):
 	promo_code = fields.Char(string="PROMO CODE")
 	customer_price = fields.Float(string="Net Price")
 	price = fields.Many2one('product.pricelist.item')
+
+
+class transport_info(models.Model):
+	_name = 'invoice.payment'
+
+	date          = fields.Date(string="Date")
+	pay_id        = fields.Many2one('customer.payment.bcube',string="Payment_id")
+	amount    	  = fields.Float(string="Amount")
+
+	pay_tree = fields.Many2one('account.invoice')
 

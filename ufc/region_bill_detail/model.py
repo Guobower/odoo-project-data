@@ -56,9 +56,6 @@ class SampleDevelopmentReport(models.AbstractModel):
                         if x not in enteries:
                             enteries.append(x)
             
-        
-        
-
         def namer():
             print "--------------"
             prov = ""
