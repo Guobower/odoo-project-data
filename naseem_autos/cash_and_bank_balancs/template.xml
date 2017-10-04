@@ -42,7 +42,7 @@
             <field name="target">new</field> 
         </record>
 
-        <menuitem name="Cash And Bank Balances" id="general_ledger_menu_item" parent="customer_profile.customer_wise_item" action="cash_bank_wizard" sequence="14"/> 
+        <menuitem name="Cash And Bank Balances" id="general_ledger_menu_item" parent="account.menu_finance_reports" action="cash_bank_wizard" sequence="10"/> 
 
 
 

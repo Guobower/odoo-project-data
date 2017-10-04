@@ -52,14 +52,14 @@
                 </group>
             </xpath>  
             <xpath expr="//group[@name='sale']" position="replace">
-                <group name="sale" string="Sale" attrs="{'invisible':[('supplier','=',True)]}">
+                <group name="sale" string="Sale" attrs="{'invisible':['|',('supplier','=',True),('check_trans','=',True)]}">
                     <field name="customer"  attrs="{'invisible':[('supplier','=',True)]}"/>
                     <field name="user_id"  attrs="{'invisible':[('supplier','=',True)]}"/>
                 </group>
             </xpath>
 
             <xpath expr="//group[@name='acc_sale']" position="replace">
-                <group name="acc_sale" string="Sale" attrs="{'invisible':[('supplier','=',True)]}">
+                <group name="acc_sale" string="Sale" attrs="{'invisible':['|',('supplier','=',True),('check_trans','!=',False)]}">
                     <field name="credit"  attrs="{'invisible':[('supplier','=',True)]}"/>
                     <field name="trust"  attrs="{'invisible':[('supplier','=',True)]}"/>
                 </group>
@@ -71,7 +71,8 @@
             </xpath>
             <xpath expr="//field[@name='property_supplier_payment_term_id']" position="replace">
                 <field name="property_supplier_payment_term_id"  attrs="{'invisible':[('supplier','=',True)]}"/>
-            </xpath>             
+            </xpath>  
+                       
         </field> 
     </record>
 
@@ -82,7 +83,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/> 
         <field name="arch" type="xml"> 
             <xpath expr="//group[@name='acc_purchase']" position="replace">
-                <group name="acc_purchase" string="Purchase" attrs="{'invisible':[('customer','=',True)]}">    
+                <group name="acc_purchase" string="Purchase" attrs="{'invisible':['|',('customer','=',True),('check_trans','!=',False)]}">    
                     <field name="property_supplier_payment_term_id"  attrs="{'invisible':[('customer','=',True)]}"/> 
                     <field name="debit"  attrs="{'invisible':[('customer','=',True)]}"/> 
                 </group>
@@ -142,7 +143,7 @@
         <field name="type">form</field> 
         <field name="arch" type="xml">
             <xpath expr="//field[@name='function']" position="after">
-                <field name="check_trans" invisible="1"/>
+                <field name="check_trans" />
                 <field name="check_purchase" invisible="1"/>
                 <field name="check_clearing_agent" invisible="1"/>
                 <field name="check_forwarder" invisible="1"/>
@@ -262,6 +263,15 @@
                     <field name="context" eval="{'default_check_supplier': 1, 'default_customer' : 0}"/> 
                 </record>
 
+               <!--  <record model="ir.actions.act_window" id="customer_configuration">
+                    <field name="name">Customers</field>
+                    <field name="res_model">res.partner</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                    <field name="domain" >[('customer', '=',True)]</field>
+                    <field name="context">{'default_currency.name':'PKR'}</field> 
+                </record> -->
+
 
                 <menuitem name="Forwarder"
                     id="forwarder_purchase_configuration_main"
@@ -273,6 +283,12 @@
                     parent="forwarder_purchase_configuration_main"
                     action="purchase_forwarder_configuration"
                     sequence="1"/>
+
+                <!-- <menuitem name="Customers"
+                    id="customer_purchase_configuration"
+                    parent="sales_team.menu_sales"
+                    action="customer_configuration"
+                    sequence="1"/> -->
 
 
                 <menuitem name="Clearing Agent"
@@ -395,5 +411,54 @@
 
         </field>
     </record>
+
+    <record id="remove_check_trans" model="ir.ui.view"> 
+        <field name="name">remove_check_trans</field> 
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+           <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':[('check_trans','!=',False)]}
+                </attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='fiscal_information']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':[('check_trans','!=',False)]}
+                </attribute>
+            </xpath>
+
+            <!-- <xpath expr="//group[@name='acc_purchase']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':[('check_trans','!=',False)]}
+                </attribute>
+            </xpath> -->
+
+
+
+
+
+        </field> 
+    </record>
+
+    <record id="remove_check_trans_sale_hide" model="ir.ui.view"> 
+        <field name="name">remove_check_trans</field> 
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field> 
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='acc_sale']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':[('check_trans','!=',False)]}
+                </attribute>
+            </xpath>
+
+        </field> 
+    </record>
+
 
 </odoo>

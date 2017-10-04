@@ -29,17 +29,14 @@ class addrerss_extension(models.Model):
     check_supplier       = fields.Boolean(string="Check Supplier")
     terms_conditions     = fields.Text(string="Terms and Conditions")
     contact_person       = fields.Char(string="Contact Person")
-    currency             = fields.Many2one('res.currency',string="Currency")
-
+    currency             = fields.Many2one('res.currency',string="Currency",default=lambda self: self._getCurrencyPkr())
 
 
     @api.model
-    def create(self, vals):
-        if self.stop_invoice == False:
-            new_record = super(addrerss_extension, self).create(vals)
+    def _getCurrencyPkr(self):
+        ResCurrency = self.env['res.currency'].search([('name','=','PKR')]).id
+        return ResCurrency
 
-
-            return new_record
 
 
 class res_partner_bank_extension(models.Model):

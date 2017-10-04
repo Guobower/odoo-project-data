@@ -322,27 +322,27 @@ class sale_order_extension(models.Model):
 #       self.product_uom_qty = self.carton * self.product_id.product_tmpl_id.qty_per_carton
 
 
-class credit_limit(models.Model):
-  _inherit = "account.invoice"
+# class credit_limit(models.Model):
+#   _inherit = "account.invoice"
 
-  balance = fields.Float(string="Balance")
+#   balance = fields.Float(string="Balance")
   
 
-  @api.multi
-  @api.constrains()
-  def _check_total(self,credit,credit_limit):
-    if credit > credit_limit:
-      raise ValidationError('Amount is exceeding credit limit')
+#   @api.multi
+#   @api.constrains()
+#   def _check_total(self,credit,credit_limit):
+#     if credit > credit_limit:
+#       raise ValidationError('Amount is exceeding credit limit')
 
-  @api.model
-  def create(self, vals):
+#   @api.model
+#   def create(self, vals):
     
-    new_record = super(credit_limit, self).create(vals)
-    credit1 = new_record.partner_id.credit + new_record.amount_total
-    credit_limit1 = new_record.partner_id.credit_limit 
-    self._check_total(credit1,credit_limit1)
+#     new_record = super(credit_limit, self).create(vals)
+#     credit1 = new_record.partner_id.credit + new_record.amount_total
+#     credit_limit1 = new_record.partner_id.credit_limit 
+#     self._check_total(credit1,credit_limit1)
 
-    return new_record
+#     return new_record
 
 
 

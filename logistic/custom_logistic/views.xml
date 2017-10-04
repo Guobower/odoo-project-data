@@ -66,7 +66,9 @@
                   <field class="attach_4" name="bayan_attach"  attrs="{'invisible':[('state','in','draft')]}"/>
                   <field name="pre_bayan"  attrs="{'invisible':['|','|',('state','in','initial'),('state','in','draft'),('state','in','final')]}"/>
                   <field name="bayan_date"  attrs="{'invisible':['|',('state','in','pre'),('state','in','draft')]}"/>
+                  <field name="shutt_start_date"  attrs="{'invisible':['|',('state','in','pre'),('state','in','draft')]}"/>
                   <field name="fin_bayan_date" attrs="{'invisible':['|','|',('state','in','pre'),('state','in','draft'),('state','in','initial')]}"/>
+                  <field name="shutt_end_date" attrs="{'invisible':['|','|',('state','in','pre'),('state','in','draft'),('state','in','initial')]}"/>
                   <!-- <field class="bill_5" name="final_bayan" attrs="{'invisible':['|',('state','in','pre'),('state','in','initial')]}"/> -->
                   <field name="final_attach" attrs="{'invisible':['|','|',('state','in','pre'),('state','in','draft'),('state','in','initial')]}"/>
                   <field name="custom_exam" attrs="{'invisible':['|','|',('state','in','pre'),('state','in','draft'),('state','in','initial')]}"/>
@@ -451,8 +453,8 @@
 
 
 
-<!-- 
-<record model="ir.ui.view" id="rental_product_sales_new">
+
+<!-- <record model="ir.ui.view" id="rental_product_sales_new">
     <field name="model">sale.order</field>
     <field name="name">sale.order.rental.new</field>
     <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>

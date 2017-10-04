@@ -2,7 +2,7 @@
 <odoo>
 
 
-   <record id="account_invoice_extension"   model="ir.ui.view"> 
+  <!--  <record id="account_invoice_extension"   model="ir.ui.view"> 
         <field name="name">account_invoice_extension</field> 
         <field name="model">account.invoice</field> 
         <field name="inherit_id" ref="account.invoice_form"/> 
@@ -12,7 +12,7 @@
             </xpath>
 
         </field>
-    </record>
+    </record> -->
 
 
 
@@ -102,6 +102,32 @@
                     <field name="gross_weight"/>
                     <field name="cbm"/>
                 </group>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_policy']" position="replace">
+
+
+            </xpath>
+
+
+            <xpath expr="//field[@name='route_ids']" position="replace">
+
+
+            </xpath> 
+
+            <xpath expr="//field[@name='property_stock_procurement']" position="replace">
+
+                
+            </xpath> 
+
+            <xpath expr="//field[@name='property_stock_production']" position="replace">
+
+                
+            </xpath> 
+
+            <xpath expr="//field[@name='property_stock_inventory']" position="replace">
+
+                
             </xpath> 
                 
         </field> 
@@ -254,7 +280,7 @@
 
 
                 <xpath expr="//field[@name='type']" position="after">
-                    <field name="foc" />
+                    <field name="foc" attrs="{'invisible': [('foc', '=', False)]}"/>
                 </xpath>
 
             <xpath expr="//label[@for='purchase_ok']" position="replace">

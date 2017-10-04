@@ -14,7 +14,7 @@ class Exportlogic(models.Model):
 	our_job_no       = fields.Char(string="Our Job No", readonly=True,)
 	customer_ref     = fields.Char(string="Customer Ref")
 	shipper_date     = fields.Date(string="DOC Received Date",default=date.today())
-	mani_date        = fields.Date(string="Manifest Date")
+	mani_date        = fields.Date(string="Manifest Received Date")
 	date             = fields.Date(string="Date",required=True,default=date.today())
 	bill_no          = fields.Char(string="B/L Number")
 	bill_attach      = fields.Binary(string=" ")
@@ -26,10 +26,12 @@ class Exportlogic(models.Model):
 	bayan_attach     = fields.Binary(string=" ")
 	final_bayan      = fields.Char(string="Final Bayan")
 	final_attach     = fields.Binary(string="Final Bayan")
-	pre_bayan        = fields.Char(string="Pre Bayan")
+	pre_bayan        = fields.Date(string="Pre Bayan Date")
 	custom_exam      = fields.Boolean(string="Open Custom Examination")
 	bayan_date       = fields.Date(string="Initial Bayan Date")
+	shutt_start_date = fields.Date(string="Shuttling Start Date")
 	fin_bayan_date   = fields.Date(string="Final Bayan Date")
+	shutt_end_date   = fields.Date(string="Shuttling End Date")
 	status           = fields.Many2one('import.status',string="Status")
 	fri_id           = fields.Many2one('freight.forward', string="Freight Link")
 	site             = fields.Many2one('import.site',string="Site")
@@ -349,11 +351,11 @@ class export_tree(models.Model):
 		if self.transporter.id and self.form.id and self.to.id and self.fleet_type:
 			trans = self.env['res.partner'].search([('id','=',self.transporter.id)])
 			for x in trans.route_id:
-				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type:
+				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type and x.service_type == "exp":
 					self.trans_charge = x.trans_charges
 			rec = self.env['res.partner'].search([('id','=',self.crt_tree.customer.id)])
 			for x in rec.route_id:
-				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type:
+				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type and x.service_type == "exp":
 					self.custm_charge = x.trans_charges
 
 
@@ -653,11 +655,11 @@ class import_tree(models.Model):
 		if self.transporter.id and self.form.id and self.to.id and self.fleet_type:
 			trans = self.env['res.partner'].search([('id','=',self.transporter.id)])
 			for x in trans.route_id:
-				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type:
+				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type and x.service_type == "imp":
 					self.trans_charge = x.trans_charges
 			rec = self.env['res.partner'].search([('id','=',self.crt_tree.customer.id)])
 			for x in rec.route_id:
-				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type:
+				if self.form.id == x.form.id and self.to.id == x.to.id and self.fleet_type == x.fleet_type and x.service_type == "imp":
 					self.custm_charge = x.trans_charges
 
 

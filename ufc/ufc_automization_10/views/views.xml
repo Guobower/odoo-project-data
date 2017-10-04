@@ -85,6 +85,7 @@
                 <field name="weight"/>
                 <field name="relevant_purchase_invoice"/>
                 <field name="sale_price"/>
+                <field name="add_per"/>
                 <field name="additional_freight_val" attrs="{'invisible':[('dharki','=',False)]}"/>
                 <field name="misc_charges" attrs="{'invisible':[('orient','=',False)]}"/>
                 <field name="purchase_price"/>
@@ -267,6 +268,7 @@
                       <field name="center_zone"/>
                       <field name="south_zone"/>
                       <field name="quetta_zone"/>
+                      <field name="rahim_yar_khan"/>
                       <field name="fixed"/>
 
                     </tree>

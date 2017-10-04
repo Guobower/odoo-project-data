@@ -52,6 +52,7 @@
                     
                     <field name="charges_serv"/>
                     <field name="charges_type"/>
+                    <field name="serv_type"/>
                     <field name="cont_type"/>
 
                   </tree>
@@ -71,6 +72,7 @@
                           <field name="form"/>
                           <field name="to"/>
                           <field name="fleet_type"/>
+                          <field name="service_type"/>
                           <field name="trans_charges"/>
 
                         </tree>
@@ -158,39 +160,30 @@
               <group string="">
 
                 <field name="sr_no"/>
-                <field name="customer" domain="[('customer','=',True)]"/> 
                 <field name="types"/>
+                <field name="s_supplier" domain="[('supplier','=',True)]"/> 
+                <field name="customer" domain="[('customer','=',True)]"/> 
                 <field name="eta_date"/>
                 <field name="etd_date"/>
                 <field name="cro"/>
-                <field name="sale_link"/>
-                <field name="new_link"/>
                 
-                
+                              
 
               </group>
 
               <group string=" ">
 
-                <field name="s_supplier" domain="[('supplier','=',True)]"/> 
+                
                 <field name="book_date"/>
                 <field name="no_of_con"/>
                 <field name="form"/>
                 <field name="to"/>
+                <field name="new_link"/>
+                <field name="sale_link"/>
                 <field name="implink" attrs="{'invisible':[('types','!=','imp')]}"/>
-                <!-- <field name="explink" attrs="{'invisible':[('types','!=','exp')]}"/> -->
+                <field name="explink" attrs="{'invisible':[('types','!=','exp')]}"/>
                 
               </group>
-
-              <group string="Container Info.">
-              </group>
-
-              <field name="frieght_id" nolabel='1'>
-                <tree editable="bottom">
-                  <field name="cont_no"/>
-                  <field name="cont_type"/>
-                </tree>
-              </field>
 
               <group string="Services">
 
@@ -205,6 +198,21 @@
                 <field name="custm"/>                
 
               </group>
+
+              <group string="Container Info.">
+              </group>
+
+              <field name="frieght_id" nolabel='1'>
+                <tree editable="bottom">
+                  <field name="cont_no"/>
+                  <field name="cont_type"/>
+                  <field name="store_charg"/>
+                  <field name="store_supp"/>
+                  <field name="freight_charg"/>
+                </tree>
+              </field>
+
+
 
             </group>
 
@@ -250,8 +258,9 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+    <menuitem id="logic_project" name="Project" parent="sales_team.menu_base_partner" sequence="12"/>
 
-    <menuitem name="Freight Forwarding" id="freight_menu_item" parent="custom_logistic.clear_import" action="freight_action" sequence="2"/>
+    <menuitem name="Project" id="freight_menu_item" parent="logic_project" action="freight_action" sequence="1"/>
 
    <!--  <record id="invoice_form_extension_tree" model="ir.ui.view">
         <field name="name">invoice_form_extension_tree</field>
@@ -267,6 +276,19 @@
         </field>
     </record> -->
 
+    <record model="ir.ui.view" id="rental_product_sales_new">
+    <field name="model">sale.order</field>
+    <field name="name">sale.order.rental.new</field>
+    <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+    <field name="arch" type="xml">
+        <xpath expr="//button[@name='action_view_delivery']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_view_invoice']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+    </field>
+</record>
 
 
 

@@ -813,32 +813,35 @@ class sale_invoice_customized(models.Model):
 	remaining_payment_days =fields.Date('Remaining Payment Days')
 	reference = fields.Char(string="Reference")
 	pay_tree_id = fields.One2many('invoice.payment','pay_tree')
-
+	balance = fields.Float(string="Balance")
+  
 
 	@api.multi
-	def refund_invoice(self):
-		self.residual = 0.00
+	@api.constrains()
+	def _check_total(self,credit,credit_limit,stop):
+		if stop == True:
+			if credit > credit_limit:
+				raise ValidationError('Amount is exceeding credit limit')
 
-
- 
 	@api.model
 	def create(self, vals):
-		new_record = super(sale_invoice_customized, self).create(vals)
-		if new_record.partner_id:
-			new_record.residual = 0
-		records = self.env['account.invoice'].search([])
-		values = 0
-		for x in records:
-			for z in x.invoice_line_ids:
-				if x.partner_id.id == new_record.partner_id.id:
-					values = values + z.price_subtotal
+	    
+	  new_record = super(sale_invoice_customized, self).create(vals)
+	  credit1 = new_record.partner_id.credit + new_record.amount_total
+	  credit_limit1 = new_record.partner_id.credit_limit
+	  stop = new_record.partner_id.stop_invoice
+	  self._check_total(credit1,credit_limit1,stop)
 
-			if values > new_record.partner_id.credit_limit:
-				raise ValidationError("The credit of this Customer exceeding limit")
-			else:
-				pass
+	  return new_record
 
-		return new_record
+	@api.multi
+	def write(self, vals):
+		super(sale_invoice_customized, self).write(vals)
+		credit1 = self.partner_id.credit + self.amount_total
+	  	credit_limit1 = self.partner_id.credit_limit
+	  	stop = self.partner_id.stop_invoice
+	  	self._check_total(credit1,credit_limit1,stop)
+	  	return True
 
 
 class sale_invoice_line_extension(models.Model):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Import/Export Logistic",
+    'name': "Cites of PAKISTAN",
 
     'summary': """
-        Nayyab""",
+        Ehtisham Faisal""",
 
     'description': """
         Long description of module's purpose
@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale'],
+    'depends': ['base','mail'],
 
     # always loaded
     'data': [

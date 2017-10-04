@@ -23,6 +23,7 @@ class ufc_automization(models.Model):
 	types                       = fields.Selection([('war','Warehouse'),('sal','Salepoint')],string="Type")
 	via                         = fields.Selection([('kot','Via Kot Sabzal (40KMs)'),('kash','Via Kashmore (70KMs)')],string="Via")
 	additional_freight          = fields.Float(string="Additional Freight")
+	add_per                     = fields.Integer(string="Additional Percentage")
 	additional_freight_val      = fields.Float(string="Additional Freight Value")
 	region                      = fields.Many2one('regions',string = "Region")
 	shipper_invoice_no          = fields.Char()
@@ -119,6 +120,12 @@ class ufc_automization(models.Model):
 		users = self.env['res.users'].search([('id','=',self._uid)])
 		if self.customer:
 			self.branch = users.Branch.id
+
+
+	@api.onchange('add_per')
+	def get_per(self):
+			value = self.sale_price * self.add_per / 100
+			self.sale_price = self.sale_price + value
 
 
 	# ========================hiding fields according to users with Boolean=================
@@ -252,6 +259,11 @@ class ufc_automization(models.Model):
 						self.expected_company_price = x.quetta_zone
 					else:
 						self.expected_company_price = self.distance * x.quetta_zone
+				elif self.region.zone == "rahim":
+					if x.fixed == True:
+						self.expected_company_price = x.rahim_yar_khan
+					else:
+						self.expected_company_price = self.distance * x.rahim_yar_khan
 				else:
 					self.distance = 0
 		self.expected_profit = self.expected_company_price - self.purchase_price
@@ -393,6 +405,7 @@ class regions(models.Model):
 		('south','South Zone'),
 		('center','Center Zone'),
 		('queeta','Queeta Zone'),
+		('rahim','Rahim Yar Khan'),
 		],string="Zone")
 
 
@@ -406,6 +419,7 @@ class rates_table(models.Model):
 	center_zone        = fields.Float()
 	south_zone         = fields.Float()
 	quetta_zone        = fields.Float()
+	rahim_yar_khan     = fields.Float(string="Rahim Yar Khan")
 	fixed              = fields.Boolean()
 
 	rates_table_id = fields.Many2one('rates')

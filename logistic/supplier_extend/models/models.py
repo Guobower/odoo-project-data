@@ -53,6 +53,7 @@ class BlnumberTree(models.Model):
 	charges_serv = fields.Float(string="Service Charges")
 	charges_type = fields.Many2one('serv.types',string="Service Type")
 	cont_type    = fields.Selection([('20 ft','20 ft'),('40 ft','40 ft')],string="Container Type")
+	serv_type    = fields.Selection([('imp','Import'),('exp','Export')],string="Import/Export")
 
 	bl_tree      = fields.Many2one('res.partner')
 
@@ -63,6 +64,7 @@ class transport_info(models.Model):
 	form          = fields.Many2one('from.qoute',string="From")
 	to            = fields.Many2one('to.quote',string="To")
 	fleet_type    = fields.Many2one('fleet',string="Fleet Type")
+	service_type  = fields.Selection([('imp','Import'),('exp','Export')],string="Service Type")
 	trans_charges = fields.Float(string="Charges")
 
 	route_trans = fields.Many2one('res.partner')
@@ -116,19 +118,19 @@ class FreightForwarding(models.Model):
 
 
 	customer = fields.Many2one('res.partner',string="Customer",required=True)
-	s_supplier = fields.Many2one('res.partner',string="Supplier")
+	s_supplier = fields.Many2one('res.partner',string="Shipping Line")
 	sr_no     = fields.Char(string="SR No", readonly=True)
 	book_date = fields.Date(string="Booking Date")
 	eta_date = fields.Date(string="ETA Date")
 	etd_date = fields.Date(string="ETD Date")
 	cro = fields.Integer(string="CRO")
 	no_of_con = fields.Integer(string="No of Containers")
-	form = fields.Many2one('from.qoute',string="From")
-	to = fields.Many2one('to.quote',string="To")
+	form = fields.Many2one('from.qoute',string="Country of Origin")
+	to = fields.Many2one('to.quote',string="Destination")
 	sale_link = fields.Many2one('sale.order',string="Sale Order Link")
 	new_link = fields.Many2one('sale.order',string="Transport Order Link")
 	implink = fields.Many2one('import.logic',string="Import Link")
-	# explink = fields.Many2one('export.logic',string="Export Link")
+	explink = fields.Many2one('export.logic',string="Export Link")
 	# abc_imp = fields.Many2one('import.logic', required=True, string="Check test", index=True)
 	freight   = fields.Boolean(string="Freight Forwarding")
 	trans   = fields.Boolean(string="Transportation")
@@ -219,22 +221,25 @@ class FreightForwarding(models.Model):
 
 			self.implink = records.id
 
-		# if self.types == 'exp':
-		# 	prev_rec = self.env['export.logic'].search([('fri_id','=',self.id)])
-		# 	prev_rec.unlink()
+		if self.types == 'exp':
+			prev_rec = self.env['export.logic'].search([('fri_id','=',self.id)])
+			prev_rec.unlink()
 
-		# 	records = self.env['export.logic'].create({
-		# 		'customer':self.customer.id,
-		# 		'fri_id':self.id,
-		# 		})
+			records = self.env['export.logic'].create({
+				'customer':self.customer.id,
+				'fri_id':self.id,
+				})
 
-		# 	self.explink = records.id
+			self.explink = records.id
 
 
 class FreightTree(models.Model):
 	_name = 'freight.tree'
 
 	cont_no = fields.Integer(string="Container No")
+	store_charg = fields.Integer(string="Storage Charges")
+	freight_charg = fields.Integer(string="Freight Charges")
+	store_supp = fields.Char(string="Storage Supplier")
 	cont_type = fields.Selection([('20 ft','20 ft'),('40 ft','40 ft')],string="Container Type")
 
 	freight_tree  = fields.Many2one('freight.forward')
