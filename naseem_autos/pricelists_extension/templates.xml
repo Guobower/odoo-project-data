@@ -21,12 +21,12 @@
                                 <group name="group_top">
                                     <group name="group_left"> 
                                         <field name="category" attrs="{'readonly': [('stages','=','validate')]}"/>
-                                        <field name="customer" attrs="{'invisible': [('type_pricelist','!=','customer')], 'readonly': [('stages','=','validate')]}"/>
+                                        <field name="customer" attrs="{'invisible': [('type_pricelist','!=','customer')], 'readonly': [('stages','=','validate')],'required':[('type_pricelist','=','customer')]}"/>
                                         <field name="check_list" invisible="1"/>
                                     </group>
                                     <group name="group_right">
                                         <field name="type_pricelist" attrs="{'readonly': [('stages','=','validate')]}" />
-                                        <field name="based_on" attrs="{'invisible': [('type_pricelist','!=','customer')], 'readonly': [('stages','=','validate')]}"/>
+                                        <field name="based_on" attrs="{'invisible': [('type_pricelist','!=','customer')], 'readonly': [('stages','=','validate')],'required':[('type_pricelist','=','customer')]}"/>
                                         <field name="category_discount" attrs="{'invisible': [('based_on','!=','discount_cat')], 'readonly': [('stages','=','validate')]}"/>
 
                                     </group> 

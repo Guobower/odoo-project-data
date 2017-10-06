@@ -34,6 +34,8 @@ class addrerss_extension(models.Model):
 
     @api.model
     def _getCurrencyPkr(self):
+        print self.currency.name
+        print "jjjjjjjjjjjjjjjjjjjjjjjjjjj"
         ResCurrency = self.env['res.currency'].search([('name','=','PKR')]).id
         return ResCurrency
 

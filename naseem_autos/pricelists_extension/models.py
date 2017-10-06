@@ -13,29 +13,30 @@ class pricelist_product_configuration(models.Model):
 	_rec_name = 'category'
 
 
-	@api.multi
-	def unlink(self):
-		raise UserError('You cannot Delete any pricelist')
+	# @api.multi
+	# def unlink(self):
+	# 	if self.stages != 'draft':
+	# 		raise UserError('You cannot Delete any pricelist')
 		# return True
 
-	@api.onchange('customer','category')
+	@api.onchange('customer','category','type_pricelist')
 	def generate_check_list(self):
 		if self.category:
-			self.check_list = str(self.category.name) + " " + str(self.customer.name)
+			self.check_list = str(self.category.name) + " " + str(self.customer.name) + " " + str(self.type_pricelist)
 
 	@api.onchange('type_pricelist')
 	def check_list_type(self):
 		if self.type_pricelist == "normal":
 			self.customer = False
+			self.based_on = False
 
 	@api.one
 	@api.constrains('category','type_pricelist','customer','stages')
 	def _check_date(self):
 
-		all_cat_ids = self.env['pricelist.configuration'].search([('id','!=',self.id),('stages','!=',"inactivate")])
-		for x in all_cat_ids:
-			if self.check_list == x.check_list:
-				raise ValidationError('Category already exists')
+		all_cat_ids = self.env['pricelist.configuration'].search([('id','!=',self.id),('stages','!=',"inactivate"),('check_list','=',self.check_list)])
+		if all_cat_ids:
+			raise ValidationError('Category already exists')
 
 		# all_ids = []
 		# all_customers = []
@@ -95,11 +96,11 @@ class pricelist_product_configuration(models.Model):
 					'pricelist_configuration':self.id,
 					})
 
-		for y in emp_list:
-			if y not in all_prod:
-				product = self.env['get.products'].search([('product_id.id','=',y)])
-				for z in product:
-					z.unlink()
+		# for y in emp_list:
+		# 	if y not in all_prod:
+		# 		product = self.env['get.products'].search([('product_id.id','=',y)])
+		# 		for z in product:
+		# 			z.unlink()
 
 
 	@api.multi
@@ -377,11 +378,11 @@ class get_products_category(models.Model):
 	category                 = fields.Many2one ('product.category')
 	pricelist_configuration  = fields.Many2one('pricelist.configuration')
 
-	@api.multi
-	def unlink(self):
-		super(get_products_category,self).unlink()
-		pricelist = self.env['product.pricelist.item'].search([('config_id','=', self.id)])
-		for x in pricelist:
-			x.unlink()
+	# @api.multi
+	# def unlink(self):
+	# 	super(get_products_category,self).unlink()
+	# 	pricelist = self.env['product.pricelist.item'].search([('config_id','=', self.id)])
+	# 	for x in pricelist:
+	# 		x.unlink()
 
-		return True
+	# 	return True

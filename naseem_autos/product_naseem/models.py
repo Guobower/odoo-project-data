@@ -139,19 +139,91 @@ class product_extension(models.Model):
       # new_record.hs_code       = new_record.product_tmpl_id.default_code
       # new_record.maximum_level = new_record.product_tmpl_id.maximum_level
       # new_record.minimum_level = new_record.product_tmpl_id.minimum_level
-      
-
 
 
       return new_record
 
     @api.multi
     def write(self, vals):
+      prev_cat = self.categ_id.id
       super(product_extension, self).write(vals)
       for x in self.orderpoint_ids:
 
         x.product_max_qty = self.maximum_level
         x.product_min_qty = self.minimum_level
+
+        if prev_cat != self.categ_id.id:
+          records = self.env['pricelist.configuration'].search([('category.id','=',prev_cat),('type_pricelist','=','normal')])
+          for x in records:
+            for y in x.get_products_id:
+              if y.product_id.id == self.id:
+                list_price=y.list_price
+                price_level1=y.price_level1
+                price_level2=y.price_level2
+                price_level3=y.price_level3
+                y.unlink()
+
+          new_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','normal')])
+          generate = new_rec.get_products_id.create({
+            'product_id': self.id,
+            'list_price':list_price,
+            'price_level1':price_level1,
+            'price_level2':price_level2,
+            'price_level3':price_level3,
+            'pricelist_configuration':new_rec.id,
+            })
+
+          cust_records = self.env['pricelist.configuration'].search([('category.id','=',prev_cat),('type_pricelist','=','customer')])
+          if cust_records:
+            for x in cust_records:
+              if x.get_products_id1:
+                for y in x.get_products_id1:
+                  if y.product_id.id == self.id:
+                    discount=y.discount_percentage
+                    print discount
+                    print "kkkkkkkkkkkkkkkkkkkkkkkkkk"
+                    y.unlink()
+                    cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
+                    for x in cust_rec:
+                      if x.get_products_id1: 
+                        generate = x.get_products_id1.create({
+                          'product_id': self.id,
+                          'discount_percentage':discount,  
+                          'pricelist_configuration':x.id,
+                        })
+              if x.get_products_id2:
+                for y in x.get_products_id2:
+                  if y.product_id.id == self.id:
+                    fixed_price=y.fixed_price
+                    print fixed_price
+                    print "hhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+                    y.unlink()
+                    cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
+                    for x in cust_rec:
+                      if x.get_products_id2: 
+                        generate = x.get_products_id1.create({
+                          'product_id': self.id,
+                          'fixed_price':fixed_price,  
+                          'pricelist_configuration':x.id,
+                        })
+
+          # cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',customer)])
+          # if cust_rec:
+          #   for x in cust_rec:
+          #     if x.get_products_id1: 
+          #       generate = x.get_products_id1.create({
+          #         'product_id': self.id,
+          #         'discount_percentage':discount,  
+          #         'pricelist_configuration':x.id,
+          #       })
+
+          #     if x.get_products_id2:
+          #       generate = x.get_products_id2.create({
+          #         'product_id': self.id,
+          #         'fixed_price':fixed_price,
+          #         'pricelist_configuration':x.id,
+          #       })
+
 
       return True
 
