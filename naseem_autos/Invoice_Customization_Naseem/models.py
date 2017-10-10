@@ -145,7 +145,7 @@ class stock_picking_own(models.Model):
 							'promo_code': x.promo_code,
 							'account_id': account_id,
 							'name' : x.name,
-							'invoice_id' : create_invoice.id
+							'invoice_id' : create_invoice.id,
 							})
 		if purchase_order:
 			create_invoice = invoice.create({
@@ -241,19 +241,28 @@ class stock_pack_extension(models.Model):
 	@api.onchange('product_qty')
 	def calculate_cartons_to(self):
 		if self.product_qty:
-			self.carton_to = self.product_qty / self.product_id.pcs_per_carton
+			self.carton_to = int(self.product_qty / self.product_id.pcs_per_carton)
+
+	@api.onchange('carton_to')
+	def round_carton_to(self):
+		if self.carton_to:
+			self.carton_to = round(self.carton_to)
+
 			# self.qty_done = self.product_id.pcs_per_carton * self.product_qty
 			# self.carton_done = self.qty_done / self.product_id.pcs_per_carton 
 
 	@api.onchange('carton_done')
 	def calculate_cartons_done(self):
 		if self.carton_done:
-			self.qty_done = self.product_id.pcs_per_carton * self.carton_done
+			self.carton_done = round(self.carton_done)
+			self.qty_done = int(self.product_id.pcs_per_carton * self.carton_done)
+
 
 	@api.onchange('qty_done')
 	def calculate_qty_done(self):
 		if self.qty_done:
-			self.carton_done =  self.qty_done / self.product_id.pcs_per_carton
+			self.qty_done = round(self.qty_done)
+			self.carton_done =  int(self.qty_done / self.product_id.pcs_per_carton)
 
 
 class sale_order_customized(models.Model):
@@ -413,7 +422,7 @@ class sale_order_customized(models.Model):
 				'customer_price': x.customer_price,
 				'price_subtotal': x.price_subtotal,
 				'promo_code': x.promo_code,
-				'account_id': account_id,
+				'account_id':3,
 				'name' : x.name,
 				'invoice_id' : create_invoice.id
 				})	
@@ -863,4 +872,14 @@ class transport_info(models.Model):
 	amount    	  = fields.Float(string="Amount")
 
 	pay_tree = fields.Many2one('account.invoice')
+
+
+class transport_info(models.Model):
+	_name = 'epay.wizard'
+
+	# @api.multi
+	# def get_epay(self):
+	# 	print "checkin ooooooooooooooooooooooooooooooo"
+
+
 

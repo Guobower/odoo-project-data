@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 
 from openerp import models, fields, api
 from openerp.exceptions import Warning
@@ -181,9 +182,18 @@ class pricelist_product_configuration(models.Model):
 
 	@api.multi
 	def update_pricelist_rule(self,product,price,pricelist_name,line_id,applied,price_compute,base,base_pricelist_id,price_discount,categ_id):
-		
 		pricelist = self.env['product.pricelist'].search([('name','=', pricelist_name)])
 		pricelists_rules = self.env['product.pricelist.item'].search([('config_id','=',line_id),('pricelist_id','=',pricelist.id)])
+		pricelist_ids_dict = []
+		# pattern = re.split("(^[0-9]+)",line_id)
+		previous_list = self.env['get.products'].search([('id','=',line_id)]).prod_price_list_id
+		if previous_list:
+			if len(previous_list) > 1:
+				for line in previous_list:
+					pricelist_ids_dict.append(line.id)
+			else:
+				pricelist_ids_dict.append(previous_list.id)
+
 		if not pricelists_rules:
 			create_new_rule_list = pricelists_rules.create({
 						'applied_on':applied,
@@ -198,6 +208,10 @@ class pricelist_product_configuration(models.Model):
 						'categ_id':categ_id,
 						'name':str(pricelists_rules.pricelist_id.name) + " - " + str(pricelists_rules.fixed_price)
 						})
+
+			# self.env['get.products'].search([('id','=',line_id)]).prod_price_list_ids = create_new_rule_list
+			pricelist_ids_dict.append(create_new_rule_list.id)
+			self.env['get.products'].search([('id','=',line_id)]).prod_price_list_id =pricelist_ids_dict
 		else:
 			if self.based_on == "fixed_price" or self.type_pricelist == "normal":
 				pricelists_rules.fixed_price = price
@@ -209,8 +223,7 @@ class pricelist_product_configuration(models.Model):
 	def update_pricelist(self):
 
 		self.stages="validate"
-
-
+		# pricelist_ids = []
 		pricelists_list_price = self.env['product.pricelist'].search([('name','=', "List Price")])
 		if self.type_pricelist == "normal":
 			for items in self.get_products_id:
@@ -218,11 +231,17 @@ class pricelist_product_configuration(models.Model):
 				self.update_pricelist_rule(items.product_id.id,items.price_level1,"Level 1",items.id,"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
 				self.update_pricelist_rule(items.product_id.id,items.price_level2,"Level 2",items.id,"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
 				self.update_pricelist_rule(items.product_id.id,items.price_level3,"Level 3",items.id,"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
-
+				# pricelist_ids.append(level_1)
+				# pricelist_ids.append(level_2)
+				# pricelist_ids.append(level_3)
+				# pricelist_ids.append(list_price)
 				items.product_id.list_price_own = items.list_price
 				items.product_id.level_1 = items.price_level1
 				items.product_id.level_2 = items.price_level2
 				items.product_id.level_3 = items.price_level3
+				# print pricelist_ids
+				# items.prod_price_list_ids = pricelist_ids
+				# pricelist_ids = []
 		else:
 			if not self.customer.linked_pricelist:
 				create_new_pricelist = pricelists_list_price.create({
@@ -232,16 +251,14 @@ class pricelist_product_configuration(models.Model):
 
 			if self.based_on == "fixed_price":
 				for y in self.get_products_id2:
-					self.update_pricelist_rule(y.product_id.id,y.fixed_price,self.customer.name,str(y.id)+" " + str(self.based_on),"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
+					fixed_price = self.update_pricelist_rule(y.product_id.id,y.fixed_price,self.customer.name,y.id,"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
 					# self.update_pricelist_rule(y.product_id.id,y.fixed_price,create_new_pricelist.name,str(y.id)+" " + str(self.based_on),"0_product_variant","fixed",base=None,base_pricelist_id=None,price_discount=None,categ_id=None)
 
 			elif self.based_on == "discount_cat":
-				self.update_pricelist_rule(None,None,self.customer.name,str(self.id)+" " + str(self.based_on),"2_product_category","formula","pricelist",2,self.category_discount,self.category.id)
+				discount_cat = self.update_pricelist_rule(None,None,self.customer.name,self.id,"2_product_category","formula","pricelist",2,self.category_discount,self.category.id)
 			elif self.based_on == "discount_prod":
 			     for prod in self.get_products_id1:
-					self.update_pricelist_rule(prod.product_id.id,None,self.customer.name,str(prod.id)+" "+str(self.based_on),"0_product_variant","formula","pricelist",2,prod.discount_percentage,None)
-
-
+					discount_prod = self.update_pricelist_rule(prod.product_id.id,None,self.customer.name,prod.id,"0_product_variant","formula","pricelist",2,prod.discount_percentage,None)
 
 
 
@@ -377,6 +394,7 @@ class get_products_category(models.Model):
 	discount_percentage      = fields.Float (string = "Discount Percentage")
 	category                 = fields.Many2one ('product.category')
 	pricelist_configuration  = fields.Many2one('pricelist.configuration')
+	prod_price_list_id   = fields.Many2many('product.pricelist.item', ondelete='cascade', string="Pricelist id")
 
 	# @api.multi
 	# def unlink(self):
@@ -386,3 +404,27 @@ class get_products_category(models.Model):
 	# 		x.unlink()
 
 	# 	return True
+
+	@api.model
+	def create(self, vals):
+		res = super(get_products_category, self).create(vals)
+		PricelistConfig = self.env['pricelist.configuration'].search([('id','=',res.pricelist_configuration.id)])
+		PricelistConfig.update_pricelist()
+		return res
+
+
+	@api.multi
+	def write(self, vals):
+		res = super(get_products_category, self).write(vals)
+		PricelistConfig = self.env['pricelist.configuration'].search([('id','=',self.pricelist_configuration.id)])
+		PricelistConfig.update_pricelist()
+		return res
+
+
+	@api.multi
+	def unlink(self):
+		for rec in self.prod_price_list_id:
+			ProductPricelist = self.env['product.pricelist.item'].search([('id','=',rec.id)])
+			ProductPricelist.unlink()
+		res = super(get_products_category,self).unlink()
+		return res

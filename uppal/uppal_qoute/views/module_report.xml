@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+
+    <data>   
+
+        <template id="module_report">
+
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                <t t-foreach="docs" t-as="o">
+
+                        <div class="page">
+
+                        	<style>
+								.data {
+									width: 100%;
+								}
+								.center-data {
+									width: 1200px;
+									margin: 0px auto;
+									line-height: 5px;
+								}
+								.center-data p .solid{
+									font-weight: bold;
+									margin-right: 15px;
+								}
+								.center-data p {
+									margin-left: 10px;
+								}
+								.heading {
+									width: 80%;
+									float: left;
+								}
+								.heading h2 {
+									margin-left: 10px;
+								}
+								.logo {
+									width: 20%;
+									float: right;
+								}
+								.company {
+									border-bottom: 2px solid;
+								}
+								.clearfloat {
+									clear: both;
+									float: none;
+								}
+								.inquiry {
+									width: 50%;
+									float: left;
+									margin-top: 30px;
+								}
+								.quotation {
+									width: 50%;
+									float: left;
+									margin-top: 30px;
+								}
+								.uppal {
+									margin-top: 70px;
+								}
+								table, td, th {
+									border: 1px solid;
+									border-collapse: collapse;
+									text-align: center;
+									padding: 12px;
+									border-color: #b4b4b4;
+									margin-bottom: 25px;
+									margin-top: 150px;
+								}
+								
+							</style>
+	                
+	                
+							
+							<div class="data">
+
+								<div class="center-data">
+
+									<div class="heading">
+
+										<h2>M/S UPPAL ENGINEERING COMPANY</h2>
+										<p>Uppal Center Ist Floor, 1st Floor ,99 Australia Building Railway Road, Lahore. Ph: 042-7666128</p>
+										<p><span class="solid">S.T.Reg #</span><span class="liquid">03-11-8412-002-55</span></p>
+										<p><span class="solid">N.T.N.</span><span class="liquid">1433222-1</span></p>
+
+									</div>
+
+									<div class="logo">
+
+										<img src="/uppal_qoute/static/src/img/uppal-logo.png" alt="uppal_logo"/>
+
+									</div>
+
+									<hr width="100%"></hr>
+
+									<br class="clearfloat"/>
+
+									<div class="inquiry">
+										<p><span class="solid" t-esc="o.partner_id.name"></span><span class="liquid"></span></p>
+										<p><span class="solid" t-esc="o.partner_id.street"></span><span class="liquid"></span></p>
+										<p><span class="solid" t-esc="o.partner_id.street2"></span><span class="liquid"></span></p>
+										<p><span class="solid" t-esc="o.partner_id.city"></span><span class="liquid"></span></p>
+										<p><span class="solid">Quoatation No:</span><span class="liquid" t-esc="o.name"></span></p>
+										<p><span class="solid">Dated</span><span class="liquid" t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"></span></p>
+										<p><span class="solid">Inquiry No:</span><span class="liquid">20000010099</span></p>
+									</div>
+
+									<div class="quotation">
+										<h2>QUOTATION</h2>
+									</div>
+
+									<table width="100%">
+										<tr>
+											<th>Sr #</th>
+											<th>Description</th>
+											<th>Unit Price</th>
+											<th>Qty</th>
+											<th>Total</th>
+										</tr>
+										
+										<t t-set="amount" t-value="0"/>
+										<t t-set="g_amount" t-value="0"/>
+										<t t-set="gst" t-value="0"/>
+										<t t-set="rate" t-value="0"/>
+										<t t-set="i" t-value="1"/>
+										<t t-foreach="lisst" t-as="line">
+
+											<tr>
+												<td>
+													<t t-esc="i"/>
+                                                	<t t-set="i" t-value="i+1"/>
+												</td>
+												<td>
+													<span t-esc="line.product_id.name"></span>
+												</td>
+												<td>
+													<span t-esc="'{:0,}'.format(int(float(line.price_unit)))"></span>
+												</td>
+												<td>
+													<span t-esc="line.product_uom_qty"></span>
+												</td>
+												<td>
+													<span t-esc="'{:0,}'.format(int(float(line.price_subtotal)))"></span>
+													<t t-set="amount" t-value="amount+line.price_subtotal"/>
+													<t t-set="rate" t-value="line.tax_id.amount"/>
+												</td>
+											</tr>
+										</t>
+										<tr>
+											<td></td>
+											<td><b>Total</b></td>
+											<td></td>
+											<td></td>
+											<td>
+												<b><span t-esc="'{:0,}'.format(int(float(amount)))"></span></b>
+												<t t-set="gst" t-value="gst+amount*rate/100"/>
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><b>GST 17%</b></td>
+											<td></td>
+											<td></td>
+											<td>
+												<b><span t-esc="'{:0,}'.format(int(float(gst)))"></span></b>
+												<t t-set="g_amount" t-value="g_amount+gst+amount"/>
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><b>Total W/Gst</b></td>
+											<td></td>
+											<td></td>
+											<td>
+												<b><span t-esc="'{:0,}'.format(int(float(g_amount)))"></span></b>
+											</td>
+										</tr>
+									</table>
+
+									<div class="delivery">
+
+										<p><span class="solid">Deliver:</span><span class="liquid">Dalda Factory SITE Karachi. Three week after Po , thru TCS Overland Express Note prices quoted are inclusive of deliver charges.</span></p>
+										<p><span class="solid">Payment</span><span class="liquid">100% After Delivery, within 30 days</span></p>
+										<p><span class="solid">Tax</span><span class="liquid">Prices quoted inclusive of all taxes</span></p>
+										<p><span class="solid">Warranty</span><span class="liquid">Uppal Spares guarenteed for one year against manufacturing defect</span></p>
+										<p><span class="solid">Validity</span><span class="liquid">30 Days</span></p>
+
+									</div>
+
+									<p class="uppal">Fawad Uppal</p>
+									<p><span class="solid">Cell:</span><span class="liquid">0300-8417170</span></p>
+
+								</div>
+
+							</div>
+								
+                        </div><!--end of page-->
+                    </t>
+                </t>
+            </t>
+
+        </template>
+
+    </data>
+
+</openerp>

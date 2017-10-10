@@ -1,4 +1,6 @@
 from openerp import models, fields, api
+from datetime import datetime
+import re
 
 
 class ufc_automization(models.Model):
@@ -55,7 +57,7 @@ class ufc_automization(models.Model):
 	driver_photo                = fields.Binary('Driver Photo')
 	billty_photo                = fields.Binary('Bilty Photo')
 	payment_photo               = fields.Binary('Payment Photo')
-	truck_no                    = fields.Char(string = "Truck No",required=True)
+	truck_no                    = fields.Char(string = "Truck No")
 	driver_name                 = fields.Char(string = "Drive Name")
 	mobile_no                   = fields.Char(string = "Mobile No")
 	cleander_name               = fields.Char(string = "Cleander Name")
@@ -66,6 +68,7 @@ class ufc_automization(models.Model):
 	sequence                    = fields.Many2one('ir.sequence',string = "Sequence") 
 	fiscal_position             = fields.Many2one('account.fiscal.position',string = "Fiscal Position") 
 	invoice_date                = fields.Date(string = "Invoice Date",required=True) 
+	new_date                    = fields.Date(string = "New Date") 
 	journal                     = fields.Many2one('account.journal',string = "Journal") 
 	account                     = fields.Many2one('account.account',string = "Account")
 	order_no                    = fields.Char(index=True, readonly=True)
@@ -100,6 +103,19 @@ class ufc_automization(models.Model):
 
 
 
+	@api.multi
+	def change_date(self):
+		rec = self.env['ufc.auto'].search([])
+		for x in rec:
+			if x.plan_date:
+				line = re.sub('-', '', x.plan_date)
+				value = datetime.strptime(line, '%d%m%Y').date()
+				x.new_date = value
+
+
+
+
+
 
 	# ===========================giving rec_name with computed_field=======================
 	# ===========================giving rec_name with computed_field=======================
@@ -126,6 +142,14 @@ class ufc_automization(models.Model):
 	def get_per(self):
 			value = self.sale_price * self.add_per / 100
 			self.sale_price = self.sale_price + value
+
+
+	@api.onchange('sale_price')
+	def round(self):
+		if self.sale_price:
+			self.sale_price = round(self.sale_price)
+
+
 
 
 	# ========================hiding fields according to users with Boolean=================
@@ -156,7 +180,7 @@ class ufc_automization(models.Model):
 	# ===========calculating distance of sindh and punjab for User Engro Karachi============
 
 
-	@api.onchange('distance')
+	@api.onchange('distance','purchase_price')
 	def dist_calculation(self):
 		rates_table1 = self.env['rates'].search([('company_name.id','=',self.customer.id),('date_from', '<=', self.invoice_date), ('date_to', '>=', self.invoice_date)])
 		for x in rates_table1.rates_table:
@@ -165,33 +189,37 @@ class ufc_automization(models.Model):
 					if x.fixed == True:
 						self.expected_company_price = x.north_zone
 					else:
-						self.expected_company_price = self.distance * x.north_zone
-
+						self.expected_company_price = self.distance * x.north_zone * self.weight
+						self.sale_price = self.expected_company_price
 				elif self.region.zone == "center":
 					if x.fixed == True:
 						self.expected_company_price = x.center_zone
 					else:
-						self.expected_company_price = self.distance * x.center_zone
+						self.expected_company_price = self.distance * x.center_zone * self.weight
+						self.sale_price = self.expected_company_price
 				elif self.region.zone == "south":
 					if x.fixed == True:
 						self.expected_company_price = x.south_zone
 					else:
-						self.expected_company_price = self.distance * x.south_zone
+						self.expected_company_price = self.distance * x.south_zone * self.weight
+						self.sale_price = self.expected_company_price
 				elif self.region.zone == "quetta":
 					if x.fixed == True:
 						self.expected_company_price = x.quetta_zone
 					else:
-						self.expected_company_price = self.distance * x.quetta_zone
+						self.expected_company_price = self.distance * x.quetta_zone * self.weight
+						self.sale_price = self.expected_company_price
 				elif self.region.zone == "rahim":
 					if x.fixed == True:
 						self.expected_company_price = x.rahim_yar_khan
 					else:
-						self.expected_company_price = self.distance * x.rahim_yar_khan
+						self.expected_company_price = self.distance * x.rahim_yar_khan * self.weight
+						self.sale_price = self.expected_company_price
 				else:
 					self.distance = 0
 		self.expected_profit = self.expected_company_price - self.purchase_price
-		self.expected_profit = self.expected_profit * self.weight
-		self.sale_price = self.expected_profit
+		self.tax2percent = self.sale_price * .02
+		self.profit      = self.sale_price - self.purchase_price - self.tax2percent
 
 		if self.customer.name == "Engro Port Karachi":
 			per_km = self.sale_price/self.distance
@@ -241,10 +269,10 @@ class ufc_automization(models.Model):
 	# ================================calculating tax and profit=============================
 
 
-	@api.onchange('purchase_price','sale_price')
-	def tax_cal(self):
-		self.tax2percent = self.sale_price * .02
-		self.profit      = self.sale_price - self.purchase_price - self.tax2percent
+	# @api.onchange('purchase_price')
+	# def tax_cal(self):
+	# 	self.tax2percent = self.sale_price * .02
+	# 	self.profit      = self.sale_price - self.purchase_price - self.tax2percent
 
 
 	# ============================calculating remaining and total paid=========================
@@ -270,39 +298,42 @@ class ufc_automization(models.Model):
 
 	# @api.multi
 	# def create_supplier_invoice(self):
-		# rates_table1 = self.env['rates'].search([('company_name.id','=',self.customer.id),('date_from', '<=', self.invoice_date), ('date_to', '>=', self.invoice_date)])
-		# for x in rates_table1.rates_table:
-		# 	if x.distance_from  <= self.distance <= x.distance_to:
-		# 		if self.region.zone == "north":
-		# 			if x.fixed == True:
-		# 				self.expected_company_price = x.north_zone
-		# 			else:
-		# 				self.expected_company_price = self.distance * x.north_zone
-
-		# 		elif self.region.zone == "center":
-		# 			if x.fixed == True:
-		# 				self.expected_company_price = x.center_zone
-		# 			else:
-		# 				self.expected_company_price = self.distance * x.center_zone
-		# 		elif self.region.zone == "south":
-		# 			if x.fixed == True:
-		# 				self.expected_company_price = x.south_zone
-		# 			else:
-		# 				self.expected_company_price = self.distance * x.south_zone
-		# 		elif self.region.zone == "quetta":
-		# 			if x.fixed == True:
-		# 				self.expected_company_price = x.quetta_zone
-		# 			else:
-		# 				self.expected_company_price = self.distance * x.quetta_zone
-		# 		elif self.region.zone == "rahim":
-		# 			if x.fixed == True:
-		# 				self.expected_company_price = x.rahim_yar_khan
-		# 			else:
-		# 				self.expected_company_price = self.distance * x.rahim_yar_khan
-		# 		else:
-		# 			self.distance = 0
-		# self.expected_profit = self.expected_company_price - self.purchase_price
-		# self.expected_profit = self.expected_profit * self.weight
+	# 	rates_table1 = self.env['rates'].search([('company_name.id','=',self.customer.id),('date_from', '<=', self.invoice_date), ('date_to', '>=', self.invoice_date)])
+	# 	for x in rates_table1.rates_table:
+	# 		if x.distance_from  <= self.distance <= x.distance_to:
+	# 			if self.region.zone == "north":
+	# 				if x.fixed == True:
+	# 					self.expected_company_price = x.north_zone
+	# 				else:
+	# 					self.expected_company_price = self.distance * x.north_zone * self.weight
+	# 					self.sale_price = self.expected_company_price
+	# 			elif self.region.zone == "center":
+	# 				if x.fixed == True:
+	# 					self.expected_company_price = x.center_zone
+	# 				else:
+	# 					self.expected_company_price = self.distance * x.center_zone * self.weight
+	# 					self.sale_price = self.expected_company_price
+	# 			elif self.region.zone == "south":
+	# 				if x.fixed == True:
+	# 					self.expected_company_price = x.south_zone
+	# 				else:
+	# 					self.expected_company_price = self.distance * x.south_zone * self.weight
+	# 					self.sale_price = self.expected_company_price
+	# 			elif self.region.zone == "quetta":
+	# 				if x.fixed == True:
+	# 					self.expected_company_price = x.quetta_zone
+	# 				else:
+	# 					self.expected_company_price = self.distance * x.quetta_zone * self.weight
+	# 					self.sale_price = self.expected_company_price
+	# 			elif self.region.zone == "rahim":
+	# 				if x.fixed == True:
+	# 					self.expected_company_price = x.rahim_yar_khan
+	# 				else:
+	# 					self.expected_company_price = self.distance * x.rahim_yar_khan * self.weight
+	# 					self.sale_price = self.expected_company_price
+	# 			else:
+	# 				self.distance = 0
+	# 	self.expected_profit = self.expected_company_price - self.purchase_price
 
 
 	@api.multi

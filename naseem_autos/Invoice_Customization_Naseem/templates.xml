@@ -115,7 +115,7 @@
                     
                     <button name="action_quotation_send" string="Send by Email" type="object"  attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('sent','sale'))]}" />
 
-                    <button name="complete_order" string="Complete" type="object"  class="btn-primary" attrs="{'invisible': [('state', '=', 'complete')]}"/>                    
+                    <button name="complete_order" string="Complete" type="object"  class="btn-primary" attrs="{'invisible': [('state', '!=', 'sale')]}"/>                    
                     <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft','sent','sale'))]}"/>
                     
                     <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
@@ -667,5 +667,16 @@
             </xpath>
         </field> 
 </record>
+
+<record id="sale.action_orders" model="ir.actions.act_window">
+    <field name="name">Sale Order</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+
+  </record>
+
+
 
 </odoo>

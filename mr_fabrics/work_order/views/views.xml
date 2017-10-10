@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<odoo>
+
+
+    <record id="view_work_order" model="ir.ui.view"> 
+      <field name="name">Work Order</field> 
+      <field name="model">work.order</field> 
+      <field name="arch" type="xml"> 
+        <form> 
+
+          <sheet>
+
+            <group >
+
+              <group string="">
+
+                <field name="buyer"/>
+
+              </group>
+
+              <group string="">
+
+                <field name="merchant"/>
+                <field name="style"/>
+
+              </group>
+
+            </group>
+
+          </sheet>
+
+        </form>
+
+      </field>
+
+    </record>
+
+  
+
+    <record id="view_tree_work_order" model="ir.ui.view"> 
+      <field name="name">Rates Form</field> 
+      <field name="model">work.order</field> 
+      <field name="type">tree</field> 
+      <field name="arch" type="xml"> 
+      <tree> 
+       
+            <field name="buyer"/>
+            <field name="merchant"/>
+            <field name="style"/>
+ 
+
+
+      </tree> 
+      </field> 
+      
+    </record>
+
+
+
+    <record model="ir.actions.act_window" id="work_order">
+      <field name="name">Work Order</field>
+      <field name="res_model">work.order</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Work Order" id="work_order_menu_item" parent="sales_team.menu_sales" action="work_order" sequence="20"/>
+
+
+
+
+
+    
+    
+</odoo>

@@ -207,7 +207,6 @@ class SampleDevelopmentReport(models.AbstractModel):
         reporting_months = []       
         year = int(date[:4])
         month = int(date[5:7])
-        print month
         day = int(date[8:10])
         months_in_words = {
         1:'Jan',

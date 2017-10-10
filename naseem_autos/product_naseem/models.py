@@ -174,38 +174,34 @@ class product_extension(models.Model):
             })
 
           cust_records = self.env['pricelist.configuration'].search([('category.id','=',prev_cat),('type_pricelist','=','customer')])
-          if cust_records:
-            for x in cust_records:
-              if x.get_products_id1:
-                for y in x.get_products_id1:
-                  if y.product_id.id == self.id:
-                    discount=y.discount_percentage
-                    print discount
-                    print "kkkkkkkkkkkkkkkkkkkkkkkkkk"
-                    y.unlink()
-                    cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
-                    for x in cust_rec:
-                      if x.get_products_id1: 
-                        generate = x.get_products_id1.create({
-                          'product_id': self.id,
-                          'discount_percentage':discount,  
-                          'pricelist_configuration':x.id,
-                        })
-              if x.get_products_id2:
-                for y in x.get_products_id2:
-                  if y.product_id.id == self.id:
-                    fixed_price=y.fixed_price
-                    print fixed_price
-                    print "hhhhhhhhhhhhhhhhhhhhhhhhhhhh"
-                    y.unlink()
-                    cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
-                    for x in cust_rec:
-                      if x.get_products_id2: 
-                        generate = x.get_products_id1.create({
-                          'product_id': self.id,
-                          'fixed_price':fixed_price,  
-                          'pricelist_configuration':x.id,
-                        })
+          for x in cust_records:
+            for y in x.get_products_id1:
+              if y.discount_percentage > 0.00:
+                if y.product_id.id == self.id:
+                  discount=y.discount_percentage
+                  y.unlink()
+                  cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
+                  for x in cust_rec:
+                    if x.get_products_id1: 
+                      generate = x.get_products_id1.create({
+                        'product_id': self.id,
+                        'discount_percentage':discount,  
+                        'pricelist_configuration':x.id,
+                      })
+
+            for y in x.get_products_id2:
+              if y.fixed_price > 0.00:
+                if y.product_id.id == self.id:
+                  fixed_price=y.fixed_price
+                  y.unlink()
+                  fix_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',x.customer.id)])
+                  for x in fix_rec:
+                    if x.get_products_id2: 
+                      generate = x.get_products_id2.create({
+                        'product_id': self.id,
+                        'fixed_price':fixed_price,  
+                        'pricelist_configuration':x.id,
+                      })
 
           # cust_rec = self.env['pricelist.configuration'].search([('category.id','=',self.categ_id.id),('type_pricelist','=','customer'),('customer.id','=',customer)])
           # if cust_rec:
