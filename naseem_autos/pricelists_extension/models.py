@@ -123,18 +123,35 @@ class pricelist_product_configuration(models.Model):
 
 	@api.multi
 	def inactive_pricelist(self):
+		self.stages="inactivate"
+		if self.type_pricelist == 'normal':
+			for x in self.get_products_id:
+				for rec in x.prod_price_list_id:
+					ProductPricelist = self.env['product.pricelist.item'].search([('id','=',rec.id)])
+					ProductPricelist.unlink()
+		if self.type_pricelist == 'customer' and self.based_on == 'discount_prod':
+			for x in self.get_products_id1:
+				for rec in x.prod_price_list_id:
+					ProductPricelist = self.env['product.pricelist.item'].search([('id','=',rec.id)])
+					ProductPricelist.unlink()
+		if self.type_pricelist == 'customer' and self.based_on == 'fixed_price':
+			for x in self.get_products_id2:
+				for rec in x.prod_price_list_id:
+					ProductPricelist = self.env['product.pricelist.item'].search([('id','=',rec.id)])
+					ProductPricelist.unlink()
 
-		if self.type_pricelist=="normal":
-			for x in self.get_products_id:
-				pricelist = self.env['product.pricelist.item'].search([('config_id','=', x.id)])
-				for y in pricelist:
-					y.unlink()
-			for x in self.get_products_id:
-				product = self.env['product.product'].search([('name','=', x.product_id.name)])
-				product.list_price_own = 0
-				product.level_1 = 0
-				product.level_2 = 0
-				product.level_3 = 0
+		# if self.type_pricelist=="normal":
+		# 	for x in self.get_products_id:
+		# 		pricelist = self.env['product.pricelist.item'].search([('config_id','=', x.id)])
+		# 		for y in pricelist:
+		# 			y.unlink()
+		# 	for x in self.get_products_id:
+		# 		product = self.env['product.product'].search([('name','=', x.product_id.name)])
+		# 		product.list_price_own = 0
+		# 		product.level_1 = 0
+		# 		product.level_2 = 0
+		# 		product.level_3 = 0
+
 
 
 
@@ -158,26 +175,26 @@ class pricelist_product_configuration(models.Model):
 		# 	x.unlink()
 
 
-		if self.based_on == "discount_cat":
-			for x in self.customer.linked_pricelist.item_ids:
-				if x.config_id == str(self.id)+" " + str(self.based_on):
-					x.unlink()
+		# if self.based_on == "discount_cat":
+		# 	for x in self.customer.linked_pricelist.item_ids:
+		# 		if x.config_id == str(self.id)+" " + str(self.based_on):
+		# 			x.unlink()
 
 
-		if self.based_on == "fixed_price":
-			for y in self.get_products_id2:
-				for x in self.customer.linked_pricelist.item_ids:
-					if x.config_id == str(y.id)+" " + str(self.based_on):
-						x.unlink()
+		# if self.based_on == "fixed_price":
+		# 	for y in self.get_products_id2:
+		# 		for x in self.customer.linked_pricelist.item_ids:
+		# 			if x.config_id == str(y.id)+" " + str(self.based_on):
+		# 				x.unlink()
 
 
-		if self.based_on == "discount_prod":
-			for y in self.get_products_id1:
-				for x in self.customer.linked_pricelist.item_ids:
-					if x.config_id == str(y.id)+" " + str(self.based_on):
-						x.unlink()
+		# if self.based_on == "discount_prod":
+		# 	for y in self.get_products_id1:
+		# 		for x in self.customer.linked_pricelist.item_ids:
+		# 			if x.config_id == str(y.id)+" " + str(self.based_on):
+		# 				x.unlink()
 
-		self.stages="inactivate"
+		
 
 
 	@api.multi

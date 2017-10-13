@@ -747,6 +747,7 @@ class sale_order_line_extension(models.Model):
 	@api.onchange('product_uom_qty')
 	def get_cartons(self):
 		if self.product_uom_qty and self.product_id:
+			self.product_uom_qty = round(self.product_uom_qty)
 			self.carton = self.product_uom_qty / self.product_id.pcs_per_carton
 
 	@api.onchange('carton')
