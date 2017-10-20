@@ -9,6 +9,8 @@
         <form>
           <header>
             <button name="generate_suppliers" string="Generate" type="object" class="oe_highlight"/>
+            <button name="xl_report" string="XL Report" type="object" class="oe_highlight"/>
+            <!-- <button name="run_q" string="Run Q" type="object" class="oe_highlight"/> -->
           </header>
           <sheet>
             <group name="top">
@@ -31,7 +33,7 @@
                   
                   <field name="suppliers"/>
                   <field name="open_bal"/>
-                  <field name="sales"/>
+                  <field name="purchases"/>
                   <field name="payment"/>
                   <field name="tax_appl"/>
                   <field name="tax_dedt"/>

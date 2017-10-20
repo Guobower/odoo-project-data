@@ -112,9 +112,9 @@
 
                                         <p3><b>Date:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/> </p3>
 
-                                        <p4><b>Customer From:</b>&#032;3 PIN SOCKET</p4>
+                                        <!-- <p4><b>Customer From:</b>&#032;3 PIN SOCKET</p4>
 
-                                        <p5><b>To:</b>&#032;WIPER FNL 20" (CN)</p5>
+                                        <p5><b>To:</b>&#032;WIPER FNL 20" (CN)</p5> -->
 
                                         <p6><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p6>
 

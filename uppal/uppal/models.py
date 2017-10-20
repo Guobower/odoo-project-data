@@ -152,3 +152,4 @@ class customer_extension(models.Model):
 
 	ntn = fields.Char('NTN')
 	sale_tax_reg = fields.Char('Sales Tax Reg')
+	sale_tax_chk = fields.Char('Sales Tax')

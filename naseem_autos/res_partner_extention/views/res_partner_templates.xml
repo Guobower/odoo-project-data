@@ -143,7 +143,7 @@
         <field name="type">form</field> 
         <field name="arch" type="xml">
             <xpath expr="//field[@name='function']" position="after">
-                <field name="check_trans" />
+                <field name="check_trans" attrs="{'invisible':[('check_trans','!=',True)]}"/>
                 <field name="check_purchase" invisible="1"/>
                 <field name="check_clearing_agent" invisible="1"/>
                 <field name="check_forwarder" invisible="1"/>
@@ -263,14 +263,15 @@
                     <field name="context" eval="{'default_check_supplier': 1, 'default_customer' : 0}"/> 
                 </record>
 
-               <!--  <record model="ir.actions.act_window" id="customer_configuration">
+             <!--    <record model="ir.actions.act_window" id="customer_configuration">
                     <field name="name">Customers</field>
                     <field name="res_model">res.partner</field>
                     <field name="view_type">form</field>
                     <field name="view_mode">tree,form</field>
                     <field name="domain" >[('customer', '=',True)]</field>
-                    <field name="context">{'default_currency.name':'PKR'}</field> 
+                    <field name="context" eval="{'default_customer':1 , 'default_check_clearing_agent': 0, 'default_check_forwarder' : 1,'check_trans':0}"/>
                 </record> -->
+
 
 
                 <menuitem name="Forwarder"
@@ -420,6 +421,12 @@
         <field name="arch" type="xml">
 
            <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':[('check_trans','!=',False)]}
+                </attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='accounting']" position="attributes">
                 <attribute name="attrs">
                     {'invisible':[('check_trans','!=',False)]}
                 </attribute>

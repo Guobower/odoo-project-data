@@ -34,7 +34,8 @@ class stock_picking_own(models.Model):
 	_inherit 	= 'stock.picking'
 	backorder 		= fields.Boolean(string="Back Order", invisible=True)
 	bilty_no  		= fields.Char(string="Billty No.")
-	print_do 		= fields.Boolean(string="Print DO", default=True) 
+	cancel  		= fields.Char(string="cancel")
+	print_do 		= fields.Boolean(string="Print DO") 
 	# bilty_recieved  = fields.Float(string="Billty Expense Received")
 	packing_expense = fields.Float(string="Packing Expense")
 	bilty_paid 		= fields.Float(string="Billty Amount")
@@ -122,6 +123,7 @@ class stock_picking_own(models.Model):
 				'due_days' : sale_order.due_days,
 				'date_invoice' : sale_order.date_order,
 				'incoterm' : sale_order.incoterm.id,
+				'source' : sale_order.name,
 				})
 
 			for x in sale_order.order_line:
@@ -130,7 +132,7 @@ class stock_picking_own(models.Model):
 						if x.product_id.property_account_income_id.id:
 							account_id = x.product_id.property_account_income_id.id
 						else:
-							account_id = x.product_id.categ_id.property_account_income_categ_id	
+							account_id = x.product_id.categ_id.property_account_income_categ_id.id	
 						create_invoice_lines= invoice_lines.create({
 							'product_id':x.product_id.id,
 							'uom':x.uom,
@@ -142,7 +144,7 @@ class stock_picking_own(models.Model):
 							'discount': x.discount,
 							'customer_price': x.customer_price,
 							'price_subtotal': x.price_subtotal,
-							'promo_code': x.promo_code,
+							'promo_code': x.promo_code.id,
 							'account_id': account_id,
 							'name' : x.name,
 							'invoice_id' : create_invoice.id,
@@ -273,13 +275,14 @@ class sale_order_customized(models.Model):
 	transporter 			= fields.Many2one('res.partner',string="Transporter")
 	remaining_payment_days  = fields.Datetime(string="Remaining Payment Days")
 	direct_invoice_check 	= fields.Boolean(string="Direct Invoice", readonly="1")
+	saleperson_check 	    = fields.Boolean(string="check", readonly="1")
 	journal 				= fields.Many2one('account.journal', string="Journal")
-	# state = fields.Selection(selection_add=[('confirm', 'Confirm'),('drft', 'Draft')])
+	waveoff_amount 	= fields.Float(string="Discount")
+	types = fields.Selection([('cash', 'Cash'),('credit', 'Credit')],string="Type",required=True)
 	state2 = fields.Selection([
 	('draft', 'Draft'),
-	('confirm', 'Confirm'),
-	('partial', 'Partial'),
-	('complete', 'Complete'),
+	('validate', 'Validate'),
+	('cancel', 'Cancelled'),
 	], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 	
 	state = fields.Selection([
@@ -292,7 +295,10 @@ class sale_order_customized(models.Model):
 	('complete', 'Complete'),
 	], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
-
+	@api.onchange('waveoff_amount')
+	def _onchange_waveoff_amount(self):
+		if self.waveoff_amount:
+			self.amount_total = self.amount_total - self.waveoff_amount
 	@api.multi
 	def make_delivery(self):
 		sale_deliveries = self.env['stock.picking'].search([('origin','=',self.name),('backorder','=',True)])
@@ -300,6 +306,10 @@ class sale_order_customized(models.Model):
 			sale_deliveries.backorder = False
 		else:
 			raise ValidationError('No Pending Delivery Exists for this Sale Order')
+
+
+	
+
 
 
 
@@ -352,12 +362,27 @@ class sale_order_customized(models.Model):
 				self.journal = journal_env_cash.id
 			else:
 				self.journal = journal_env_sale.id
-
 			self.transporter = self.partner_id.transporter
 			self.payment_term_id = self.partner_id.payment_term
 			self.incoterm = self.partner_id.incoterm
 			self.currency_id = self.partner_id.currency
+			if self.partner_id.user_id:
+				self.user_id = self.partner_id.user_id.id
+				self.saleperson_check = True
+			else: 
+				self.saleperson_check = False
 
+
+	@api.onchange('types')
+	def _cash_types(self):
+		if self.types:
+			if self.types == 'cash':
+				check = self.env['hr.employee'].search([('user_id.id','=',self.user_id.id)])
+				if check.cash_book:
+					self.journal = check.cash_book.id
+			else:
+				sale_journal = self.env['account.journal'].search([('type','=','sale')])
+				self.journal = sale_journal.id
 
 
 
@@ -376,7 +401,7 @@ class sale_order_customized(models.Model):
 
 	@api.multi
 	def validate_direct_invoice(self):
-		# self.state = 'done'
+		self.state2 = 'validate'
 
 #####################################
 #  Create Customer Invoice  
@@ -401,6 +426,7 @@ class sale_order_customized(models.Model):
 			'due_days' : self.due_days,
 			'date_invoice' : self.date_order,
 			'incoterm' : self.incoterm.id,
+			'cancel' : self.name,
 			'balance' : total,
 			'state2' : "confirm"
 			})
@@ -421,8 +447,8 @@ class sale_order_customized(models.Model):
 				'discount': x.discount,
 				'customer_price': x.customer_price,
 				'price_subtotal': x.price_subtotal,
-				'promo_code': x.promo_code,
-				'account_id':3,
+				'promo_code': x.promo_code.id,
+				'account_id':account_id,
 				'name' : x.name,
 				'invoice_id' : create_invoice.id
 				})	
@@ -434,6 +460,7 @@ class sale_order_customized(models.Model):
 		inventory_lines = self.env['stock.move'].search([])
 		create_inventory = inventory.create({
 			'partner_id':self.partner_id.id,
+			'cancel':self.name,
 			'location_id':15,
 			'picking_type_id' : 4,
 			'location_dest_id' : 9,
@@ -448,7 +475,8 @@ class sale_order_customized(models.Model):
 				'picking_id': create_inventory.id,
 				'name':"test",
 				'location_dest_id': 9,
-				})	
+				})
+
 	#####################################
 	#  Create Journal Entry 
 	#####################################
@@ -522,7 +550,16 @@ class sale_order_customized(models.Model):
 	# 			'account_id': account_id.id,
 	# 			'name' : x.name,
 	# 			'invoice_id' : create_invoice.id
-	# 			})					
+	# 			})	
+
+	@api.multi
+	def cancel_invoice(self):
+		self.state2 = 'cancel'
+
+		del_stock = self.env['stock.picking'].search([('cancel','=',self.name)])
+		del_stock.unlink()
+		del_invoice = self.env['account.invoice'].search([('cancel','=',self.name)])
+		del_invoice.unlink()		
 
 	@api.model
 	def create(self, vals):	
@@ -538,9 +575,9 @@ class sale_order_customized(models.Model):
 
 	@api.multi
 	def write(self, vals):
-		super(sale_order_customized, self).write(vals)
+		res =super(sale_order_customized, self).write(vals)
 		self.delete_zero_products()
-		return True
+		return res
 	def delete_zero_products(self):
 		for lines in self.instant_promo:
 			if lines.qty == 0:
@@ -606,21 +643,19 @@ class sale_order_customized(models.Model):
 		if flag == 1:
 			raise ValidationError('Same Product exists multiple times in Sale Order')
 		else:
-			instant_promo_lines = self.env['promo.instant'].search([('sales_promo_id5.scheme_from_dt','<',self.date_order), ('sales_promo_id5.scheme_to_dt','>',self.date_order), ('sales_promo_id5.stages','=',"validate")])
+			instant_promo_lines = self.env['promo.instant'].search([('sales_promo_id5.scheme_from_dt','<=',self.date_order), ('sales_promo_id5.scheme_to_dt','>=',self.date_order), ('sales_promo_id5.stages','=',"validate")])
 			sale_order_lines = self.env['sale.order.line'].search([])
-
 			for x in self.order_line:
 				for y in instant_promo_lines:
 					if x.product_id.id == y.product.id and x.order_id.partner_id in y.sales_promo_id5.customer:
-						invoice_lines = self.env['account.invoice.line'].search([('invoice_id.date','>',y.sales_promo_id5.scheme_from_dt), ('invoice_id.date','<',y.sales_promo_id5.scheme_to_dt),('product_id.id','=',y.product.id),('invoice_id.partner_id.id','=',self.partner_id.id),('invoice_id.state','!=',"draft")])
+						invoice_lines = self.env['account.invoice.line'].search([('invoice_id.date','>=',y.sales_promo_id5.scheme_from_dt), ('invoice_id.date','<=',y.sales_promo_id5.scheme_to_dt),('product_id.id','=',y.product.id),('invoice_id.partner_id.id','=',self.partner_id.id),('invoice_id.state','!=',"draft")])
 						current_quantity = 0
 						for qt in self.order_line:
 							if qt.product_id.id == y.product.id and qt.price_unit != 0:
 								current_quantity = current_quantity + qt.product_uom_qty
 						invoice_total = (self.quantity(invoice_lines)[0] - self.quantity(invoice_lines)[2]) + current_quantity
 						invoice_total_promo =  self.quantity(invoice_lines)[1] - self.quantity(invoice_lines)[3]
-						reward_quantity = (int(invoice_total/y.qty) * y.qty_reward) - invoice_total_promo  
-						
+						reward_quantity = (int(invoice_total/y.qty) * y.qty_reward) - invoice_total_promo
 						ids = []
 						for a in self.instant_promo:
 							ids.append(a.product_id.id)
@@ -629,17 +664,28 @@ class sale_order_customized(models.Model):
 						elif x.product_id.id in ids:
 							for c in self.instant_promo:
 								if c.product_id.id == x.product_id.id:
-									c.qty = reward_quantity
+									if c.manual != True:
+										c.qty = reward_quantity
 
 			product_lst = []
 			for y in self.order_line:
 				product_lst.append(y.product_id.id)
 			for lines in self.instant_promo:
 				if lines.product_id.id not in product_lst:
-					lines.qty = 0
+					if c.manual != True:
+						lines.qty = 0
 		for x in self.order_line:
 			x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
-				
+
+	def _prepare_instant_promo(self, product_id, qty, id):
+		data = {
+		'product_id':product_id,
+		'qty': qty,
+		'instant_promo_id': id,
+
+		}
+		return data
+
 	
 	def quantity(self,invoice):
 		total_quantity = [0,0,0,0]
@@ -672,13 +718,15 @@ class sale_order_line_extension(models.Model):
 	uom 			= fields.Char(string="UOM")
 	carton 			= fields.Float(string="Quantity (CARTONS)")
 	last_sale 		= fields.Float(string="Last Sale")  
-	promo_code 		= fields.Char(string="PROMO CODE")
+	promo_code 		= fields.Many2one('naseem.sales.promo',string="PROMO CODE",readonly=True)
 	customer_price 	= fields.Float(string="Net Price")
 	pricelist_ext 	= fields.Many2one('product.pricelist', string = "Pricelist")
 	price 			= fields.Many2one('product.pricelist.item')
 	check_boolean 	= fields.Boolean()
 	set_list_price 	= fields.Boolean()
 	check_promo 	= fields.Boolean(string="Promo ?", default=False)
+	trial_price_unit 	= fields.Float(string="local Price")
+	
 	
 
 
@@ -722,10 +770,10 @@ class sale_order_line_extension(models.Model):
 
 		for a in all_promotions:
 			if self.product_id == a.prod_name:
-				self.promo_code = a.scheme_no
+				self.promo_code = a.id
 				self.check_promo = True
 			else:
-				self.promo_code = " "
+				self.promo_code = False
 				self.check_promo = False
 
 ########################################
@@ -743,6 +791,9 @@ class sale_order_line_extension(models.Model):
 	def calculate_customer_price(self):
 		discounted_amount = (self.price_unit/100)*self.discount
 		self.customer_price = self.price_unit - discounted_amount
+		if self.check_boolean == False:
+			if self.price_unit != self.trial_price_unit:
+				self.price = ""
 
 	@api.onchange('product_uom_qty')
 	def get_cartons(self):
@@ -759,56 +810,57 @@ class sale_order_line_extension(models.Model):
 	def get_price(self):
 	   self.pricelist_ext = self.price.pricelist_id.id
 
-	@api.multi
-	def _get_display_price(self, product):
-	   if self.order_id.pricelist_id.discount_policy == 'without_discount':
-		  from_currency = self.order_id.company_id.currency_id
-		  return from_currency.compute(product.lst_price, self.pricelist_ext.currency_id)
-	   return product.with_context(pricelist=self.pricelist_ext.id).price
+	# @api.multi
+	# def _get_display_price(self, product):
+	#    if self.order_id.pricelist_id.discount_policy == 'without_discount':
+	# 	  from_currency = self.order_id.company_id.currency_id
+	# 	  return from_currency.compute(product.lst_price, self.pricelist_ext.currency_id)
+	#    return product.with_context(pricelist=self.pricelist_ext.id).price
 
-	@api.multi
-	@api.onchange('product_id','pricelist_ext')
-	def product_id_change(self):
-		if not self.product_id:
-			return {'domain': {'product_uom': []}}
+	# @api.multi
+	# @api.onchange('product_id','pricelist_ext')
+	# def product_id_change(self):
+	# 	if not self.product_id:
+	# 		return {'domain': {'product_uom': []}}
 
-		vals = {}
-		domain = {'product_uom': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
-		if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
-			vals['product_uom'] = self.product_id.uom_id
-			vals['product_uom_qty'] = 1.0
+	# 	vals = {}
+	# 	domain = {'product_uom': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
+	# 	if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+	# 		vals['product_uom'] = self.product_id.uom_id
+	# 		vals['product_uom_qty'] = 1.0
 
-		product = self.product_id.with_context(
-			lang=self.order_id.partner_id.lang,
-			partner=self.order_id.partner_id.id,
-			quantity=vals.get('product_uom_qty') or self.product_uom_qty,
-			date=self.order_id.date_order,
-			pricelist=self.pricelist_ext.id,
-			uom=self.product_uom.id
-			)
-		name = product.name_get()[0][1]
-		if product.description_sale:
-			name += '\n' + product.description_sale
-		vals['name'] = name
+	# 	product = self.product_id.with_context(
+	# 		lang=self.order_id.partner_id.lang,
+	# 		partner=self.order_id.partner_id.id,
+	# 		quantity=vals.get('product_uom_qty') or self.product_uom_qty,
+	# 		date=self.order_id.date_order,
+	# 		pricelist=self.pricelist_ext.id,
+	# 		uom=self.product_uom.id
+	# 		)
+	# 	name = product.name_get()[0][1]
+	# 	if product.description_sale:
+	# 		name += '\n' + product.description_sale
+	# 	vals['name'] = name
 
-		self._compute_tax_id()
+	# 	self._compute_tax_id()
 
-		if self.pricelist_ext and self.order_id.partner_id:
-			vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(self._get_display_price(product), product.taxes_id, self.tax_id)
-		self.update(vals)
+	# 	if self.pricelist_ext and self.order_id.partner_id:
+	# 		vals['price_unit'] = self.env['account.tax']._fix_tax_included_price(self._get_display_price(product), product.taxes_id, self.tax_id)
+	# 		vals['trial_price_unit'] = vals['price_unit']
+	# 	self.update(vals)
 
-		title = False
-		message = False
-		warning = {}
-		if product.sale_line_warn != 'no-message':
-			title = _("Warning for %s") % product.name
-			message = product.sale_line_warn_msg
-			warning['title'] = title
-			warning['message'] = message
-			if product.sale_line_warn == 'block':
-				self.product_id = False
-			return {'warning': warning}
-		return {'domain': domain}
+	# 	title = False
+	# 	message = False
+	# 	warning = {}
+	# 	if product.sale_line_warn != 'no-message':
+	# 		title = _("Warning for %s") % product.name
+	# 		message = product.sale_line_warn_msg
+	# 		warning['title'] = title
+	# 		warning['message'] = message
+	# 		if product.sale_line_warn == 'block':
+	# 			self.product_id = False
+	# 		return {'warning': warning}
+	# 	return {'domain': domain}
 	
 
 
@@ -824,6 +876,54 @@ class sale_invoice_customized(models.Model):
 	reference = fields.Char(string="Reference")
 	pay_tree_id = fields.One2many('invoice.payment','pay_tree')
 	balance = fields.Float(string="Balance")
+	source = fields.Char(string="Source")
+	cancel = fields.Char(string="cancel")
+	waveoff_amount 	= fields.Float(string="Discount")
+	pdc_module = fields.Many2one('pdc_bcube.pdc_bcube', string="Checks And Balance")
+
+	@api.onchange('waveoff_amount')
+	def _onchange_waveoff_amount(self):
+		if self.waveoff_amount:
+			self.amount_total = self.amount_total - self.waveoff_amount
+
+	@api.multi
+	def action_invoice_open(self):
+		if self.state != 'open':
+			if self.payment_term_id.name == 'Immediate Payment':
+				JournalEntries = self.env['account.move'].search([('partner_id','=',self.partner_id.id)])
+				amount = 0
+				for rec in JournalEntries:
+					for line in rec.line_ids:
+						if line.account_id.id == self.partner_id.property_account_receivable_id.id:
+							amount += line.debit - line.credit
+				amount += self.amount_total
+				if amount > 0:
+					return {
+					'type': 'ir.actions.act_window',
+					'name': 'Customer Receipts',
+					'res_model': 'customer.payment.bcube',
+					'view_type': 'form',
+					'view_mode': 'form',
+					'target' : 'new',
+					'context': {'default_partner_id': self.partner_id.id,'default_receipts': True}
+					}		
+		if not self.pdc_module:
+			if self.payment_term_id.name == 'Cheque Before Delivery':
+				self.state == 'draft'
+				return {
+				'type': 'ir.actions.act_window',
+				'name': 'Cheque And Balance',
+				'res_model': 'pdc_bcube.pdc_bcube',
+				'view_type': 'form',
+				'view_mode': 'form',
+				'target' : 'new',
+				'context': {'default_customer': self.partner_id.id, 'default_inv_ref': self.id}
+				}
+		rec = self.env['stock.picking'].search([('origin','=',self.source)])
+		rec.print_do = True
+		res = super(sale_invoice_customized, self).action_invoice_open()
+		return res
+
   
 
 	@api.multi
@@ -860,7 +960,7 @@ class sale_invoice_line_extension(models.Model):
 	uom = fields.Char(string="UOM", readonly="1")
 	carton = fields.Float(string="Quantity (CARTONS)")
 	last_sale = fields.Float(string="Last Sale")  
-	promo_code = fields.Char(string="PROMO CODE")
+	promo_code 		= fields.Many2one('naseem.sales.promo',string="PROMO CODE",readonly=True)
 	customer_price = fields.Float(string="Net Price")
 	price = fields.Many2one('product.pricelist.item')
 
@@ -877,6 +977,9 @@ class transport_info(models.Model):
 
 class transport_info(models.Model):
 	_name = 'epay.wizard'
+
+
+
 
 	# @api.multi
 	# def get_epay(self):

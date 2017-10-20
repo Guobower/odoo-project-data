@@ -69,7 +69,7 @@
                                 </div>
 
                                 <div class="account">
-                                    <P><b>All Csutomers</b></P>
+                                    <!-- <P><b>Customer </b></P> -->
                                 </div>
 
                                 <div class="invoice">
@@ -121,7 +121,7 @@
                                             <td>
                                                <span t-esc="get_paid(o.id)"></span> 
                                             </td>
-                                            <td>193,900.00</td>
+                                            <td>-</td>
                                         </tr>
 
                                     </t>

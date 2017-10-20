@@ -48,6 +48,32 @@ class SampleDevelopmentReport(models.AbstractModel):
                 if y.product_id.name not in lissst:
                     lissst.append(y.product_id.name)
 
+        def get_lastprice(attr):
+            value = 0
+            l_id = []
+            l_date = []
+            name = 0
+            new = " "
+            sale = sale = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','=','out_invoice')])
+            for x in sale:
+                for z in x.invoice_line_ids:
+                    if attr == z.product_id.name:
+                        l_id.append(x)
+                        newlist = sorted(l_id, key=lambda x: x.id)
+                        name = newlist.pop().id
+                        l_date.append(x)
+                        datelist = sorted(l_date, key=lambda x: x.date_invoice)
+                        new = datelist.pop().date_invoice
+            for data in sale:
+                for line in data.invoice_line_ids:
+                    if attr == line.product_id.name:
+                        if data.id == name and data.date_invoice == new:
+                            value = line.last_sale 
+
+            return value
+
+
+
 
         def old_product(attr):
             value = 0
@@ -319,6 +345,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_product3': get_product3,
             'get_product4': get_product4,
             'get_product5': get_product5,
+            'get_lastprice': get_lastprice,
 
             }
 

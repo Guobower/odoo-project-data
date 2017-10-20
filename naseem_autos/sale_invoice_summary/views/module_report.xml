@@ -142,13 +142,13 @@
 
                                         <p11><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p11>  
 
-                                        <p12><b>Invoice No:</b></p12>
+                                        <!-- <p12><b>Invoice No:</b></p12> -->
 
                                         <p13>
                                             <span t-esc="get_inv_from()"></span>
                                         </p13> 
 
-                                        <p14><b>To:</b></p14>
+                                        <!-- <p14><b>To:</b></p14> -->
 
                                         <p15>
                                             <span t-esc="get_inv_to()"></span>

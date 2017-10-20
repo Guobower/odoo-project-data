@@ -7,7 +7,7 @@
             name="customer_top_sale.customer_report"
             file="customer_top_sale.customer_report"
             report_type="qweb-html"
-            string="Customer Top Sale"/>
+            string=" "/>
             
 
          <record id="customer_top_sale_report_wizard_form_view" model="ir.ui.view">

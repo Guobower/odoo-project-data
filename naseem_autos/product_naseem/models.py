@@ -17,6 +17,8 @@ class product_template_extension(models.Model):
     net_weight         = fields.Float(string ="Net Weight")
     gross_weight       = fields.Float(string = "Gross Weight")
     cbm                = fields.Float(string = "CBM")
+    min_sale_level     = fields.Float(string = "Minimum Sales Level")
+    associate_days     = fields.Char(string = "Associated Days")
     # list_price_own            = fields.Integer('List Price', readonly = True)
     # level_1                = fields.Integer('Price Level 1', readonly = True)
     # level_2                = fields.Integer('Price Level 2', readonly = True)
@@ -60,6 +62,7 @@ class product_history(models.Model):
   po_qty      = fields.Float(string="PO Quantity")
   po_no       = fields.Char(string="PO No.")
   history_id  = fields.Many2one('product.product')
+  supplier_id  = fields.Many2one('res.partner', domain="[('supplier','=',True)]")
 
   # @api.onchange('adjustment')
   # def update_average(self):
@@ -257,6 +260,7 @@ class wizard_tree(models.TransientModel):
   @api.onchange('qty')
   def get_carton(self):
     if self.qty:
+      self.qty = round(self.qty)
       self.carton = self.qty / self.product.pcs_per_carton 
 
   @api.onchange('carton')
@@ -328,9 +332,7 @@ class wizard_class(models.TransientModel):
               'date_planned':date.today(),
               'order_id': active_class_purchase.id
               })
-            print "xxxxxxxxxxxxxxxxXXXXxx"
-            print x.product.name
-            print "yyYYYYYYYYyyyyyYYYYY"
+
           for y in active_class_purchase.order_line:
             if y.product_id.product_tmpl_id.qty_per_carton>0:
               y.carton = y.product_uom_qty/y.product_id.product_tmpl_id.qty_per_carton

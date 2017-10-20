@@ -89,12 +89,12 @@
                                         <P> Customer Address List</P>
                                     </div>
                                     <div class="account">
-                                        <P1><b>Cusotmer From:</b></P1>
-                                         <p2>AFG-QADIR</p2>
+                                        <!-- <P1><b>Cusotmer From:</b></P1>
+                                         <p2>AFG-QADIR</p2> -->
                                     </div>
                                     <div class="invoice">
-                                        <p1><b>To:</b></p1>
-                                        <p2>UNKNOWN</p2>
+                                       <!--  <p1><b>To:</b></p1>
+                                        <p2>UNKNOWN</p2> -->
                                     </div>
                                     <div class="time">
                                         <p><b>Date:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/></p>
@@ -139,7 +139,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="o.city"></span>
+                                                    <span t-esc="o.city.name"></span>
                                                 </td>
 
                                                 <td>

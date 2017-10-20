@@ -23,7 +23,7 @@ class pricelist_product_configuration(models.Model):
 	@api.onchange('customer','category','type_pricelist')
 	def generate_check_list(self):
 		if self.category:
-			self.check_list = str(self.category.name) + " " + str(self.customer.name) + " " + str(self.type_pricelist)
+			self.check_list = str(self.category.name) + " " + str(self.customer.name) + " " + str(self.type_pricelist) + " " + str(self.based_on)
 
 	@api.onchange('type_pricelist')
 	def check_list_type(self):
@@ -445,3 +445,14 @@ class get_products_category(models.Model):
 			ProductPricelist.unlink()
 		res = super(get_products_category,self).unlink()
 		return res
+
+class BankExtend(models.Model):
+	_inherit = 'account.journal'
+
+	bank_address = fields.Char(string="Bank Address")
+
+class HrExtend(models.Model):
+	_inherit = "hr.employee"
+
+
+	cash_book = fields.Many2one('account.journal',string="Cash Book")

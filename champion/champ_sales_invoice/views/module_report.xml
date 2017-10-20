@@ -579,10 +579,10 @@
 										<tr>
 											<td class="space1">
 
-												<span t-esc="data.quantity"></span>
+												<span t-esc="int(data.quantity)"></span>
 											</td>
 											<td>
-												<span t-esc="rate(product_id)"></span>
+												<span t-esc="sales(product_id)"></span>
 											</td>
 
 											<td>
@@ -634,44 +634,6 @@
 										<td><b></b></td>
 										<td><b></b></td>
 									</tr>
-
-								
-<!-- 
-										<tr>
-											<td></td>
-											<td></td>
-											<td><b>Discount
-												<span t-esc="data.discount"></span>%
-											</b></td>
-											<td></td>
-											<td></td>
-											<td></td>
-
-											<td class="lower">
-												<span t-esc="'{:0,}'.format(int(float(total*data.discount/100)))"></span>
-												<t t-set= "total" t-value= "total-total*data.discount/100"/></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-
-									
-
-										<tr>
-											<td><b></b></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-
-											<td><b>
-												<span t-esc="'{:0,}'.format(int(float(total)))"></span>
-											</b></td>
-											<td><b></b></td>
-											<td><b></b></td>
-											<td><b></b></td>
-										</tr> -->
 
 									<t t-set= "line_total" t-value="0"/>
 									

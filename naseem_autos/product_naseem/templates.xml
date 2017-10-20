@@ -97,11 +97,6 @@
     
             <xpath expr="//group[@name='group_lots_and_weight']" position="replace">
 
-                <group>
-                    <field name="net_weight"/>
-                    <field name="gross_weight"/>
-                    <field name="cbm"/>
-                </group>
             </xpath>
 
             <xpath expr="//field[@name='invoice_policy']" position="replace">
@@ -280,7 +275,7 @@
 
 
                 <xpath expr="//field[@name='type']" position="after">
-                    <field name="foc" attrs="{'invisible': [('foc', '=', False)]}"/>
+                    <field name="foc"/>
                 </xpath>
 
             <xpath expr="//label[@for='purchase_ok']" position="replace">
@@ -328,6 +323,11 @@
                 <xpath expr="//field[@name='uom_id']" position="after">
                      <field name="minimum_level"/>
                      <field name="maximum_level"/>
+                     <field name="net_weight"/>
+                     <field name="gross_weight"/>
+                     <field name="cbm"/>
+                     <field name="min_sale_level"/>
+                     <field name="associate_days"/>
 
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
@@ -353,21 +353,25 @@
                 <field name="history_link">
                     <tree editable="bottom">
                         <field name="date"/>
-                        <field name="qty"/>
-                        <!-- <field name="carton"/> -->
-                        <field name="unit_price"/>
                         <field name="pre_qty"/>
-                        <!-- <field name="pre_carton"/> -->
-                        <field name="adjustment"/>
-                        <field name="net"/>
                         <field name="pre_price"/>
-                        <field name="avg_price"/>
                         <field name="po_qty"/>
+                        <field name="qty" string="Recieved Qty"/>
+                        <field name="unit_price" string="New Price"/>
+                        <field name="adjustment" invisible="1"/>
+                        <field name="net" invisible="1"/>
+                        <field name="avg_price"/>
                         <field name="po_no"/>
+                        <field name="supplier_id"/>
                     </tree>
                 </field>
             </page>
         </xpath>
+
+        <!-- To hide Inventory Page -->
+        <xpath expr="//page[3]" position="replace">
+        </xpath>
+
         </field> 
     </record>
 
@@ -569,7 +573,7 @@
             <field name="arch" type="xml"> 
                 <header>
                     <xpath expr="//button[@name='action_confirm']" position="after">
-                        <button name="generate_wizard" string="Add Products" type="object" class="oe_highlight" context="{'default_sale_boolean': 0}" attrs="{'invisible': [('state', 'in',('sale','complete'))]}" />
+                        <button name="generate_wizard" string="Add Products" type="object" class="oe_highlight" context="{'default_sale_boolean': 0}" attrs="{'invisible': [('state2', 'in',('validate'))]}" />
                     </xpath>
                 </header>
             </field>

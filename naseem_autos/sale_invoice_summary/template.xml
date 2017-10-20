@@ -17,8 +17,8 @@
                 <form string="Report">
                     <group name="group_top">
                         <group name="group_left"> 
-                            <field name="invoice_from"/>
-                            <field name="invoice_to"/>
+                            <!-- <field name="invoice_from"/>
+                            <field name="invoice_to"/> -->
                             <field name="customer"/>
                         </group>
                         <group name="group_right">

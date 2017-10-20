@@ -178,6 +178,7 @@ class product_order_extension(models.Model):
 								'po_qty':x.product_qty,
 								'po_no':self.name,
 								'history_id':product_details.id,
+								'supplier_id':self.partner_id.id,
 								})
 
 				product_details.previouse_purchase 	= product_details.previouse_purchase + x.price_unit
@@ -427,6 +428,7 @@ class product_order_line_extension(models.Model):
 	@api.onchange('product_qty')
 	def get_cartons(self):
 		if self.product_qty and self.product_id:
+			self.product_qty = round(self.product_qty)
 			self.carton = self.product_qty / self.product_id.pcs_per_carton
 
 

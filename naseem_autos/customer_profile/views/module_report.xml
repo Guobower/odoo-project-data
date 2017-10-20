@@ -270,7 +270,9 @@
                                                 <td>
                                                     <span t-esc="line"></span>
                                                 </td>
-                                                <td>$50.00 @ 75.00</td>
+                                                <td>
+                                                    <span t-esc="get_lastprice(line)"></span>
+                                                </td>
                                                 <td>
                                                     <span t-esc="old_product(line)"></span>
                                                 </td>

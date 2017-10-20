@@ -33,7 +33,7 @@
     <field name="arch" type="xml"> 
         <header>
             <button name="do_button" string="Print DO" type="object" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
-            <button name="dc_button" string="Print DC" type="object" class="btn-primary"/>
+            <button name="dc_button" string="Print DC" type="object" class="btn-primary" attrs="{'invisible': [('print_do', '=',False)]}"/>
             <button name="close_order" string="Close" type="object" class="btn-primary"/>
             <button name="cancel_order" string="Cancel" type="object" class="btn-primary"/>
             <!-- <field name="state" widget="statusbar" statusbar_visible="close" /> -->
@@ -77,6 +77,7 @@
                     <field name="bilty_paid"/>
                     <field name="warehouse" widget="selection" domain="[('journal_id','=',2)]" />
                     <field name="packing_expense"/>
+                    <field name="cancel" invisible="1"/>
                  </group>
                 <group string="Other Details" >
                     <field name="reference_no" />
@@ -101,7 +102,9 @@
                    <form string="Sales Order" class="o_sale_order">
                     <header>
                     <button name="make_delivery" string="Make Delivery" type="object"  class="btn-primary" attrs="{'invisible': ['|','|',('direct_invoice_check', '=',True),('state', 'in', ('draft','sent','complete'))]}" />
-                    <button name="validate_direct_invoice" string="Validate" type="object"  class="btn-primary" attrs="{'invisible': [('direct_invoice_check', '=',False)]}" />
+                    <button name="validate_direct_invoice" string="Validate" type="object"  class="btn-primary" attrs="{'invisible': ['|',('direct_invoice_check', '=',False),('state2', 'in', ('validate'))]}" />
+
+                    <button name="cancel_invoice" string="Cancel" type="object"  class="btn-primary" attrs="{'invisible': [('direct_invoice_check', '=',False)]}" />
 
                     <button name="action_quotation_send" string="Send by Email" type="object" class="btn-primary" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft'))]}"/>
 
@@ -120,7 +123,7 @@
                     
                     <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
 
-                    <field name="state2" widget="statusbar" statusbar_visible="drft,confirm,,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', False)]}" />
+                    <field name="state2" widget="statusbar" statusbar_visible="draft,validate,cancel" attrs="{'invisible': [('direct_invoice_check', '=', False)]}" />
 
                 </header>
                 <sheet>
@@ -136,19 +139,21 @@
                             <field name="partner_id" attrs="{'readonly':[('state', 'not in', 'draft')]}" domain="[('customer','=',True)]" context="{'search_default_customer':1}" options="{&quot;always_reload&quot;: True}" widget="selection"/>
                             <!-- <field name="partner_id" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" widget="selection"/> -->
                              <field name="transporter" domain="[('check_trans', '=', True)]" widget="selection" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
+                             <field name="types" attrs="{'invisible':[('direct_invoice_check', '=', False)]}"/>
                              <field name="remaining_payment_days" invisible="1"/>
                         </group>
                         <group colspan="2">
-                            <field name="user_id" attrs="{'readonly':[('state', 'not in', 'draft')]}"/> 
-                            <field name="payment_term_id" options="{'no_create': True}" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
+                            <field name="user_id" attrs="{'readonly':['|',('state', 'not in', 'draft'),('saleperson_check', '=', True)]}"/> 
+                            <field name="payment_term_id" options="{'no_create': True}" attrs="{'readonly':True}"/>
                             
                             <field name="pricelist_id" invisible="1" />
+                            <field name="saleperson_check" invisible="1"/>
                              <field name="direct_invoice_check" attrs="{'invisible':[('direct_invoice_check', '=', False)]}" />
                         </group>
                         <group colspan="2">
                             <field name="due_days" attrs="{'readonly':[('state', 'not in', 'draft')]}"/> 
                             <field name="date_order" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
-                            <field name="journal" invisible="1"/>
+                            <field name="journal" attrs="{'invisible':[('direct_invoice_check', '=', False)]}"/>
                         </group>
                         <group colspan="6">
                             <field name="due" readonly="1" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
@@ -222,8 +227,8 @@
                                     <field name="product_uom" attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" context="{'company_id': parent.company_id}" groups="product.group_uom" options="{&quot;no_open&quot;: True}"/>
                                     <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags"/>
                                     <field name="last_sale" readonly="1"/>
-                                    <field name="price" domain="['&amp;',('product_id', '=', product_id),('pricelist_id', 'in', [2,3,4,5])]" attrs="{'readonly': [('check_boolean','=', True)]}"  />
-                                    <field name="price_unit" attrs="{'readonly': ['|',('qty_invoiced', '&gt;', 0),('check_promo','=', True)]}" string="List Price"/>
+                                    <field name="price" domain="['&amp;',('product_id', '=', product_id),('pricelist_id', 'in', [2,3,4,5])]" attrs="{'readonly': [('check_boolean','=', True)]}"  string="Pricelist" widget="selection"/>
+                                    <field name="price_unit" attrs="{'readonly': ['|',('qty_invoiced', '&gt;', 0),('check_promo','=', True)]}" string="Price"/>
                                     
                                     <field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
                                     <field name="discount" groups="sale.group_discount_per_so_line"/>
@@ -241,6 +246,7 @@
                                     <field name="pricelist_ext" invisible="1"/>
                                     <field name="check_promo" invisible="1"/>
                                     <field name="check_boolean" invisible="1"/>
+                                    <field name="trial_price_unit"  invisible="1"/>
 
                                 </tree>
                                 <kanban class="o_kanban_mobile">
@@ -270,8 +276,9 @@
                                 </kanban>
                             </field>
                             <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="1"/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="1"/>
+                                <field name="waveoff_amount"/>
                                 <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                                     <label for="amount_total"/>
                                     <button name="button_dummy" states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
@@ -389,6 +396,7 @@
                 <group name="top" col="6" colspan="15">
                     <group colspan="2">
                         <field name="number" string="S.No."/>
+                        <field name="pdc_module"/>
                         <field string="Customer" name="partner_id" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" domain="[('customer', '=', True)]"/>
                     <field name="transporter" domain="[('check_trans', '=', True)]" />
                     <field name="reference"/>
@@ -396,8 +404,10 @@
                 </group>
                     <group colspan="2">
                         <field name="user_id"/>
-                         <field name="payment_term_id"/>
+                         <field name="payment_term_id" readonly="1"/>
                          <field name="balance"/>
+                         <field name="source" invisible="1"/>
+                         <field name="cancel" invisible="1"/>
                          <field name="check_direct_invoice" invisible="1"/>
                     </group>
                     <group colspan="2">
@@ -431,7 +441,7 @@
                                 <field name="last_sale"/>
                                 <field name="price"/> 
                                 <field name="uom_id" groups="product.group_uom"/>
-                                <field name="price_unit" string="List Price"/>
+                                <field name="price_unit" string="Price"/>
                                 <field name="discount" groups="base.group_no_one"/>
                                 <field name="customer_price"/>
                              
@@ -466,8 +476,9 @@
                             </kanban>
                         </field>
                         <group class="oe_subtotal_footer oe_right">
-                            <field name="amount_untaxed"/>
-                            <field name="amount_tax"/>
+                            <field name="amount_untaxed" invisible="1"/>
+                            <field name="amount_tax" invisible="1"/>
+                            <field name="waveoff_amount"/>
                             <field name="amount_total" class="oe_subtotal_footer_separator"/>
                             <field name="payments_widget" colspan="2" nolabel="1" widget="payment"/>
                             <field name="residual" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
@@ -625,11 +636,28 @@
         </record>
 
 
+    <record id="action_due_orders" model="ir.actions.act_window">
+            <field name="name">Due Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('state', '=', 'open'),('type', '=', 'out_invoice'),('due_days', '&gt;=', '1')]</field>
+        </record>
+
+
             <menuitem id="direct_invoice_Invoicing" 
                 action="action_direct_orders"
                 name="Direct Invoice" 
                 parent="sale.menu_sale_invoicing" 
                 sequence="1100"/>
+
+            <menuitem id="due_invoice_Invoicing" 
+                action="action_due_orders"
+                name="Due Invoice" 
+                parent="sale.menu_sale_invoicing" 
+                sequence="1101"/>
+
+
+
 
 <!--             <menuitem id="sale.menu_sale_order" 
                 sequence="2"/> -->

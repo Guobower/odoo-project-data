@@ -262,6 +262,7 @@
                                 <tree editable="bottom">
                                     <field name="product_id" domain="[('foc', '=', True)]" />
                                     <field name="qty"/>
+                                    <field name="manual"/>
                                 </tree>
                             </field>
                             </group>

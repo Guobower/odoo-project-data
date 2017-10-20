@@ -7,7 +7,7 @@
             name="customer_profile.customer_report"
             file="customer_profile.customer_report"
             report_type="qweb-html"
-            string="Customer Detail"/>
+            string=" "/>
             
 
          <record id="customer_wise_report_wizard_form_view" model="ir.ui.view">

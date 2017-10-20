@@ -92,6 +92,7 @@
            <xpath expr="//field[@name='category_id']" position="after">
                     <field name="ntn"/>
                     <field name="sale_tax_reg"/>
+                    <field name="sale_tax_chk"/>
             </xpath>
 
         </field> 

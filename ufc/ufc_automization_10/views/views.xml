@@ -82,7 +82,6 @@
                 <field name="shipper_invoice_no"/>
                 <field name="plan"/>
                 <field name="plan_date"/>
-                <field name="new_date"/>
                 <field name="weight"/>
                 <field name="relevant_purchase_invoice"/>
                 <field name="sale_price"/>

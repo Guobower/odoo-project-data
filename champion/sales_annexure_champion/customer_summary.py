@@ -211,7 +211,7 @@ class RegionWiseReport(models.AbstractModel):
 		# 			raise
 		# dir_path = os.path.dirname(os.path.realpath(__file__))
 
-		workbook = xlsxwriter.Workbook("/home/nayyab/odoo10/custom-addons/sales_annexure_champion/static/src/customer_invoices.xlsx")
+		workbook = xlsxwriter.Workbook("/home/odoo/odoo-dev/champion_paint/sales_annexure_champion/static/src/customer_invoices.xlsx")
 		worksheet = workbook.add_worksheet()
 
 		main_heading = workbook.add_format({

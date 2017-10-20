@@ -9,7 +9,7 @@
                     <field name="arch" type="xml">
                         <form string="Price List Configuration">
                     <header>
-                        <button name="generate_products" type="object" string="Generate Products" class= "oe_highlight"  attrs="{'invisible': [('stages','not in','validate')]}" />
+                        <button name="generate_products" type="object" string="Generate Products" class= "oe_highlight"  attrs="{'invisible': ['|',('stages','not in','validate'),('based_on','=','discount_cat')]}" />
                         <button name="update_pricelist" type="object" string="Update Pricelists" class= "oe_highlight" attrs="{'invisible': [('stages','=','draft')]}" />
                         <button name="inactive_pricelist" type="object" string="Deactive" class= "oe_highlight" attrs="{'invisible': [('stages','!=','validate')]}"/>
                         <button name="validate" type="object" string="Validate" class= "oe_highlight" attrs="{'invisible': [('stages','!=','draft')]}"/>
@@ -171,6 +171,34 @@
 
             <record id="pricelist_level_3"   model="product.pricelist"> 
                 <field name="name">Level 3</field> 
+            </record>
+
+
+            <record id="bank_customization" model="ir.ui.view">
+                <field name="name">bank_customization</field>
+                <field name="model">account.journal</field>
+                <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='bank_id']" position="after">
+
+                        <field name="bank_address"/>
+                    </xpath>
+                </field>
+            </record>
+
+
+            <record id="emp_customization" model="ir.ui.view">
+                <field name="name">emp_customization</field>
+                <field name="model">hr.employee</field>
+                <field name="inherit_id" ref="hr.view_employee_form"/>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='calendar_id']" position="after">
+
+                        <field name="cash_book"/>
+                    </xpath>
+                </field>
             </record>
 
 

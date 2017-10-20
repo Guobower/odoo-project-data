@@ -728,7 +728,7 @@ class instant_promo_so(models.Model):
 
 	product_id = fields.Many2one('product.product', string = "Product")
 	qty        = fields.Float(string = "Quantity")
-
+	manual     = fields.Boolean(string="Manual")
 	instant_promo_id = fields.Many2one('sale.order')
 
 
