@@ -41,30 +41,6 @@ class SampleDevelopmentReport(models.AbstractModel):
                 lists.append(y)
 
 
-        
-            new = 0
-            for x in enteries:
-                new = x.product_id.id
-
-            return new
-
-
-
-        def sales(attr):
-            varriant = []
-            new = " "
-            for x in enteries:
-                for y in x.product_id:
-                    for z in y.attribute_value_ids:
-                        if attr == x.x.product_id:
-                            varriant.append(z.name)
-                            new = varriant
-                            print new
-                            print "nnnnnnnnnnnnnnnnnnnnnnnn"
-
-            return new
-
-
         def price():
             numb = 0
             for data in records.invoice_line_ids:
@@ -81,25 +57,20 @@ class SampleDevelopmentReport(models.AbstractModel):
                 if x.attribute_id.name == "Volume":
                     return x.name
 
-        def percent():
+        def percent(attr):
             value = 0
-            new = 0
             for x in records.invoice_line_ids:
                 for y in x.invoice_line_tax_ids:
                     value = y.name
                     if "Sales" in value:
-                        taxes = self.env["account.tax"].search([('name','=',value)])
-                        new = taxes.amount
-                    else:
-                        new = 0
-
-            return new
+                        if attr == x.product_id.id:
+                            taxes = self.env["account.tax"].search([('name','=',value)])
+                            return taxes.amount
 
 
 
 
-                    
-                           
+
 
         docargs = {
             'doc_ids': docids,

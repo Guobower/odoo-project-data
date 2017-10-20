@@ -243,9 +243,9 @@
                                     <field name="currency_id" invisible="1"/>
                                     <field name="promo_code"/>
                 
-                                    <field name="pricelist_ext" invisible="1"/>
-                                    <field name="check_promo" invisible="1"/>
-                                    <field name="check_boolean" invisible="1"/>
+                                    <field name="pricelist_ext" />
+                                    <field name="check_promo" />
+                                    <field name="check_boolean" />
                                     <field name="trial_price_unit"  invisible="1"/>
 
                                 </tree>

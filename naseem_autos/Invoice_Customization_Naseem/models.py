@@ -808,7 +808,18 @@ class sale_order_line_extension(models.Model):
 
 	@api.onchange('price')
 	def get_price(self):
-	   self.pricelist_ext = self.price.pricelist_id.id
+		self.pricelist_ext = self.price.pricelist_id.id
+
+	@api.onchange('product_id','product_uom_qty','price_unit','customer_price')
+	def _onchange_product_line(self):
+		if self.product_id and self.pricelist_ext:
+			print self.pricelist_ext
+			print self.price
+			print "--------------------------------"
+
+
+
+
 
 	# @api.multi
 	# def _get_display_price(self, product):
