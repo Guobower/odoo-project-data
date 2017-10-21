@@ -584,7 +584,7 @@
 
 											<td>
 												<t t-foreach="data.product_id.attribute_value_ids" t-as="line">
-													<span t-esc="line.name"></span>
+													(<span t-esc="line.name"></span>)
 												</t>
 											</td>
 

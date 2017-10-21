@@ -139,7 +139,7 @@
                             <field name="partner_id" attrs="{'readonly':[('state', 'not in', 'draft')]}" domain="[('customer','=',True)]" context="{'search_default_customer':1}" options="{&quot;always_reload&quot;: True}" widget="selection"/>
                             <!-- <field name="partner_id" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" widget="selection"/> -->
                              <field name="transporter" domain="[('check_trans', '=', True)]" widget="selection" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
-                             <field name="types" attrs="{'invisible':[('direct_invoice_check', '=', False)]}"/>
+                             <field name="types" attrs="{'invisible':[('direct_invoice_check', '=', False)],'required':[('direct_invoice_check','=','True')]}"/>
                              <field name="remaining_payment_days" invisible="1"/>
                         </group>
                         <group colspan="2">
@@ -243,9 +243,9 @@
                                     <field name="currency_id" invisible="1"/>
                                     <field name="promo_code"/>
                 
-                                    <field name="pricelist_ext" />
-                                    <field name="check_promo" />
-                                    <field name="check_boolean" />
+                                    <field name="pricelist_ext" invisible="1"/>
+                                    <field name="check_promo" invisible="1"/>
+                                    <field name="check_boolean" invisible="1"/>
                                     <field name="trial_price_unit"  invisible="1"/>
 
                                 </tree>

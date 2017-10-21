@@ -70,8 +70,6 @@ class SampleDevelopmentReport(models.AbstractModel):
 
 
 
-
-
         docargs = {
             'doc_ids': docids,
             'doc_model': 'account.invoice',

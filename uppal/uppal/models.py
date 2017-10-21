@@ -13,6 +13,7 @@ class sale_order_extension(models.Model):
 		('not_delivered', 'Not Delivered'),
 		('invoiced', 'Fully Invoiced'),
 		],string="Order State")
+	entity = fields.Many2one('ecube.entity',string="Entity")
 
 	@api.onchange('order_line')
 	def change_status(self):
@@ -30,6 +31,11 @@ class sale_order_line_extension(models.Model):
 	qty_SO        = fields.Float(string="Qty on SO")
 	qty_PO        = fields.Float(string="Qty on PO")
 	qty_available = fields.Float(string="Qty Available")
+	order_state_field   = fields.Selection([
+		('not_available', 'Not Available'),
+		('not_delivered', 'Not Delivered'),
+		('invoiced', 'Fully Invoiced'),
+		],string="Order State")
 	# testing 			= fields.Many2one('sale.order',string="testing")
 
 	@api.onchange('product_id')
@@ -153,3 +159,8 @@ class customer_extension(models.Model):
 	ntn = fields.Char('NTN')
 	sale_tax_reg = fields.Char('Sales Tax Reg')
 	sale_tax_chk = fields.Char('Sales Tax')
+
+class sale_order_extension(models.Model):
+	_name = 'ecube.entity'
+
+	name = fields.Char(string="Name")

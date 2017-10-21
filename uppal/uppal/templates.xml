@@ -10,6 +10,7 @@
 
            <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="order_state"/>
+                    <field name="entity"/>
             </xpath>
 
            <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="after">
@@ -25,6 +26,7 @@
 
            <xpath expr="//field[@name='order_line']/tree/field[@name='qty_PO']" position="after">
                     <field name="qty_available"/>
+                    <field name="order_state_field"/>
             </xpath>
 
         </field> 

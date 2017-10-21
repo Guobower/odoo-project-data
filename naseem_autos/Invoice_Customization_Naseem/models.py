@@ -278,7 +278,7 @@ class sale_order_customized(models.Model):
 	saleperson_check 	    = fields.Boolean(string="check", readonly="1")
 	journal 				= fields.Many2one('account.journal', string="Journal")
 	waveoff_amount 	= fields.Float(string="Discount")
-	types = fields.Selection([('cash', 'Cash'),('credit', 'Credit')],string="Type",required=True)
+	types = fields.Selection([('cash', 'Cash'),('credit', 'Credit')],string="Type")
 	state2 = fields.Selection([
 	('draft', 'Draft'),
 	('validate', 'Validate'),
@@ -672,7 +672,7 @@ class sale_order_customized(models.Model):
 				product_lst.append(y.product_id.id)
 			for lines in self.instant_promo:
 				if lines.product_id.id not in product_lst:
-					if c.manual != True:
+					if lines.manual != True:
 						lines.qty = 0
 		for x in self.order_line:
 			x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
@@ -789,11 +789,12 @@ class sale_order_line_extension(models.Model):
 
 	@api.onchange('discount','price_unit')
 	def calculate_customer_price(self):
-		discounted_amount = (self.price_unit/100)*self.discount
-		self.customer_price = self.price_unit - discounted_amount
-		if self.check_boolean == False:
-			if self.price_unit != self.trial_price_unit:
-				self.price = ""
+		if self.discount:
+			discounted_amount = (self.price_unit/100)*self.discount
+			self.customer_price = self.price_unit - discounted_amount
+		# if self.check_boolean == False:
+		# 	if self.price_unit != self.trial_price_unit:
+		# 		self.price = ""
 
 	@api.onchange('product_uom_qty')
 	def get_cartons(self):
@@ -801,10 +802,10 @@ class sale_order_line_extension(models.Model):
 			self.product_uom_qty = round(self.product_uom_qty)
 			self.carton = self.product_uom_qty / self.product_id.pcs_per_carton
 
-	@api.onchange('carton')
-	def get_quantity(self):
-		if self.carton and self.product_id:
-			self.product_uom_qty = self.carton * self.product_id.pcs_per_carton
+	# @api.onchange('carton')
+	# def get_quantity(self):
+	# 	if self.carton and self.product_id:
+	# 		self.product_uom_qty = self.carton * self.product_id.pcs_per_carton
 
 	@api.onchange('price')
 	def get_price(self):
@@ -813,9 +814,19 @@ class sale_order_line_extension(models.Model):
 	@api.onchange('product_id','product_uom_qty','price_unit','customer_price')
 	def _onchange_product_line(self):
 		if self.product_id and self.pricelist_ext:
-			print self.pricelist_ext
-			print self.price
-			print "--------------------------------"
+			for item in self.pricelist_ext.item_ids:
+				if item.product_id.id == self.product_id.id:
+					if item.compute_price == 'fixed':
+						if item.fixed_price != 0.0:
+							self.price_unit = item.fixed_price
+					elif item.compute_price == 'formula':
+						if item.price_discount != 0.0:
+							self.price_unit = self.product_id.with_context(pricelist=item.base_pricelist_id.id).price
+							self.discount = item.price_discount
+					else:
+						raise Warning('Pls select compute price to fix or formula in the pricelist.')
+
+
 
 
 
