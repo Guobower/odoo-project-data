@@ -5,7 +5,7 @@ from openerp.exceptions import ValidationError
 class region_bill_summary(models.Model):
 	_name = 'region.bills' 
 
-	customer = fields.Many2one('res.partner',string = "Customer")
+	customer = fields.Many2one('res.partner',string = "Customer",required=True)
 	branch   = fields.Many2one('branch',string = "Branch")
 	form     = fields.Date(string="From")
 	to       = fields.Date()
@@ -50,17 +50,13 @@ class region_bill_summary(models.Model):
 			active_ids = []
 			grand_tot = 0
 			for x in entries:
-
 				del active_ids[:]
-
 				for y in records:
 					if y.region.code == x:
 						active_ids.append(y)
-
 				amount = 0
 				for b in active_ids:
 					amount = amount + b.sale_price
-
 				grand_tot = grand_tot + amount
 
 			return grand_tot
@@ -77,10 +73,8 @@ class region_bill_summary(models.Model):
 			if data.Customer.id == self.customer.id:
 				if (data.date_from >= self.form and data.date_from <= self.to) or (data.date_to >= self.form and data.date_to <= self.to): 
 					raise ValidationError("The record of this %s already exist" %self.customer.name)
-		
 			else:
-				print "oooooooooooooooooooooooooooooo"
-
+				pass
 
 		create_reorder = self.env['summary.ffc'].create({
 			'Customer':self.customer.id,

@@ -13,7 +13,9 @@ class sale_order_extension(models.Model):
 		('not_delivered', 'Not Delivered'),
 		('invoiced', 'Fully Invoiced'),
 		],string="Order State")
+	customer_po      = fields.Char(string="Customer PO #")
 	entity = fields.Many2one('ecube.entity',string="Entity")
+
 
 	@api.onchange('order_line')
 	def change_status(self):
@@ -31,11 +33,6 @@ class sale_order_line_extension(models.Model):
 	qty_SO        = fields.Float(string="Qty on SO")
 	qty_PO        = fields.Float(string="Qty on PO")
 	qty_available = fields.Float(string="Qty Available")
-	order_state_field   = fields.Selection([
-		('not_available', 'Not Available'),
-		('not_delivered', 'Not Delivered'),
-		('invoiced', 'Fully Invoiced'),
-		],string="Order State")
 	# testing 			= fields.Many2one('sale.order',string="testing")
 
 	@api.onchange('product_id')
@@ -52,12 +49,12 @@ class sale_order_line_extension(models.Model):
 			for x in total_sales:
 				for y in x.order_line:
 					if self.product_id == y.product_id:
-						total = total + y.product_uom_qty
+						total = total + y.product_uom_qty - y.qty_delivered
 
 			for a in total_purchase:
 				for b in a.order_line:
 					if self.product_id == b.product_id:
-						total_p = total_p + b.product_qty
+						total_p = total_p + b.product_qty - b.qty_received
 
 			for x in stock_history:
 				if self.product_id == x.product_id:
@@ -66,7 +63,7 @@ class sale_order_line_extension(models.Model):
 		self.qty_SO = total
 		self.qty_PO = total_p
 		self.qty_hand = qty_on_hand
-		self.qty_available = self.qty_PO - self.qty_SO
+		self.qty_available = self.qty_hand + self.qty_PO - self.qty_SO
 
 
 class purchase_order_extension(models.Model):
@@ -152,6 +149,13 @@ class stock_picking_own(models.Model):
 	
 		return new_record
 
+
+class sale_order_extension(models.Model):
+	_name = 'ecube.entity'
+
+	name = fields.Char(string="Name")
+
+
 class customer_extension(models.Model):
 	_inherit = 'res.partner'
 
@@ -159,8 +163,3 @@ class customer_extension(models.Model):
 	ntn = fields.Char('NTN')
 	sale_tax_reg = fields.Char('Sales Tax Reg')
 	sale_tax_chk = fields.Char('Sales Tax')
-
-class sale_order_extension(models.Model):
-	_name = 'ecube.entity'
-
-	name = fields.Char(string="Name")

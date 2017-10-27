@@ -102,14 +102,14 @@ class ufc_automization(models.Model):
 
 
 
-	@api.multi
-	def change_date(self):
-		rec = self.env['ufc.auto'].search([])
-		for x in rec:
-			if x.plan_date:
-				line = re.sub('-', '', x.plan_date)
-				value = datetime.strptime(line, '%d%m%Y').date()
-				x.new_date = value
+	# @api.multi
+	# def change_date(self):
+	# 	rec = self.env['ufc.auto'].search([])
+	# 	for x in rec:
+	# 		if x.plan_date:
+	# 			line = re.sub('-', '', x.plan_date)
+	# 			value = datetime.strptime(line, '%d%m%Y').date()
+	# 			x.new_date = value
 
 
 

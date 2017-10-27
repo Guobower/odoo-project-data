@@ -9,6 +9,7 @@
         <field name="arch" type="xml"> 
 
            <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="customer_po"/>
                     <field name="order_state"/>
                     <field name="entity"/>
             </xpath>
@@ -16,6 +17,7 @@
            <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="after">
                     <field name="qty_hand"/>
             </xpath>
+            
            <xpath expr="//field[@name='order_line']/tree/field[@name='qty_hand']" position="after">
                     <field name="qty_SO"/>
             </xpath>
@@ -26,7 +28,6 @@
 
            <xpath expr="//field[@name='order_line']/tree/field[@name='qty_PO']" position="after">
                     <field name="qty_available"/>
-                    <field name="order_state_field"/>
             </xpath>
 
         </field> 

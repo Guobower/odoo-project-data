@@ -61,19 +61,9 @@ class bank_extend(models.Model):
 	@api.multi
 	def process_reconciliation(self,data,uid,id):
 		new_record = super(bank_extend, self).process_reconciliation(data,uid,id)
-		print "pppppppppppppppppppppppppppppppppp"
 		records = self.env['account.bank.statement'].search([('id','=',self.statement_id.id)])
-		print "pppppppppppppppppppppppppppppppppp"
-		print records
 		journal_entery =  self.env['account.move'].search([], order='id desc', limit=1)
-		last_id = journal_entery.id
-		print last_id
-		print "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn99"
 		journal_entery.branch = records.branch.id
-		print "====================================="
-		print journal_entery.branch.name
-		print journal_entery.ref
-		print journal_entery.journal_id.name
 		return new_record
 
 

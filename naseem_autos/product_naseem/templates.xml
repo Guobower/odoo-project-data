@@ -573,7 +573,7 @@
             <field name="arch" type="xml"> 
                 <header>
                     <xpath expr="//button[@name='action_confirm']" position="after">
-                        <button name="generate_wizard" string="Add Products" type="object" class="oe_highlight" context="{'default_sale_boolean': 0}" attrs="{'invisible': [('state2', 'in',('validate'))]}" />
+                        <button name="generate_wizard" string="Add Products" type="object" class="oe_highlight" context="{'default_sale_boolean': 0}" attrs="{'invisible': [('state2', 'in',('validate','cancel'))]}" />
                     </xpath>
                 </header>
             </field>

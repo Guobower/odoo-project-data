@@ -4,7 +4,7 @@ from openerp.exceptions import ValidationError
 class orient_bill_summary(models.Model):
 	_name = 'orient.bills' 
 
-	customer    = fields.Many2one('res.partner',string = "Customer")
+	customer    = fields.Many2one('res.partner',string = "Customer",required=True)
 	bl_number   = fields.Many2one('bill.num',string = "B/L Number")
 	branch      = fields.Many2one('branch',string = "Branch")
 	bill_no     = fields.Char(string = "Bill No")
@@ -46,7 +46,7 @@ class orient_bill_summary(models.Model):
 				raise ValidationError("The record of this %s already exist" %self.bl_number.name)
 		
 			else:
-				print "oooooooooooooooooooooooooooooo"
+				pass
 
 
 		create_reorder = self.env['orient.summ'].create({

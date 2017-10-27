@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<!-- Import Assets -->
+<template id="assets_backend" name="custom assets" inherit_id="web.assets_backend"> 
+    <xpath expr="." position="inside">
+    <link rel="stylesheet" href="/Invoice_Customization_Naseem/static/src/css/styles.css"/>
+    </xpath> 
+</template>
+
+<record id="stock_picking_extension" model="ir.ui.view"> 
+    <field name="name">stock_picking_extension</field> 
+    <field name="model">stock.picking</field> 
+    <field name="inherit_id" ref="stock.view_picking_form"/> 
+    <field name="arch" type="xml"> 
+        <header>
+         <!--    <button name="do_button" string="Print DO" type="object" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
+            <button name="dc_button" string="Print DC" type="object" class="btn-primary" attrs="{'invisible': [('print_do', '=',False)]}"/> -->
+            <button name="close_order" string="Close" type="object" class="btn-primary"/>
+            <!-- <button name="cancel_order" string="Cancel" type="object" class="btn-primary"/> -->
+            <!-- <field name="state" widget="statusbar" statusbar_visible="close" /> -->
+            <button name="submitt_bilty" string="Confirm Bilty" type="object" class="btn-primary"/>            
+        </header>
+
+        <xpath expr="//button[@name='do_unreserve']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='action_confirm']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='button_scrap']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='do_print_picking']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='force_assign']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='action_assign']" position="replace">
+        </xpath>
+
+        <xpath expr="//button[@name='action_cancel']" position="replace">
+        </xpath>
+        <xpath expr="//field[@name='origin']" position="after">
+            <field name="print_do"/>
+            <field name="direct_inv"/>
+        </xpath>
+       <!--  <xpath expr="//page[@name='extra']" position="replace">
+        </xpath> -->
+        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='product_qty']" position="after">
+            <field name="carton_to"/>
+        </xpath>
+        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='qty_done']" position="after">
+            <field name="carton_done"/>
+        </xpath>
+
+        <!-- <xpath expr="//page[1]" position="attributes">
+                
+            <attribute name="attrs">
+                {'invisible': [('state','in', ('confirmed','waiting'))]}
+            </attribute>
+
+        </xpath> -->
+
+        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='from_loc']" position="replace">
+            <!-- <field name="carton_done"/> -->
+        </xpath>
+
+        <!-- <xpath expr="//field[@name='origin']" position="after"> -->
+            
+            <group>
+                <group string="Bilty Details"  >
+                    <field name="bilty_no" />
+                   <!--  <field name="bilty_recieved" attrs="{'invisible': [('picking_type_code', '=','incoming')]}"/> -->
+                    <field name="bilty_paid"/>
+                    <field name="warehouse" widget="selection" domain="[('journal_id','=',2)]" />
+                    <field name="packing_expense"/>
+                    <field name="del_records" invisible="1"/>
+                    <field name="inv_type"/>
+                    <field name="cash_book_id"/>
+                 </group>
+                <group string="Other Details" >
+                    <field name="reference_no" />
+                    <field name="carton_no" />
+                    <field name="bundle_no" />
+                    <field name="delivered_by" />
+                    <field name="received_by" />
+                     <field name="transporter" domain="[('check_trans','=',True)]" widget="selection" />
+                </group>
+             </group>
+        <!-- </xpath> -->
+
+    </field> 
+</record>
+
+
+        <record id="stock.action_picking_tree_all" model="ir.actions.act_window">
+            <field name="domain">[('backorder', '=',False)]</field>
+        </record>
+
+        <record id="stock.stock_picking_action_picking_type" model="ir.actions.act_window">
+            <field name="domain">[('backorder', '=',False)]</field>
+        </record>
+
+<record id="customized_stock_picking" model="ir.ui.view"> 
+        <field name="name">customized_stock_picking</field> 
+        <field name="model">stock.picking</field> 
+        <field name="inherit_id" ref="stock.view_picking_form"/> 
+        <field name="arch" type="xml"> 
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="backorder" invisible="1"/>
+            </xpath>
+        </field> 
+</record>
+
+
+
+<record id="changing_backorder_wizard" model="ir.ui.view"> 
+        <field name="name">changing_backorder_wizard</field> 
+        <field name="model">stock.backorder.confirmation</field> 
+        <field name="inherit_id" ref="stock.view_backorder_confirmation"/> 
+        <field name="arch" type="xml"> 
+            <xpath expr="//button[@name='process_cancel_backorder']"    position="replace">
+                <button name="process_cancel_backorder" invisible="1" />
+            </xpath>
+        </field>
+</record>
+
+</odoo>
