@@ -283,6 +283,8 @@ class sale_order_customized(models.Model):
 			create_inventory.state = 'done'
 			create_inventory.do_new_transfer()
 			print "kkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+			print "kkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+			print "kkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
 
 	#####################################
 	#  Create Stock Entry 
