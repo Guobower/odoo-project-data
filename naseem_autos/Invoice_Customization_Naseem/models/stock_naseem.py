@@ -92,8 +92,7 @@ class stock_picking_own(models.Model):
 		new_record = super(stock_picking_own, self).do_new_transfer()
 		if self.direct_inv == True and self.inv_type == 'credit':
 			sale_order = self.env['sale.order'].search([('name','=',self.origin)])
-			purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
-			
+			purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])	
 			# invoice = self.env['account.invoice'].search([])
 			# invoice_lines = self.env['account.invoice.line'].search([])
 			self._invoice_creation_sale(sale_order ,self.pack_operation_product_ids)
@@ -177,6 +176,7 @@ class stock_picking_own(models.Model):
 				'date_invoice' : sale_order.date_order,
 				'incoterm' : sale_order.incoterm.id,
 				'source' : sale_order.name,
+				'stock_id' : self.id,
 				})
 
 			for x in sale_order.order_line:
@@ -184,11 +184,6 @@ class stock_picking_own(models.Model):
 				qty = 0
 				for y in pack_operation_product_ids:
 					amt = amt + y.qty_done
-				
-				# 	if amt == 0:
-				# 		qty = y.product_qty
-				# else:
-				# 	qty = y.qty_done
 				for y in pack_operation_product_ids:
 					if amt == 0:
 						qty = y.product_qty

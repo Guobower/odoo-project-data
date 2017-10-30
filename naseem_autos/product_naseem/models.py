@@ -19,6 +19,7 @@ class product_template_extension(models.Model):
     cbm                = fields.Float(string = "CBM")
     min_sale_level     = fields.Float(string = "Minimum Sales Level")
     associate_days     = fields.Char(string = "Associated Days")
+    
     # list_price_own            = fields.Integer('List Price', readonly = True)
     # level_1                = fields.Integer('Price Level 1', readonly = True)
     # level_2                = fields.Integer('Price Level 2', readonly = True)

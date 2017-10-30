@@ -56,15 +56,23 @@ class sale_order_customized(models.Model):
 
 	@api.multi
 	def complete_order(self):
-		if self.direct_invoice_check == True:
-			self.state2 = "complete"
-		else:
-			self.state = "complete"
-		back_order = self.env['stock.picking'].search([('origin','=',self.name),('state','not in',('done','cancel'))])
-		if back_order:
-			print "Found"
-			print "xxxxXXXxxxXXXXxxxxxxxxxxx"
-			back_order.state = "cancel"
+		return {
+		'type': 'ir.actions.act_window',
+		'name': 'Add Products',
+		'res_model': 'sale.approve',
+		'view_type': 'form',
+		'view_mode': 'form',
+		'target' : 'new',
+		}
+		# if self.direct_invoice_check == True:
+		# 	self.state2 = "complete"
+		# else:
+		# 	self.state = "complete"
+		# back_order = self.env['stock.picking'].search([('origin','=',self.name),('state','not in',('done','cancel'))])
+		# if back_order:
+		# 	print "Found"
+		# 	print "xxxxXXXxxxXXXXxxxxxxxxxxx"
+		# 	back_order.state = "cancel"
 
 
 	@api.multi
@@ -282,7 +290,6 @@ class sale_order_customized(models.Model):
 					y.carton_done = y.carton_to
 			create_inventory.state = 'done'
 			create_inventory.do_new_transfer()
-			print "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
 
 	#####################################
 	#  Create Stock Entry 
@@ -660,6 +667,26 @@ class sale_order_line_extension(models.Model):
 							self.discount = item.price_discount
 					else:
 						raise Warning('Pls select compute price to fix or formula in the pricelist.')
+
+	
+class sale_order_line_extension(models.Model):
+	_name = "sale.approve"
+
+	@api.multi
+	def approve_backorder(self):
+		active_class = self.env['sale.order'].browse(self._context.get('active_id'))
+		if active_class:
+			if active_class.direct_invoice_check == True:
+				active_class.state2 = "complete"
+			else:
+				active_class.state = "complete"
+			back_order = self.env['stock.picking'].search([('origin','=',active_class.name),('state','not in',('done','cancel'))])
+			print back_order
+			print "kkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+			if back_order:
+				print "Found"
+				print "xxxxXXXxxxXXXXxxxxxxxxxxx"
+				back_order.state = "cancel"
 
 
 

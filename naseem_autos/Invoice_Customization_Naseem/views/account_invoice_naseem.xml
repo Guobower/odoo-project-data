@@ -55,8 +55,9 @@
                         <field name="user_id"/>
                          <field name="payment_term_id" readonly="1"/>
                          <field name="balance"/>
-                         <field name="source" invisible="1"/>
+                         <field name="source"/>
                          <field name="del_records" invisible="1"/>
+                         <field name="stock_id"/>
                          <field name="check_direct_invoice" invisible="1"/>
                     </group>
                     <group colspan="2">

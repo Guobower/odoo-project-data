@@ -23,7 +23,7 @@ from odoo.exceptions import UserError
 class sale_invoice_customized(models.Model):
 	_inherit = 'account.invoice'
 
-	due_days = fields.Integer(string="Due Days")
+	due_days = fields.Integer(string="Due Days",compute="compute_remaining_days")
 	due = fields.Char(string="Due")
 	transporter = fields.Many2one('res.partner',string="Transporter")
 	incoterm = fields.Many2one('stock.incoterms')
@@ -34,6 +34,7 @@ class sale_invoice_customized(models.Model):
 	balance = fields.Float(string="Balance")
 	source = fields.Char(string="Source")
 	del_records = fields.Many2one('sale.order')
+	stock_id = fields.Many2one('stock.picking',string="Stock Link")
 	waveoff_amount 	= fields.Float(string="Discount")
 	pdc_module = fields.Many2one('pdc_bcube.pdc_bcube', string="Checks And Balance")
 
@@ -75,12 +76,19 @@ class sale_invoice_customized(models.Model):
 				'target' : 'new',
 				'context': {'default_customer': self.partner_id.id, 'default_inv_ref': self.id}
 				}
-		rec = self.env['stock.picking'].search([('origin','=',self.source)])
-		rec.print_do = True
+		credit1 = self.partner_id.credit + self.amount_total
+	  	credit_limit1 = self.partner_id.credit_limit
+	  	stop = self.partner_id.stop_invoice
+	  	self._check_total(credit1,credit_limit1,stop)
 		res = super(sale_invoice_customized, self).action_invoice_open()
+		rec = self.env['stock.picking'].search([('id','=',self.stock_id.id)])
+		rec.print_do = True
+		sale_order = self.env['sale.order'].search([('name','=',self.source)])
+		for x in sale_order.picking_ids:
+			if x.state == 'done':
+				sale_order.state = 'complete'
 		return res
 
-  
 
 	@api.multi
 	@api.constrains()
@@ -89,25 +97,34 @@ class sale_invoice_customized(models.Model):
 			if credit > credit_limit:
 				raise ValidationError('Amount is exceeding credit limit')
 
-	@api.model
-	def create(self, vals):
+	@api.one
+	def compute_remaining_days(self):
+		current_date = fields.Datetime.now()
+		if self.date_invoice and self.payment_term_id and self.remaining_payment_days:
+			fmt = '%Y-%m-%d'
+			d1 = datetime.strptime(current_date, fmt)
+			d2 = datetime.strptime(self.remaining_payment_days, fmt)
+			self.due_days = str((d1-d2).days)
+
+	# @api.model
+	# def create(self, vals):
 		
-	  new_record = super(sale_invoice_customized, self).create(vals)
-	  credit1 = new_record.partner_id.credit + new_record.amount_total
-	  credit_limit1 = new_record.partner_id.credit_limit
-	  stop = new_record.partner_id.stop_invoice
-	  self._check_total(credit1,credit_limit1,stop)
+	#   new_record = super(sale_invoice_customized, self).create(vals)
+	#   credit1 = new_record.partner_id.credit + new_record.amount_total
+	#   credit_limit1 = new_record.partner_id.credit_limit
+	#   stop = new_record.partner_id.stop_invoice
+	#   self._check_total(credit1,credit_limit1,stop)
 
-	  return new_record
+	#   return new_record
 
-	@api.multi
-	def write(self, vals):
-		super(sale_invoice_customized, self).write(vals)
-		credit1 = self.partner_id.credit + self.amount_total
-		credit_limit1 = self.partner_id.credit_limit
-		stop = self.partner_id.stop_invoice
-		self._check_total(credit1,credit_limit1,stop)
-		return True
+	# @api.multi
+	# def write(self, vals):
+	# 	super(sale_invoice_customized, self).write(vals)
+	# 	credit1 = self.partner_id.credit + self.amount_total
+	# 	credit_limit1 = self.partner_id.credit_limit
+	# 	stop = self.partner_id.stop_invoice
+	# 	self._check_total(credit1,credit_limit1,stop)
+	# 	return True
 
 
 class sale_invoice_line_extension(models.Model):
