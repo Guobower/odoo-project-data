@@ -84,9 +84,12 @@ class sale_invoice_customized(models.Model):
 		rec = self.env['stock.picking'].search([('id','=',self.stock_id.id)])
 		rec.print_do = True
 		sale_order = self.env['sale.order'].search([('name','=',self.source)])
+		count = 0
 		for x in sale_order.picking_ids:
 			if x.state == 'done':
-				sale_order.state = 'complete'
+				count = count + 1
+		if count == len(sale_order.picking_ids):
+			sale_order.state = 'complete'
 		return res
 
 
@@ -99,7 +102,8 @@ class sale_invoice_customized(models.Model):
 
 	@api.one
 	def compute_remaining_days(self):
-		current_date = fields.Datetime.now()
+		current_date = fields.date.today()
+		current_date = str(current_date)
 		if self.date_invoice and self.payment_term_id and self.remaining_payment_days:
 			fmt = '%Y-%m-%d'
 			d1 = datetime.strptime(current_date, fmt)
