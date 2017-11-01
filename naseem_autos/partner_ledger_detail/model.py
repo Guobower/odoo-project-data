@@ -60,19 +60,19 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return value
 
-        upper = []
+        # upper = []
         main = self.env['account.invoice'].search([('type','=','out_invoice'),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
-        for x in main:
-            upper.append(x)
+        # for x in main:
+        #     upper.append(x)
 
-        inner = []
-        def get_line(attr):
-            del inner[:]
-            main = self.env['account.invoice'].search([('type','=','out_invoice'),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
-            for x in main:
-                if attr == x.id:
-                    for z in x.invoice_line_ids:
-                        inner.append(z)
+        # inner = []
+        # def get_line(attr):
+        #     del inner[:]
+        #     main = self.env['account.invoice'].search([('type','=','out_invoice'),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
+        #     for x in main:
+        #         if attr == x.id:
+        #             for z in x.invoice_line_ids:
+        #                 inner.append(z)
 
 
 
@@ -99,7 +99,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_form': get_form,
             'get_to': get_to,
             'get_bal': get_bal,
-            'upper': upper,
+            'main': main,
             'get_line': get_line,
             'inner': inner,
             }

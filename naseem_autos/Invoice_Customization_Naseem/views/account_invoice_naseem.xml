@@ -10,6 +10,58 @@
 </template>
  <!-- Sales Invoice XML -->
 
+  <record id="account_form_view_ext"   model="ir.ui.view"> 
+
+            <field name="name">account_form_view_ext</field> 
+            <field name="model">account.invoice</field> 
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+
+                <header>
+                    <xpath expr="//button[@name='action_invoice_open']" position="before">
+                        <button name="to_refund" string="Stock Refund" type="object" class="oe_highlight"  attrs="{'invisible': [('type', '!=','out_refund')]}" />
+                    </xpath>
+
+                    <xpath expr="//field[@name='state']" position="replace">
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,refund,open,paid"/> 
+
+                    </xpath>
+
+
+                </header>
+
+                <xpath expr="//button[@name='action_invoice_open']" position="attributes">
+                
+                    <attribute name="attrs">
+                        {'invisible': [('state','not in', ('darft','proforma2','refund'))]}
+                    </attribute>
+
+                </xpath>
+
+
+                <xpath expr="//field[@name='tax_line_ids']" position="replace">
+
+                </xpath>
+
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="warehouse"/>
+
+                </xpath>
+
+                <xpath expr="//field[@name='amount_tax']" position="replace">
+
+                </xpath>
+
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="before">
+                    <field name="cartons"/>
+
+                </xpath>
+
+            </field>
+
+        </record>
+
 
 <record id="account.invoice_form" model="ir.ui.view">
     <field name="model">account.invoice</field>
@@ -190,6 +242,9 @@
 </record>
 
 
+
+
+
 <!-- Removing Sale Team Field (team_id) from sales invoice form veiw -->
 
 <record id="sale.account_invoice_form" model="ir.ui.view">
@@ -207,6 +262,9 @@
         </data>
     </field>
 </record>
+
+
+
             
 
 
@@ -217,12 +275,28 @@
             <field name="domain">[('state', '=', 'open'),('type', '=', 'out_invoice'),('due_days', '&gt;=', '1')]</field>
         </record>
 
-
-
             <menuitem id="due_invoice_Invoicing" 
                 action="action_due_orders"
                 name="Due Invoice" 
                 parent="sale.menu_sale_invoicing" 
                 sequence="1101"/>
+
+
+     <record id="action_sales_return" model="ir.actions.act_window">
+            <field name="name">Sales Return</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('type', '=', 'out_refund')]</field>
+            <field name="context" eval="{'default_type': 'out_refund'}"/>
+        </record>
+
+        <menuitem id="asles_return" 
+            action="action_sales_return"
+            name="Sales Return" 
+            parent="sale.menu_sale_invoicing" 
+            sequence="1102"/>
+
+
+
 
 </odoo>

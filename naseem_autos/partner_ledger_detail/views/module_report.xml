@@ -259,22 +259,22 @@
                                         </tr>
 
                                         <t t-set="gd_total" t-value="0"/>
-                                        <t t-foreach="upper" t-as="data">
+                                        <t t-foreach="main" t-as="data">
                                             <span t-esc="get_line(data.id)"></span>
                                             <t t-set="d_total" t-value="0"/>
-                                            <t t-foreach="inner" t-as="line">
+                                            <t t-foreach="data.invoice_line_ids" t-as="line">
                                                 
                                                 <tr>
 
                                                     <td>
-                                                       <span t-esc="line.invoice_id.number"></span> 
+                                                       <span t-esc="data.number"></span> 
                                                     </td>
                                                     <td>
-                                                        <span t-esc="line.invoice_id.date_invoice"></span>
+                                                        <span t-esc="data.date_invoice"></span>
                                                     </td>
                                                     <td>SI</td>
                                                     <td>
-                                                        <span t-esc="line.invoice_id.reference"></span>
+                                                        <span t-esc="data.reference"></span>
                                                     </td>
 
                                                     <td>
@@ -312,8 +312,6 @@
                                             <td><b>0</b></td>
                                         </tr>
 
-
-                                    
                                     </table>
 
                                     <div class="amount">

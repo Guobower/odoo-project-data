@@ -61,6 +61,10 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         def get_name(attr):
             name = " "
+            get_cat = " "
+            get_quan = 0
+            get_caton = 0
+            caton_val = 0
             if record_wizard.location == "all_loc":
                 records = self.env['stock.history'].search([])
             else:
@@ -68,21 +72,24 @@ class SampleDevelopmentReport(models.AbstractModel):
             for x in records:
                 if x.product_id.id == attr:
                     name = x.product_id.name
+                    get_cat = x.product_id.categ_id.name
+                    get_quan = get_quan + x.quantity
+                    get_caton = get_caton + x.quantity
+                    caton_val = get_caton / x.product_id.pcs_per_carton
 
 
-            return name
+            return name,get_cat,get_quan,caton_val
+        # def get_cat(attr):
+        #     name = " "
+        #     if record_wizard.location == "all_loc":
+        #         records = self.env['stock.history'].search([])
+        #     else:
+        #         records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
+        #     for x in records:
+        #         if x.product_id.id == attr:
+        #             name = x.product_id.categ_id.name
 
-        def get_cat(attr):
-            name = " "
-            if record_wizard.location == "all_loc":
-                records = self.env['stock.history'].search([])
-            else:
-                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
-            for x in records:
-                if x.product_id.id == attr:
-                    name = x.product_id.categ_id.name
-
-            return name
+        #     return name
 
 
         # def get_caton(attr):
@@ -98,32 +105,34 @@ class SampleDevelopmentReport(models.AbstractModel):
         #     return value
 
 
-        def get_quan(attr):
-            value = 0
-            if record_wizard.location == "all_loc":
-                records = self.env['stock.history'].search([])
-            else:
-                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
-            for x in records:
-                if x.product_id.id == attr:
-                    value = value + x.quantity
+        # def get_quan(attr):
+        #     value = 0
+        #     if record_wizard.location == "all_loc":
+        #         records = self.env['stock.history'].search([])
+        #     else:
+        #         records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
+        #     for x in records:
+        #         if x.product_id.id == attr:
+        #             value = value + x.quantity
 
-            return value
+        #     test = 123
+
+        #     return value,test
 
 
-        def get_caton(attr):
-            value = 0
-            carton = 0
-            if record_wizard.location == "all_loc":
-                records = self.env['stock.history'].search([])
-            else:
-                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
-            for x in records:
-                if x.product_id.id == attr:
-                    value = value + x.quantity
-                    carton = value / x.product_id.pcs_per_carton
+        # def get_caton(attr):
+        #     value = 0
+        #     carton = 0
+        #     if record_wizard.location == "all_loc":
+        #         records = self.env['stock.history'].search([])
+        #     else:
+        #         records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
+        #     for x in records:
+        #         if x.product_id.id == attr:
+        #             value = value + x.quantity
+        #             carton = value / x.product_id.pcs_per_carton
 
-            return carton
+        #     return carton
 
         def get_loc():
             name = " "
@@ -152,9 +161,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             'lisst': lisst,
             'new': new,
             'get_name': get_name,
-            'get_cat': get_cat,
-            'get_caton': get_caton,
-            'get_quan': get_quan,
+            # 'get_cat': get_cat,
+            # 'get_caton': get_caton,
+            # 'get_quan': get_quan,
             'get_loc': get_loc,
             'namer': namer,
      

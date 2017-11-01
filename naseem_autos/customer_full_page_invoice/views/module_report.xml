@@ -185,7 +185,7 @@
                                         <t t-set="t_2" t-value="0"/>
                                         <t t-set="t_3" t-value="0"/>
                                         <t t-set="t_4" t-value="0"/>
-                                        <t t-foreach="enteries" t-as="data">
+                                        <t t-foreach="o.invoice_line_ids" t-as="data">
 
                                             <tr>
 
@@ -231,7 +231,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.promo_code"></span>
+                                                    <span t-esc="data.promo_code.id"></span>
                                                 </td>
                                             </tr>
 

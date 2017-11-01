@@ -123,25 +123,25 @@
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_name(line)"></span>
+                                                        <span t-esc="get_name(line)[0]"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_cat(line)"></span>
+                                                        <span t-esc="get_name(line)[1]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_quan(line)"></span>
+                                                        <span t-esc="get_name(line)[2]"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_caton(line)"></span>
+                                                        <span t-esc="get_name(line)[3]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_quan(line)"></span>
+                                                        <span t-esc="get_name(line)[2]"></span>
                                                     </td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     
 
                                                 </tr>
@@ -160,25 +160,25 @@
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_name(data)"></span>
+                                                        <span t-esc="get_name(data)[0]"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_cat(data)"></span>
+                                                        <span t-esc="get_name(data)[1]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_quan(data)"></span>
+                                                        <span t-esc="get_name(data)[2]"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_caton(data)"></span>
+                                                        <span t-esc="get_name(data)[3]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_quan(data)"></span>
+                                                        <span t-esc="get_name(data)[2]"></span>
                                                     </td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     
 
                                                 </tr>

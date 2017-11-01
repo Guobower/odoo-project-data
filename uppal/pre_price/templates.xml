@@ -54,7 +54,7 @@
 </record>
 
 <record model="ir.actions.act_window" id="ecube_currency_action">
-    <field name="name">ecube currency</field>
+    <field name="name">Currency</field>
     <field name="res_model">ecube.currency</field>
     <field name="view_type">form</field>
     <field name="view_mode">tree,form</field>
