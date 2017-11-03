@@ -159,27 +159,18 @@
                                                 <th>Description</th>
                                                 <th>UOM</th>
                                                 <t t-foreach="new_loc" t-as="data">
-                                                    <th>Loo
-                                                        <span t-esc="i"></span>
-                                                        <t t-set="i" t-value="i+1"/>
-                                                    </th>
-                                                </t>
-                                            </tr>
-
-                                             <tr>
-                                                <th colspan="3">Location</th>
-                                                <t t-foreach="new_loc" t-as="data">
                                                     <th>
                                                         <span t-esc="data"></span>
                                                     </th>
                                                 </t>
                                             </tr>
+
                                             <t t-foreach="multi" t-as="line">
                                                 <tr>
                                                     <td>
-                                                        <span t-esc="line.id"></span>
+                                                        <span t-esc="line.default_code"></span>
                                                     </td>
-                                                    <td>
+                                                    <td style="margin-right:10px">
                                                         <span t-esc="line.name"></span>
                                                     </td>
                                                     <td>
@@ -211,27 +202,18 @@
                                                 <th>Description</th>
                                                 <th>UOM</th>
                                                 <t t-foreach="loc" t-as="data">
-                                                    <th>Loo
-                                                        <span t-esc="i"></span>
-                                                        <t t-set="i" t-value="i+1"/>
-                                                    </th>
-                                                </t>
-                                            </tr>
-
-                                             <tr>
-                                                <th colspan="3">Location</th>
-                                                <t t-foreach="loc" t-as="data">
                                                     <th>
                                                         <span t-esc="data"></span>
                                                     </th>
                                                 </t>
                                             </tr>
+
                                             <t t-foreach="records" t-as="line">
                                                 <tr>
                                                     <td>
-                                                        <span t-esc="line.id"></span>
+                                                        <span t-esc="line.default_code"></span>
                                                     </td>
-                                                    <td>
+                                                    <td style="margin-right:10px">
                                                         <span t-esc="line.name"></span>
                                                     </td>
                                                     <td>

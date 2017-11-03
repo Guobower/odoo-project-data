@@ -26,6 +26,7 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.exceptions import Warning
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.product_ledger.product_ledger_report'
@@ -56,50 +57,111 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         records = self.env['product.product'].search([('id','=',product.id)])
 
-        invoices = self.env['account.invoice'].search([('date_invoice','>=',form),('date_invoice','<=',to)])
+        invoices = self.env['stock.history'].search([('date','>=',form),('date','<=',to)])
+        open_bal = self.env['stock.history'].search([('date','<',form)])
 
-        last_purchase = self.env['account.invoice'].search([('type','=','in_invoice'),('date_invoice','<',form)])
-
-        last_purchased = []
-        dates = []
-        for x in last_purchase:
-            for y in x.invoice_line_ids:
-                if y.product_id == product:
-                    last_purchased.append(x)
-                    dates.append(x.date_invoice)
-
-        dates.sort()
-
-        for x in dates:
-            last = x
-
-        def last_quantity(attr):
-            for x in last_purchased:
-                if x.date_invoice == last:
-                    for y in x.invoice_line_ids:
-                        if y.product_id == product:
-                            if attr == 'qty':
-                                return y.quantity
-                            if attr == 'date':
-                                return x.date_invoice
-                            if attr == 'unit':
-                                return y.product_id.uom
 
         required_invoices = []
         for x in invoices:
-            for y in x.invoice_line_ids:
-                if y.product_id == product:
-                    required_invoices.append(x)
+            if x.product_id == product:
+                required_invoices.append(x)
 
-        def line_data(data,attr):
-            for x in required_invoices:
-                if x == data:
-                    for y in x.invoice_line_ids:
-                        if y.product_id == product:
-                            if attr == 'unit_price':
-                                return y.price_unit
-                            if attr == 'qty':
-                                return y.quantity
+        def get_tot():
+            amt = 0
+            for x in invoices:
+                if x.product_id == product:
+                    amt = amt + x.quantity
+
+            return amt
+
+        def get_open():
+            amt = 0
+            for x in open_bal:
+                if x.product_id == product:
+                    amt = amt + x.quantity
+
+            return amt
+
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+        def get_price():
+            amt = 0
+            last = []
+            last_d = []
+            name = 0
+            new = " "
+            l_date = " "
+            pcs = " "
+            value = 0
+            for x in invoices:
+                if x.product_id == product:
+                    pcs = x.product_id.uom
+                    value = value + x.quantity
+                    if x.quantity > 0:
+                        last.append(x)
+                        newlist = sorted(last, key=lambda x: x.id)
+                        name = newlist.pop().id
+                        last.append(x)
+                        datelist = sorted(last, key=lambda x: x.date)
+                        new = datelist.pop().date
+            for x in invoices:
+                if x.product_id == product:
+                    if x.quantity > 0:
+                        if x.id == name:
+                            amt = x.quantity
+                        if x.date == new:
+                            l_date = x.date
+
+            return amt,l_date,pcs,value
+
+
+
+
+
+
+        # last_purchase = self.env['account.invoice'].search([('type','=','in_invoice'),('date_invoice','<',form)])
+
+        # last_purchased = []
+        # dates = []
+        # for x in last_purchase:
+        #     for y in x.invoice_line_ids:
+        #         if y.product_id == product:
+        #             last_purchased.append(x)
+        #             dates.append(x.date_invoice)
+
+        # dates.sort()
+
+        # for x in dates:
+        #     last = x
+
+        # def last_quantity(attr):
+        #     for x in last_purchased:
+        #         if x.date_invoice == last:
+        #             for y in x.invoice_line_ids:
+        #                 if y.product_id == product:
+        #                     if attr == 'qty':
+        #                         return y.quantity
+        #                     if attr == 'date':
+        #                         return x.date_invoice
+        #                     if attr == 'unit':
+        #                         return y.product_id.uom
+
+        
+
+        # def line_data(data,attr):
+        #     for x in required_invoices:
+        #         if x == data:
+        #             for y in x.invoice_line_ids:
+        #                 if y.product_id == product:
+        #                     if attr == 'unit_price':
+        #                         return y.price_unit
+        #                     if attr == 'qty':
+        #                         return y.quantity
             
         docargs = {
             'doc_ids': docids,
@@ -110,9 +172,13 @@ class SampleDevelopmentReport(models.AbstractModel):
             'form': form,
             'date': date,
             'timed': timed,
+            'get_tot': get_tot,
+            'get_price': get_price,
+            'get_open': get_open,
+            'get_time': get_time,
             'required_invoices': required_invoices,
-            'line_data': line_data,
-            'last_quantity': last_quantity
+            # 'line_data': line_data,
+            # 'last_quantity': last_quantity
         }
 
         return report_obj.render('product_ledger.product_ledger_report', docargs)

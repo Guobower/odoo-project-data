@@ -154,7 +154,7 @@
 
                                             <p>
                                                 <span class="solid">Time:</span> 
-                                                <span class="liquid" t-esc="timed"></span>
+                                                <span class="liquid" t-esc="get_time()"></span>
                                             </p>
                                         </div>
                                     </div>
@@ -172,8 +172,8 @@
                                         </p>
                                         <p class="fuller">
                                             <span class="solid">Opening Balance:</span>
-                                            <t t-set="open_bal" t-value="100500000" />
-                                            <span class="liquid">100500000</span>
+                                            <!-- <t t-set="open_bal" t-value="100500000" /> -->
+                                            <span class="liquid" t-esc="get_open()"></span>
                                         </p>
 
                                     </div>
@@ -194,8 +194,8 @@
                                         
                                         <t t-foreach="required_invoices" t-as="data">
                                             <tr>
-                                                <td><span t-esc="data.number"></span></td>
-                                                <td>
+                                                <!-- <td><span t-esc="data.number"></span></td> -->
+                                                <!-- <td>
                                                     <t t-set="type" t-value="data.type" />
                                                     <t t-if="type == 'out_invoice'">
                                                         <span>SI</span>
@@ -209,13 +209,36 @@
                                                     <t t-if="type == 'in_refund'">
                                                         <span>PR</span>
                                                     </t>
-                                                </td>
-                                                <td><span t-esc="data.date_invoice"></span></td>
-                                                <td><span t-esc="data.reference"></span></td>
-                                                <td><span t-esc="data.partner_id.name"></span></td>
-                                                <td><span> - </span></td>
-                                                <td><span t-esc="line_data(data,'unit_price')"></span></td>
+                                                </td> -->
                                                 <td>
+                                                    <span t-esc="data.move_id.picking_id.account_inv_id.number"></span>
+                                                </td>
+                                                <td>
+                                                    <t t-if="data.move_id.picking_id.account_inv_id.type == 'out_invoice'">
+                                                        <span>SI</span>
+                                                    </t>
+                                                    <t t-if="data.move_id.picking_id.account_inv_id.type == 'out_refund'">
+                                                        <span>SR</span>
+                                                    </t>
+                                                </td>
+                                                <td><span t-esc="data.date"></span></td>
+                                                <td></td>
+                                                <td>
+                                                    <span t-esc="data.move_id.picking_id.account_inv_id.partner_id.name"></span>
+                                                </td>
+                                                <td></td>
+                                                <!-- <td><span t-esc="data.reference"></span></td> -->
+                                                <!-- <td><span t-esc="data.partner_id.name"></span></td> -->
+                                                <td>
+                                                   <!--  <t t-foreach="data.move_id.picking_id.account_inv_id.invoice_line_ids" t-as="line">
+                                                        <t t-if="line.product_id.id == 'product'">
+                                                            <span t-esc="line.price_unit"></span>
+                                                        </t>
+                                                    </t> -->
+                                                    <span t-esc="data.move_id.picking_id.account_inv_id.invoice_line_ids.price_unit"></span>
+                                                </td>
+                                                <!-- <td><span t-esc="line_data(data,'unit_price')"></span></td> -->
+                                                <!-- <td>
                                                     <t t-if="type == 'out_invoice'">
                                                         <span> - </span>
                                                     </t>
@@ -228,22 +251,21 @@
                                                     <t t-if="type == 'in_refund'">
                                                         <span t-esc="line_data(data,'qty')"></span>
                                                     </t>
-                                                </td>
+                                                </td> -->
                                                 <td>
-                                                    <t t-if="type == 'out_invoice'">
-                                                        <span t-esc="line_data(data,'qty')"></span>
-                                                    </t>
-                                                    <t t-if="type == 'in_invoice'">
-                                                        <span> - </span>
-                                                    </t>
-                                                    <t t-if="type == 'out_refund'">
-                                                        <span t-esc="line_data(data,'qty')"></span>
-                                                    </t>
-                                                    <t t-if="type == 'in_refund'">
-                                                        <span> - </span>
+                                                    <t t-if="data.quantity &gt; 0">
+                                                        <span t-esc="data.quantity"></span>
                                                     </t>
                                                 </td>
+
                                                 <td>
+                                                    <t t-if="data.quantity &lt; 0">
+                                                        <span t-esc="data.quantity"></span>
+                                                    </t>
+                                                </td>
+
+                                                <td></td>
+                                               <!--  <td>
                                                     <t t-if="type == 'out_invoice'">
                                                         <t t-set="open_bal" t-value="open_bal - line_data(data,'qty')" />
                                                         <span t-esc="open_bal"></span>
@@ -260,7 +282,7 @@
                                                         <t t-set="open_bal" t-value="open_bal - line_data(data,'qty')" />
                                                         <span t-esc="open_bal"></span>
                                                     </t>
-                                                </td>
+                                                </td> -->
                                                 
                                             </tr> 
                                         </t>
@@ -270,22 +292,25 @@
 
                                         <p>
                                             <span class="solid">Current In Stock:</span>
-                                            <span class="liquid">158</span>
+                                            <span class="liquid" t-esc="get_price()[3]"></span>
                                         </p>
 
                                         <p>
                                             <span class="solid">Last Buying Quantity:</span>
-                                            <span class="liquid" t-esc="last_quantity('qty')"></span>
+                                            <span class="liquid" t-esc="get_price()[0]"></span>
+                                            <!-- <span class="liquid" t-esc="last_quantity('qty')"></span> -->
                                         </p>
 
                                         <p>
                                             <span class="solid">Last Buying Date:</span>
-                                            <span class="liquid" t-esc="last_quantity('date')"></span>
+                                            <span class="liquid" t-esc="get_price()[1]"></span>
+                                            <!-- <span class="liquid" t-esc="last_quantity('date')"></span> -->
                                         </p>
 
                                         <p>
                                             <span class="solid">Measuring Unit:</span>
-                                            <span class="liquid" t-esc="last_quantity('unit')"></span>
+                                            <span class="liquid" t-esc="get_price()[2]"></span>
+                                            <!-- <span class="liquid" t-esc="last_quantity('unit')"></span> -->
                                         </p>
 
                                     </div>

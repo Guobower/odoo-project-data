@@ -4,6 +4,6 @@
     'description': "Customer Profile",
     'author': 'Nayyab',
     'application': True,
-    'depends': ['base'],
+    'depends': ['base','stock'],
     'data': ['template.xml','views/module_report.xml'],
 }

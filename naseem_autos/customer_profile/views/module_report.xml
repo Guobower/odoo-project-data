@@ -173,7 +173,7 @@
 
                                         <div class="date">
                                             <p><b>Date:</b>&#032;<span t-esc="date"></span></p>
-                                            <p><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p>
+                                            <p><b>Time:</b>&#032;<span t-esc="get_time()"/></p>
                                         </div>
 
                                         <div class="walait">
@@ -187,7 +187,7 @@
                                     <div class="total">
 
                                         <div class="balance">
-                                            <p>BALANCE :&#032;<span t-esc="o.credit"></span></p>
+                                            <p>BALANCE :&#032;<span t-esc="get_bal()"></span></p>
                                         </div>
 
                                     </div>
@@ -195,8 +195,10 @@
                                     <br class="clearfloat"/>
 
                                     <div class="current">
-                                        <p><b>Current Month Payment:</b> 110500</p>
-                                        <p><b>Current Month Sales:</b>&#032;&#032;<span t-esc="get_sale()"></span></p>
+                                        <p><b>Current Month Payment:</b><span t-esc="payment()"></span></p>
+                                        <p><b>Current Month Sales:</b>&#032;&#032;
+                                        <span t-esc="get_sale()"></span>
+                                        </p>
                                     </div>
                                     <div class="contact">
                                     
@@ -221,29 +223,29 @@
 
                                         <tr class="right">
                                             <td>Receipt</td>
-                                            <td>0.00</td>
-                                            <td>0.00</td>
-                                            <td>0.00</td>
-                                            <td>0.00</td>
-                                            <td>0.00</td>
+                                            <td><span t-esc="get_month_values()[0][0]"></span></td>
+                                            <td><span t-esc="get_month_values()[0][1]"></span></td>
+                                            <td><span t-esc="get_month_values()[0][2]"></span></td>
+                                            <td><span t-esc="get_month_values()[0][3]"></span></td>
+                                            <td><span t-esc="get_month_values()[0][4]"></span></td>
 
                                         </tr>
                                         <tr>
                                             <td>SALES</td>
                                             <td>
-                                                <span t-esc="get_val1()"></span>
+                                                <span t-esc="get_month_values()[1][0]"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_val2()"></span>
+                                                <span t-esc="get_month_values()[1][1]"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_val3()"></span>
+                                                <span t-esc="get_month_values()[1][2]"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_val4()"></span>
+                                                <span t-esc="get_month_values()[1][3]"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_val5()"></span>
+                                                <span t-esc="get_month_values()[1][4]"></span>
                                             </td>
                                         </tr>
                                     </table>
@@ -274,25 +276,25 @@
                                                     <span t-esc="get_lastprice(line)"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="old_product(line)"></span>
+                                                    <span t-esc="get_product_values(line)[1][0]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][0]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product1(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][1]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product2(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][2]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product3(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][3]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product4(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][4]"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product5(line)"></span>
+                                                    <span t-esc="get_product_values(line)[0][5]"></span>
                                                 </td>
 
                                             </tr>

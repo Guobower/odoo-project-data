@@ -53,39 +53,43 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         def hand(attr):
             amt = 0
-            data = self.env['stock.history'].search([])
+            amt1 = 0
+            new = 0
+            data = self.env['stock.history'].search([('product_categ_id.id','=',attr)])
             for x in data:
                 if attr == x.product_categ_id.id:
                     amt = amt + x.quantity
-
-            return amt
-
-
-        def cost(attr):
-            amt = 0
-            new = 0
-            data = self.env['stock.history'].search([])
-            for x in data:
-                if attr == x.product_categ_id.id:
                     new = x.quantity * x.product_id.average_cost
-                    amt = amt + new
+                    amt1 = amt1 + new
 
-            return amt
-
-        def first():
-            name = " "
-            for x in slect_prod:
-                name = x.name
-
-            return name
+            return amt,amt1
 
 
-        def last():
-            name = " "
-            for x in slect_prod[:1]:
-                name = x.name
+        # def cost(attr):
+        #     amt = 0
+        #     new = 0
+        #     data = self.env['stock.history'].search([])
+        #     for x in data:
+        #         if attr == x.product_categ_id.id:
+        #             new = x.quantity * x.product_id.average_cost
+        #             amt = amt + new
 
-            return name
+        #     return amt
+
+        # def first():
+        #     name = " "
+        #     for x in slect_prod:
+        #         name = x.name
+
+        #     return name
+
+
+        # def last():
+        #     name = " "
+        #     for x in slect_prod[:1]:
+        #         name = x.name
+
+        #     return name
 
 
 
@@ -100,9 +104,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             'data': data,
             'select': select,
             'hand': hand,
-            'cost': cost,
-            'first': first,
-            'last': last,
+            # 'cost': cost,
+            # 'first': first,
+            # 'last': last,
      
 
             }

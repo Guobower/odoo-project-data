@@ -27,6 +27,10 @@ class TopSaleDetail(models.Model):
     form = fields.Date("Date From")
     to = fields.Date("Date To")
     account = fields.Many2many('account.account',string='Accounts')
+    accounts = fields.Selection([
+        ('all_acc','All Accounts'),
+        ('spec_acc','Specfic or Multiple Accounts'),
+        ],string="Slecet Account")
 
 
 class GenerateTopSalesWise(models.Model):

@@ -88,9 +88,9 @@
 
                                             <tr>
                                                 <td>
-                                                    <span t-esc="o.id"></span>
+                                                    <span t-esc="o.default_code"></span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:left">
                                                     <span t-esc="o.name"></span>
                                                 </td>
                                                 <td>

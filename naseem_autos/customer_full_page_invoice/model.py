@@ -31,9 +31,9 @@ class SampleDevelopmentReport(models.AbstractModel):
         records = self.env['account.invoice'].browse(docids)
 
 
-        enteries = []
-        for x in records.invoice_line_ids:
-            enteries.append(x)
+        # enteries = []
+        # for x in records.invoice_line_ids:
+        #     enteries.append(x)
 
 
         def number_to_word(attrb):
@@ -49,7 +49,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'doc_model': 'account.invoice',
             'docs': records,
             'data': data,
-            'enteries': enteries,
+            # 'enteries': enteries,
             'number_to_word': number_to_word
             }
 

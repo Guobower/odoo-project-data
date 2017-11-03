@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.product_valuation.customer_report'
@@ -41,6 +42,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         product = record_wizard.product
         slect_prod = record_wizard.slect_prod
+        slect_categ = record_wizard.slect_categ
 
         
         records = self.env['product.product'].search([])
@@ -52,17 +54,38 @@ class SampleDevelopmentReport(models.AbstractModel):
                 if x.id == z.id:
                     select.append(z)
 
+        cat = []
+        records = self.env['product.product'].search([])
+        for z in records:
+            if z.categ_id.id == slect_categ.id:
+                cat.append(z)
+
+
         count = [1]
 
         def hand(attr):
             amt = 0
-            data = self.env['stock.history'].search([])
+            last = []
+            name = " "
+            stock = 0
+            data = self.env['stock.history'].search([('product_id.id','=',attr)])
             for x in data:
-                if attr == x.product_id.id:
-                    amt = amt + x.quantity
+                amt = amt + x.quantity
+                last.append(x)
+                newlist = sorted(last, key=lambda x: x.date)
+                name = newlist.pop().date
+            for x in data:
+                if name == x.date:
+                    stock = stock + x.quantity
 
-            return amt
+            return amt,stock
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
 
 
         def namer():
@@ -70,6 +93,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             if product == "all_prod":
                 prov = product
             if product == "multi_prod":
+                prov = product
+            if product == "categ_wise":
                 prov = product
 
             return prov
@@ -85,7 +110,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             'records': records,
             'namer': namer,
             'select': select,
+            'cat': cat,
             'hand': hand,
+            'get_time': get_time,
 
             }
 

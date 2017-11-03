@@ -179,6 +179,8 @@ class stock_picking_own(models.Model):
 					'stock_id' : self.id,
 					})
 
+				self.account_inv_id = create_invoice.id
+
 				for x in sale_order.order_line:
 					amt = 0
 					qty = 0

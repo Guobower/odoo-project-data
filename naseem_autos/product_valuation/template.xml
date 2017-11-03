@@ -26,6 +26,7 @@
                         <group name="group_right">
 
                              <field name="slect_prod" widget="many2many_tags" attrs="{'invisible':[('product','!=','multi_prod')]}"/>
+                             <field name="slect_categ" attrs="{'invisible':[('product','!=','categ_wise')]}"/>
 
                         </group>
 

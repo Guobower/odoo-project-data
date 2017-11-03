@@ -154,7 +154,7 @@
                                         <p8><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p8>
 
                                         <p9><b>Sales Person:</b>&#032;
-                                        <span t-esc="o.date_invoice"></span>
+                                        <span t-esc="o.user_id.name"></span>
                                         </p9>
 
                                         <p10><b>Invoice Date:</b>&#032;
@@ -199,7 +199,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.uom"></span>
+                                                    <span t-esc="data.product_id.uom"></span>
                                                 </td>
 
                                                 <td>

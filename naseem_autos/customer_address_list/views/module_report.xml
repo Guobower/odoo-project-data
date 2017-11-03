@@ -139,7 +139,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="o.city.name"></span>
+                                                    <span t-esc="o.city"></span>
                                                 </td>
 
                                                 <td>

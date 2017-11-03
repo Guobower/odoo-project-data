@@ -220,7 +220,7 @@
 
 
                                     <div class="time">
-                                        <p><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p>
+                                        <p><b>Time:</b>&#032;<span t-esc="get_time()"></span></p>
                                     </div>
 
 
@@ -237,13 +237,13 @@
                                         <p6>
                                             <span t-esc="o.contact_address.customer_name"></span>
                                         </p6>
-                                        <p7><b>Previous Balnce:</b></p7>
+                                        <p7><b>Previous Balance:</b></p7>
                                         <p8></p8>
                                         <p9>
-                                            <span t-esc="get_bal(o.id)"></span>
+                                            <span t-esc="get_bal(o.id)[0]"></span>
                                         </p9>
                                     </div>
-
+                                    <!-- <h2>VOICES</h2> -->
                                     <table width="100%">
 
                                         <tr>
@@ -253,14 +253,15 @@
                                             <th>Type</th>
                                             <th>Ref</th>
                                             <th>Details</th>
-                                            <th>Debit</th>
-                                            <th>Credit</th>
-                                            <th>Balance</th>
+                                            <th>Amount</th>
+                                            <!-- <th>Credit</th>
+                                            <th>Balance</th> -->
                                         </tr>
 
                                         <t t-set="gd_total" t-value="0"/>
+                                        <t t-set="py_total" t-value="0"/>
                                         <t t-foreach="main" t-as="data">
-                                            <span t-esc="get_line(data.id)"></span>
+                                            <!-- <span t-esc="get_line(data.id)"></span> -->
                                             <t t-set="d_total" t-value="0"/>
                                             <t t-foreach="data.invoice_line_ids" t-as="line">
                                                 
@@ -272,7 +273,14 @@
                                                     <td>
                                                         <span t-esc="data.date_invoice"></span>
                                                     </td>
-                                                    <td>SI</td>
+                                                    <td>
+                                                        <t t-if="data.type == 'out_invoice'">
+                                                            <span>SI</span>
+                                                        </t>
+                                                        <t t-if="data.type == 'out_refund'">
+                                                            <span>SR</span>
+                                                        </t>
+                                                    </td>
                                                     <td>
                                                         <span t-esc="data.reference"></span>
                                                     </td>
@@ -285,8 +293,8 @@
                                                         <t t-set="d_total" t-value="d_total+line.price_subtotal"/>
                                                         <t t-set="gd_total" t-value="gd_total+d_total"/>
                                                     </td>
-                                                    <td>0</td>
-                                                    <td>0</td>
+                                                    <!-- <td>0</td>
+                                                    <td>0</td> -->
 
                                                 </tr>
 
@@ -297,8 +305,8 @@
                                                 <td><b>
                                                     <span t-esc="d_total"></span>
                                                 </b></td>
-                                                <td><b>0</b></td>
-                                                <td><b>0</b></td>
+                                                <!-- <td><b>0</b></td>
+                                                <td><b>0</b></td> -->
                                             </tr>
 
                                         </t>
@@ -308,17 +316,68 @@
                                             <td><b>
                                                 <span t-esc="gd_total"></span>
                                             </b></td>
-                                            <td><b>0</b></td>
-                                            <td><b>0</b></td>
+                                            <!-- <td><b>0</b></td>
+                                            <td><b>0</b></td> -->
                                         </tr>
 
                                     </table>
 
+                                    <table width="100%">
+
+                                        <tr>
+
+                                            <th>Date</th>
+                                            <th>Ref</th>
+                                            <th>Details</th>
+                                            <th>Amount</th>
+
+                                        </tr>
+
+                                        <t t-foreach="lisst" t-as="data">
+
+                                            <tr>
+
+                                                <td>
+                                                    <span t-esc="data.move_id.date"></span>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="data.move_id.name"></span>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="data.name"></span>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="data.debit"></span>
+                                                    <t t-set="py_total" t-value="py_total+data.debit"/>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                        <tr>
+
+                                            <td colspan="3"><b>Total</b></td>
+                                            <td>
+                                                <b><span t-esc="py_total"></span></b>
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+
+
+
                                     <div class="amount">
                                         <p1>Amount Ouststanding:</p1>
-                                        <p2>0</p2>
+                                        <p2>
+                                            <span t-esc="get_bal(o.id)[1]"></span>
+                                        </p2>
                                         <p3>Amount Paid This Period:</p3>
-                                        <p4>0</p4>
+                                        <p4>
+                                            <span t-esc="get_pay()"></span>
+                                        </p4>
                                         <p5>Credit Limit:</p5>
                                         <p6>
                                             <span t-esc="float(o.credit_limit)"></span>

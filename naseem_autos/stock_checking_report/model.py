@@ -47,13 +47,13 @@ class SampleDevelopmentReport(models.AbstractModel):
         count=[1]
 
         lisst = []
-        records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
+        records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name),('location_id.usage','=','internal'),('date','<=',record_wizard.date)])
         for x in records:
             if x.product_id.id not in lisst:
                 lisst.append(x.product_id.id)
 
         new = []
-        records = self.env['stock.history'].search([])
+        records = self.env['stock.history'].search([('location_id.usage','=','internal'),('date','<=',record_wizard.date)])
         for x in records:
             if x.product_id.id not in new:
                 new.append(x.product_id.id)

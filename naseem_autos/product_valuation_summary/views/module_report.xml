@@ -93,14 +93,14 @@
                                         <P><b>Product Valuation Summary</b></P>
                                     </div>
                                     <div class="account">
-                                        <P><b>Category From:</b>&#032;
+                                        <!-- <P><b>Category From:</b>&#032;
                                         <span t-esc="last()"></span>
-                                        </P>
+                                        </P> -->
                                     </div>
                                     <div class="invoice">
-                                        <p><b>To:</b>&#032;
+                                        <!-- <p><b>To:</b>&#032;
                                         <span t-esc="first()"></span>
-                                        </p>
+                                        </p> -->
                                     </div>
                                     <div class="time">
 
@@ -129,12 +129,12 @@
                                                     <span t-esc="data.name"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="hand(data.id)"></span>
-                                                    <t t-set="stok" t-value="stok+hand(data.id)"/>
+                                                    <span t-esc="hand(data.id)[0]"></span>
+                                                    <t t-set="stok" t-value="stok+hand(data.id)[0]"/>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="cost(data.id)"></span>
-                                                    <t t-set="val" t-value="val+cost(data.id)"/>
+                                                    <span t-esc="hand(data.id)[1]"></span>
+                                                    <t t-set="val" t-value="val+hand(data.id)[1]"/>
                                                 </td>
                                             </tr>
                                         </t>

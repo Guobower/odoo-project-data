@@ -49,7 +49,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             value = 0
             deb = 0
             cre = 0
-            balance = self.env['account.move'].search([('date','<=',form)])
+            balance = self.env['account.move'].search([('date','<',form)])
             for x in balance:
                 for z in x.line_ids:
                     if z.partner_id.id == attr:

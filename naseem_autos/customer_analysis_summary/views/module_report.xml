@@ -89,8 +89,9 @@
                                 }
 
                                 .account p12 {
-                                    width: 5%;
+                                    width: 10%;
                                     float: left;
+                                    margin-left: 880px;
                                 }
 
                                 table, th, td{
@@ -127,13 +128,13 @@
                                         <p5><b>Date:</b></p5>
                                         <p6><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"></span></p6>
 
-                                        <p7><b>Customer From:</b></p7>
+                                        <!-- <p7><b>Customer From:</b></p7>
                                         <p8>AFG-QADIR</p8>
                                         <p9><b>To:</b></p9>
-                                        <p10>UNKNOWN</p10>
-                                        <p11><b>Time:</b></p11>
+                                        <p10>UNKNOWN</p10> -->
+                                        <!-- <p11><b>Time:</b></p11> -->
 
-                                        <p12><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p12>
+                                        <p12><b>Time:</b><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p12>
 
                                     </div>
                                     

@@ -44,15 +44,19 @@ class SampleDevelopmentReport(models.AbstractModel):
         def get_supp(attr):
             last = []
             name = " "
-            supplier = self.env['account.invoice'].search([(('type','=',"in_invoice"))])
+            supp = " "
+            supplier = self.env['stock.history'].search([(('product_id.id','=',attr))])
             for x in supplier:
-                if x.invoice_line_ids.product_id.id == attr:
-                    last.append(x)
-                    newlist = sorted(last, key=lambda x: x.id)
-                    name = newlist.pop().partner_id.name
+                last.append(x)
+                newlist = sorted(last, key=lambda x: x.date)
+                name = newlist.pop().date
+            for x in supplier:
+                if x.date == name:
+                    for y in x.move_id:
+                        for z in y.picking_id:
+                            supp = z.partner_id.name
 
-
-            return name
+            return supp
 
 
         docargs = {

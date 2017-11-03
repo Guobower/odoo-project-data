@@ -28,83 +28,112 @@ from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class SampleDevelopmentReport(models.AbstractModel):
-    _name = 'report.sales_summary.sales_summary_report'
+	_name = 'report.sales_summary.sales_summary_report'
 
-    @api.model
-    def render_html(self,docids, data=None):
+	@api.model
+	def render_html(self,docids, data=None):
 
-        report_obj = self.env['report']
-        report = report_obj._get_report_from_name('sales_summary.sales_summary_report')
-        active_wizard = self.env['sales.summary'].search([])
+		report_obj = self.env['report']
+		report = report_obj._get_report_from_name('sales_summary.sales_summary_report')
+		active_wizard = self.env['sales.summary'].search([])
 
-        emp_list = []
-        for x in active_wizard:
-            emp_list.append(x.id)
-        emp_list = emp_list
-        emp_list_max = max(emp_list) 
+		emp_list = []
+		for x in active_wizard:
+			emp_list.append(x.id)
+		emp_list = emp_list
+		emp_list_max = max(emp_list) 
 
-        record_wizard = self.env['sales.summary'].search([('id','=',emp_list_max)])
-        record_wizard_del = self.env['sales.summary'].search([('id','!=',emp_list_max)])
-        record_wizard_del.unlink()
+		record_wizard = self.env['sales.summary'].search([('id','=',emp_list_max)])
+		record_wizard_del = self.env['sales.summary'].search([('id','!=',emp_list_max)])
+		record_wizard_del.unlink()
 
-        to = record_wizard.to
-        form = record_wizard.form
+		to = record_wizard.to
+		form = record_wizard.form
 
-        date = datetime.now().date()
-        timed = datetime.now().time().strftime("%H:%M")
+		date = datetime.now().date()
+		
+		records = self.env['account.invoice'].search([])
 
-        records = self.env['account.invoice'].search([])
+		start_date = datetime.strptime(form,"%Y-%m-%d")
+		end_date = datetime.strptime(to,"%Y-%m-%d")
+		lisst = []
+		 
+		if start_date <= end_date:
+			for n in range( ( end_date - start_date ).days + 1 ):
+				lisst.append( start_date + timedelta( n ) )
+		else:
+			for n in range( ( start_date - end_date ).days + 1 ):
+				lisst.append( start_date - timedelta( n ) )
+		 
+		# for d in list:
+		# 	testdate = str(d).split(' ')
+		# 	print testdate[0]
 
-        def cashsale():
-            direct_invoices = self.env['sale.order'].search([('direct_invoice_check','=','1'),('date_order','>=',form),('date_order','<=',to)])
+		# def cashsale(attr):
+		# 	direct_invoices = self.env['sale.order'].search([('direct_invoice_check','=','1'),('date_order','=',attr)])
+		# 	direct_payments = 0
+		# 	for x in direct_invoices:
+		# 		if testdate == attr:
+		# 			print "kkkkkkkkkkkkkkkkkkkkkkkkk"
+		# 			direct_payments = direct_payments + x.amount_total
 
-            direct_payments = 0
-            for x in direct_invoices:
-                direct_payments = direct_payments + x.amount_total
+		# 	return direct_payments
 
-            return direct_payments
+		def creditsale(attr):
+			credit_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','!=','cash')])
+			credit_payments = 0
+			for x in credit_invoices:
+				credit_payments = credit_payments + x.amount_total
 
-        def creditsale():
-            credit_invoices = self.env['account.invoice'].search([('date_invoice','>=',form),('date_invoice','<=',to)])
+			return credit_payments
 
-            credit_payments = 0
-            for x in credit_invoices:
-                credit_payments = credit_payments + x.amount_total
+		def cashsale(attr):
+			cash_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','=','cash')])
+			cash_payments = 0
+			for x in cash_invoices:
+				cash_payments = cash_payments + x.amount_total
 
-            return credit_payments
+			return cash_payments
 
-        def cashpay():
-            cash_payments = self.env['customer.payment.bcube'].search([('date','>=',form),('date','<=',to),('journal_id.name','=','cash')])
+		def cashpay(attr):
+			cash_payments = self.env['customer.payment.bcube'].search([('date','=',attr),('journal_id.type','=','cash'),('receipts','=',True)])
+			cash_payment = 0
+			for x in cash_payments:
+				cash_payment = cash_payment + x.total
 
-            cash_payment = 0
-            for x in cash_payments:
-                cash_payment = cash_payment + x.total
+			return cash_payment
 
-            return cash_payment
+		def bankpay(attr):
+			bank_payments = self.env['customer.payment.bcube'].search([('date','=',attr),('journal_id.type','=','bank'),('receipts','=',True)])
+			bank_payment = 0
+			for x in bank_payments:
+				bank_payment = bank_payment + x.total
 
-        def bankpay():
-            bank_payments = self.env['customer.payment.bcube'].search([('date','>=',form),('date','<=',to),('journal_id.name','=','Bank')])
+			return bank_payment
 
-            bank_payment = 0
-            for x in bank_payments:
-                bank_payment = bank_payment + x.total
+		def get_time():
+			t0 = time.time()
+			t1 = t0 + (60*60)*5 
+			new = time.strftime("%I:%M",time.localtime(t1))
 
-            return bank_payment
+			return new
 
 
-        docargs = {
-            'doc_ids': docids,
-            'doc_model': 'account.invoice',
-            'docs': records,
-            'data': data,
-            'to':to,
-            'form':form,
-            'date':date,
-            'timed':timed,
-            'cashsale': cashsale,
-            'creditsale': creditsale,
-            'cashpay': cashpay,
-            'bankpay': bankpay
-        }
+		docargs = {
+			'doc_ids': docids,
+			'doc_model': 'account.invoice',
+			'docs': records,
+			'data': data,
+			'to':to,
+			'form':form,
+			'date':date,
+			'timed':timed,
+			'cashsale': cashsale,
+			'creditsale': creditsale,
+			'cashpay': cashpay,
+			'bankpay': bankpay,
+			'lisst': lisst,
+			'get_time': get_time,
+		}
 
-        return report_obj.render('sales_summary.sales_summary_report', docargs)
+		return report_obj.render('sales_summary.sales_summary_report', docargs)

@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.partner_ledger_detail.customer_report'
@@ -49,7 +50,10 @@ class SampleDevelopmentReport(models.AbstractModel):
             value = 0
             deb = 0
             cre = 0
-            balance = self.env['account.move'].search([('date','<=',form)])
+            new_cre = 0
+            new_deb = 0
+            amt = 0
+            balance = self.env['account.move'].search([('date','<',form)])
             for x in balance:
                 for z in x.line_ids:
                     if z.partner_id.id == attr:
@@ -57,11 +61,62 @@ class SampleDevelopmentReport(models.AbstractModel):
                             deb = deb + z.debit
                             cre = cre + z.credit
                             value = deb - cre
+            balance = self.env['account.move'].search([('date','<=',to)])
+            for x in balance:
+                for z in x.line_ids:
+                    if z.partner_id.id == attr:
+                        if z.account_id.user_type_id.name == "Receivable":
+                            new_deb = new_deb + z.debit
+                            new_cre = new_cre + z.credit
+                            amt = new_deb - new_cre
 
-            return value
 
-        # upper = []
-        main = self.env['account.invoice'].search([('type','=','out_invoice'),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
+            return value,amt
+
+        # upper = []partner_ledger_detail
+        main = self.env['account.invoice'].search([('type','=',('out_invoice','out_refund')),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
+        act_move = self.env['account.move'].search([('date','>=',form),('date','<=',to)])
+        amt_pay = self.env['customer.payment.bcube'].search([('date','>=',form),('date','<=',to),('partner_id.id','=',record_wizard.partner_ids.id),('receipts','=',True)])
+
+
+        lisst = []
+        for x in act_move:
+            for y in x.line_ids:
+                if y.partner_id.id == record_wizard.partner_ids.id:
+                    if y.account_id.user_type_id.name == "Bank and Cash":
+                        lisst.append(y)
+
+
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+
+        def get_pay():
+            new = 0
+            for x in amt_pay:
+                new = new + x.amount
+
+            return new
+
+
+
+
+
+        # def get_outstand():
+        #     debt = 0
+        #     cre = 0
+        #     new = 0
+        #     for x in act_move:
+        #         for y in x.line_ids:
+        #             if y.partner_id.id == record_wizard.partner_ids.id:
+        #                 if y.account_id.user_type_id.name == "Rece":
+
+
+
         # for x in main:
         #     upper.append(x)
 
@@ -99,9 +154,12 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_form': get_form,
             'get_to': get_to,
             'get_bal': get_bal,
+            'get_time': get_time,
+            'get_pay': get_pay,
             'main': main,
-            'get_line': get_line,
-            'inner': inner,
+            'lisst': lisst,
+            # 'get_line': get_line,
+            # 'inner': inner,
             }
 
         return report_obj.render('partner_ledger_detail.customer_report', docargs)

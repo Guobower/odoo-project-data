@@ -43,6 +43,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         form = record_wizard.form
         to = record_wizard.to
         account = record_wizard.account
+        accounts = record_wizard.accounts
 
         # records = self.env['account.move'].search([('id','=',record_wizard.partner_ids.id)])
 
@@ -51,6 +52,14 @@ class SampleDevelopmentReport(models.AbstractModel):
         lisst = []
         for x in account:
             lisst.append(x)
+
+        all_acc = []
+        all_account = self.env['account.account'].search([])
+        for x in all_account:
+            if x.name not in all_account:
+                if x.user_type_id.name != 'View Type':
+                    all_acc.append(x.name)
+
 
 
         inner = []
@@ -92,6 +101,15 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return name
 
+        def namer():
+            prov = ""
+            if accounts == "all_acc":
+                prov = accounts
+            if accounts == "spec_acc":
+                prov = accounts
+
+            return prov
+
 
         docargs = {
 
@@ -105,6 +123,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_line': get_line,
             'inner': inner,
             'get_bal': get_bal,
+            'namer': namer,
             }
 
         return report_obj.render('general_ledger_activity.customer_report', docargs)

@@ -7,7 +7,7 @@
             name="customer_analysis_summary.customer_report"
             file="customer_analysis_summary.customer_report"
             report_type="qweb-html"
-            string=" "/>
+            string="customer analysis"/>
             
 
          <record id="customer_analysis_summary_report_wizard" model="ir.ui.view">

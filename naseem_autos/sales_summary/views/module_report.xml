@@ -152,7 +152,7 @@
 
                                             <p>
                                                 <span class="solid">Time:</span> 
-                                                <span class="liquid" t-esc="timed"></span>
+                                                <span class="liquid" t-esc="get_time()"></span>
                                             </p>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
                                         <tr>
                                             <th>InvDate</th>
                                             <th>CashSale</th>
-                                            <th>Cr.CardSale</th>
+                                            <!-- <th>Cr.CardSale</th> -->
                                             <th>CreditSale</th>
                                             <th>TotalSale</th>
                                             <th>Cash</th>
@@ -170,34 +170,53 @@
                                             <th>Total</th>
                                             <th>Remarks</th>
                                         </tr>
-                                        <tr>
-                                            <td><span t-esc="to"></span></td>
-                                            <td>
-                                                <span t-esc="cashsale()"></span>
-                                                <t t-set="cash" t-value="cashsale()" />
-                                            </td>
-                                            <td>0</td>
-                                            <td>
-                                                <span t-esc="creditsale()"></span>
-                                                <t t-set="credit" t-value="creditsale()" />
-                                            </td>
-                                            <td>
-                                                <span t-esc="cash + credit"></span></td>
-                                                <t t-set="total_sale" t-value="cash + credit" />
-                                            <td>
-                                                <span t-esc="cashpay()"></span></td>
-                                                <t t-set="cashpay" t-value="cashpay()" />
-                                            <td>
-                                                <span t-esc="bankpay()"></span></td>
-                                                <t t-set="bankpay" t-value="bankpay()" />
-                                            <td>
-                                                <span t-esc="cashpay + bankpay"></span>
-                                                <t t-set="total_payment" t-value="cashpay + bankpay" />
-                                            </td>
-                                            <td>
-                                                <span t-esc="total_sale - total_payment "></span>
-                                            </td>
-                                        </tr>
+                                        
+                                        <t t-foreach="lisst" t-as="data">
+                                            <t t-set="s_total" t-value="0"/>
+                                            <t t-set="d_total" t-value="0"/>
+
+                                            <tr>
+                                                <td><span t-esc="data.strftime('%d-%m-%Y')"></span></td>
+                                                <td>
+                                                    <span t-esc="cashsale(data.strftime('%Y-%m-%d'))"></span>
+                                                    <!-- <t t-set="cash" t-value="cashsale()" /> -->
+                                                </td>
+                                                
+                                                <td>
+                                                    <span t-esc="creditsale(data.strftime('%Y-%m-%d'))"></span>
+
+                                                    <!-- <t t-set="credit" t-value="creditsale()" /> -->
+                                                </td>
+                                                <td>
+                                                    <t t-set="s_total" t-value="s_total+cashsale(data.strftime('%Y-%m-%d'))+creditsale(data.strftime('%Y-%m-%d'))"/>
+                                                    <span t-esc="s_total"></span>
+                                                </td>
+                                                    <!-- <span t-esc="cash + credit"></span></td>
+                                                    <t t-set="total_sale" t-value="cash + credit" /> -->
+                                                    <td>
+                                                        <span t-esc="cashpay(data.strftime('%Y-%m-%d'))"></span>
+                                                    </td>
+                                                    <!-- <t t-set="cashpay" t-value="cashpay()" /> -->
+                                                
+                                                    <td>
+                                                        <span t-esc="bankpay(data.strftime('%Y-%m-%d'))"></span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-set="d_total" t-value="d_total+cashpay(data.strftime('%Y-%m-%d'))+bankpay(data.strftime('%Y-%m-%d'))"/>
+                                                    <span t-esc="d_total"></span>
+                                                    </td>
+                                                    <!-- <t t-set="bankpay" t-value="bankpay()" /> -->
+                                                <td>
+                                                   <!--  <span t-esc="cashpay + bankpay"></span>
+                                                    <t t-set="total_payment" t-value="cashpay + bankpay" /> -->
+                                                </td>
+                                                <td>
+                                                    <!-- <span t-esc="total_sale - total_payment "></span> -->
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
                                     </table>    
 
                                 </div>
