@@ -134,7 +134,7 @@
                                         <p10>UNKNOWN</p10> -->
                                         <!-- <p11><b>Time:</b></p11> -->
 
-                                        <p12><b>Time:</b><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p12>
+                                        <p12><b>Time:</b><span t-esc="get_time()"></span></p12>
 
                                     </div>
                                     

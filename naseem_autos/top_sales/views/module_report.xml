@@ -99,7 +99,7 @@
                                         </p>
                                         <p>
                                             <span class="solid">Time:</span>
-                                            <span class="liquid"><span t-esc="timed"></span></span>
+                                            <span class="liquid"><span t-esc="get_time()"></span></span>
                                         </p>
                                     </div>
 

@@ -52,7 +52,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
 		date = datetime.now().date()
 		
-		records = self.env['account.invoice'].search([])
+		records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
 
 		start_date = datetime.strptime(form,"%Y-%m-%d")
 		end_date = datetime.strptime(to,"%Y-%m-%d")
@@ -80,7 +80,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 		# 	return direct_payments
 
 		def creditsale(attr):
-			credit_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','!=','cash')])
+			credit_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','!=','cash'),('state','not in',('draft','cancel'))])
 			credit_payments = 0
 			for x in credit_invoices:
 				credit_payments = credit_payments + x.amount_total
@@ -88,7 +88,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 			return credit_payments
 
 		def cashsale(attr):
-			cash_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','=','cash')])
+			cash_invoices = self.env['account.invoice'].search([('date_invoice','=',attr),('type','in',('out_invoice','out_refund')),('journal_id.type','=','cash'),('state','not in',('draft','cancel'))])
 			cash_payments = 0
 			for x in cash_invoices:
 				cash_payments = cash_payments + x.amount_total
@@ -127,7 +127,6 @@ class SampleDevelopmentReport(models.AbstractModel):
 			'to':to,
 			'form':form,
 			'date':date,
-			'timed':timed,
 			'cashsale': cashsale,
 			'creditsale': creditsale,
 			'cashpay': cashpay,

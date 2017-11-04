@@ -19,7 +19,7 @@
                         <group name="group_left"> 
 
                             <field name="location"/>
-                            <field name="slect_loc" attrs="{'invisible':[('location','!=','multi_loc')]}"/>
+                            <field name="slect_loc" attrs="{'invisible':[('location','!=','multi_loc')]}" domain="[('usage','=','internal')]"/>
                             
                         </group>
 

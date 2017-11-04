@@ -99,7 +99,7 @@
                                     <div class="time">
                                         <p><b>Date:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/></p>
 
-                                        <p><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p>
+                                        <p><b>Time:</b>&#032;<span t-esc="get_time()"/></p>
 
                                     </div>
                                     

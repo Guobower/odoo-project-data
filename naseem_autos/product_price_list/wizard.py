@@ -25,9 +25,11 @@ class ProductListPrice(models.Model):
     _name = "product.list"
 
     slect_prod = fields.Many2many('product.product',string="Select Product")
+    slect_categ = fields.Many2one('product.category',string="Select Category")
     product = fields.Selection([
         ('all_prod','All Product'),
-        ('multi_prod','Specfic or Multiple Product')
+        ('multi_prod','Specfic or Multiple Product'),
+        ('cat_wise','Category Wise'),
         ],string="Products")
 
 class ProductListPriceWise(models.Model):

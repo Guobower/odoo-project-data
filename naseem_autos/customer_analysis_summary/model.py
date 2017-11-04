@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.customer_analysis_summary.customer_report'
@@ -62,7 +63,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         def get_sale(attr):
             value = 0 
-            sale = self.env['account.invoice'].search([('type','=','out_invoice'),('date_invoice','>=',form),('date_invoice','<=',to)])
+            sale = self.env['account.invoice'].search([('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to)])
             for x in sale:
                 if attr == x.partner_id.id:
                     value = value + x.amount_total
@@ -95,6 +96,13 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return name
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
         docargs = {
 
@@ -107,6 +115,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'records': records,
             'get_open': get_open,
             'get_sale': get_sale,
+            'get_time': get_time,
             'get_receipt': get_receipt,
 
             }

@@ -25,6 +25,7 @@ from odoo import models, fields, api
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.customer_recipt.customer_recipts'
@@ -59,29 +60,29 @@ class SampleDevelopmentReport(models.AbstractModel):
         for x in users:
             users_list.append(x)
 
-        def customer(attr):
-            count = 0
-            first = ' '
-            last = ' '
-            for x in users_list:
-                last = x.name
-                count = count + 1
+        # def customer(attr):
+        #     count = 0
+        #     first = ' '
+        #     last = ' '
+        #     for x in users_list:
+        #         last = x.name
+        #         count = count + 1
 
-            if count == 1:
-                first = users.name
-            else:
-                first_user = users_list[0]
-                first = first_user.name
+        #     if count == 1:
+        #         first = users.name
+        #     else:
+        #         first_user = users_list[0]
+        #         first = first_user.name
 
-            if attr == 'first':
-                return first
+        #     if attr == 'first':
+        #         return first
 
-            if attr == 'last':
-                return last
+        #     if attr == 'last':
+        #         return last
 
         def getloop(attr):
             loops = 0
-            recipts = self.env['customer.payment.bcube'].search([('active_user','=',attr.id),('date','>=',form),('date','<=',to)])
+            recipts = self.env['customer.payment.bcube'].search([('active_user','=',attr.id),('date','>=',form),('date','<=',to),('receipts','=',True)])
             for x in recipts:
                 loops = loops + 1
 
@@ -90,9 +91,17 @@ class SampleDevelopmentReport(models.AbstractModel):
         user_recipts = []
         def getrecipts(attr):
             del user_recipts[:]
-            recipts = self.env['customer.payment.bcube'].search([('active_user','=',attr.id),('date','>=',form),('date','<=',to)])
+            recipts = self.env['customer.payment.bcube'].search([('active_user','=',attr.id),('date','>=',form),('date','<=',to),('receipts','=',True)])
             for x in recipts:
                 user_recipts.append(x)
+
+
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
 
         docargs = {
             'doc_ids': docids,
@@ -101,13 +110,14 @@ class SampleDevelopmentReport(models.AbstractModel):
             'data': data,
             'to': to,
             'form': form,
-            'customer': customer,
+            # 'customer': customer,
             'date': date,
             'timed': timed,
             'users_list': users_list,
             'getrecipts': getrecipts,
             'user_recipts': user_recipts,
-            'getloop': getloop
+            'getloop': getloop,
+            'get_time': get_time,
         }
 
         return report_obj.render('customer_recipt.customer_recipts', docargs)

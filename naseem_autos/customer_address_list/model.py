@@ -19,7 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
-
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.customer_address_list.module_report'
@@ -31,13 +31,22 @@ class SampleDevelopmentReport(models.AbstractModel):
         records = self.env['res.partner'].browse(docids)
 
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+
      
 
         docargs = {
             'doc_ids': docids,
             'doc_model': 'res.partner',
             'docs': records,
-            'data': data
+            'data': data,
+            'get_time': get_time,
             }
 
         return report_obj.render('customer_address_list.module_report', docargs)

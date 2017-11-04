@@ -20,6 +20,7 @@
 ###################################################
 from openerp import models, fields, api
 from num2words import num2words
+import time
 
 
 class SampleDevelopmentReport(models.AbstractModel):
@@ -36,12 +37,20 @@ class SampleDevelopmentReport(models.AbstractModel):
             word = word.title() + " " + "Only"
             return word
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
         docargs = {
             'doc_ids': docids,
             'doc_model': 'customer.payment.bcube',
             'docs': records,
             'data': data,
+            'get_time': get_time,
             'number_to_word':number_to_word,
 
             }

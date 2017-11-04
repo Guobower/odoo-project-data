@@ -20,6 +20,7 @@
 ###################################################
 from openerp import models, fields, api
 from num2words import num2words
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.customer_full_page_invoice.module_report'
@@ -42,6 +43,14 @@ class SampleDevelopmentReport(models.AbstractModel):
             return word
 
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+
       
 
         docargs = {
@@ -50,7 +59,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             'docs': records,
             'data': data,
             # 'enteries': enteries,
-            'number_to_word': number_to_word
+            'number_to_word': number_to_word,
+            'get_time':get_time,
             }
 
         return report_obj.render('customer_full_page_invoice.module_report', docargs)

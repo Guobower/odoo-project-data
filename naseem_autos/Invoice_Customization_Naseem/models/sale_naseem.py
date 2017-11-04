@@ -210,7 +210,9 @@ class sale_order_customized(models.Model):
 			for x in create_inventory:
 				for y in x.pack_operation_product_ids:
 					y.carton_to = y.product_qty / y.product_id.pcs_per_carton
-			# create_inventory.do_new_transfer()
+					y.qty_done = y.product_qty
+					y.carton_done = y.carton_to
+			create_inventory.do_new_transfer()
 
 		if self.types == 'credit':
 

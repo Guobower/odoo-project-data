@@ -221,102 +221,205 @@
 
                                         <p1><b>Date:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"></span></p1>
 
-                                        <p2><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p2>
+                                        <p2><b>Time:</b>&#032;<span t-esc="get_time()"></span></p2>
 
                                     </div>
 
-                                    <t t-foreach="lisst" t-as="data">
+                                    <t t-if="num == 'spec_acc'">
 
-                                        <div class="acc">
-                                            <p1>Account ID: </p1>
-                                            <p2>
-                                                <span t-esc="data.code"></span>
-                                            </p2>
-                                            <p3>Description: </p3>
-                                            <p4>
-                                                <span t-esc="data.name"></span>
-                                            </p4>
-                                            <p5>Balance:</p5>
-                                            <p6>
-                                                <span t-esc="get_bal(data.code)"></span>
-                                            </p6>
+                                        <t t-foreach="lisst" t-as="data">
 
-                                        </div>
+                                            <div class="acc">
+                                                <p1>Account ID: </p1>
+                                                <p2>
+                                                    <span t-esc="data.code"></span>
+                                                </p2>
+                                                <p3>Description: </p3>
+                                                <p4>
+                                                    <span t-esc="data.name"></span>
+                                                </p4>
+                                                <p5>Balance:</p5>
+                                                <p6>
+                                                    <span t-esc="get_bal(data.code)"></span>
+                                                </p6>
 
-                                        <table width="100%">
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Type</th>
-                                                <th>Date</th>
-                                                <th>Reference</th>
-                                                <th>Detail:</th>
-                                                <th>Debit:</th>
-                                                <th>Credit:</th>
-                                                <th>Balance</th>
-                                                
-                                            </tr>
-                                            <span t-esc="get_line(data.code)"></span>
-                                            <t t-set='bal' t-value="get_bal(data.code)"/>
-                                            <t t-set='t_d' t-value="0"/>
-                                            <t t-set='t_c' t-value="0"/>
-                                            <t t-set='t_b' t-value="0"/>
-                                            <t t-foreach="inner" t-as="line">
+                                            </div>
+
+                                            <table width="100%">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Type</th>
+                                                    <th>Date</th>
+                                                    <th>Reference</th>
+                                                    <th>Detail:</th>
+                                                    <th>Debit:</th>
+                                                    <th>Credit:</th>
+                                                    <th>Balance</th>
+                                                    
+                                                </tr>
+                                                <span t-esc="get_line(data.code)"></span>
+                                                <t t-set='bal' t-value="get_bal(data.code)"/>
+                                                <t t-set='t_d' t-value="0"/>
+                                                <t t-set='t_c' t-value="0"/>
+                                                <t t-set='t_b' t-value="0"/>
+                                                <t t-foreach="inner" t-as="line">
+
+                                                    <tr>
+                                                        <td>
+                                                            <span t-esc="line.move_id.name"></span>
+                                                        </td>
+                                                        <td>JC</td>
+                                                        <td>
+                                                            <span t-esc="line.move_id.date"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.move_id.ref"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.name"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.debit"></span>
+                                                            <t t-set='t_d' t-value="t_d+line.debit"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.credit"></span>
+                                                            <t t-set='t_c' t-value="t_c+line.credit"/>
+                                                        </td>
+                                                        <td>
+                                                            <t t-set='bal' t-value="bal+line.debit-line.credit"/>
+                                                            <span t-esc="bal"></span>
+                                                            <t t-set='t_b' t-value="t_b+bal"/>
+                                                        </td>
+                                                    </tr>
+
+                                                </t>
 
                                                 <tr>
-                                                    <td>
-                                                        <span t-esc="line.move_id.name"></span>
-                                                    </td>
-                                                    <td>JC</td>
-                                                    <td>
-                                                        <span t-esc="line.move_id.date"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="line.move_id.ref"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="line.name"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="line.debit"></span>
-                                                        <t t-set='t_d' t-value="t_d+line.debit"/>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="line.credit"></span>
-                                                        <t t-set='t_c' t-value="t_c+line.credit"/>
-                                                    </td>
-                                                    <td>
-                                                        <t t-set='bal' t-value="bal+line.debit-line.credit"/>
-                                                        <span t-esc="bal"></span>
-                                                        <t t-set='t_b' t-value="t_b+bal"/>
-                                                    </td>
+
+                                                    <td colspan="3"><b>Current Closing Balance:</b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_b"></span>
+                                                    </b></td>
+
+                                                    <td><b>Total</b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_d"></span>
+                                                    </b></td>
+
+                                                    <td><b>   
+                                                        <span t-esc="t_c"></span>
+                                                    </b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_b"></span>
+                                                    </b></td>
                                                 </tr>
 
-                                            </t>
+                                            </table>
 
-                                            <tr>
+                                        </t>
 
-                                                <td colspan="3"><b>Current Closing Balance:</b></td>
+                                    </t>
 
-                                                <td><b>
-                                                    <span t-esc="t_b"></span>
-                                                </b></td>
+                                    <t t-if="num == 'all_acc'">
 
-                                                <td><b>Total</b></td>
+                                        <t t-foreach="all_acc" t-as="rec">
 
-                                                <td><b>
-                                                    <span t-esc="t_d"></span>
-                                                </b></td>
+                                            <div class="acc">
+                                                <p1>Account ID: </p1>
+                                                <p2>
+                                                    <span t-esc="rec.code"></span>
+                                                </p2>
+                                                <p3>Description: </p3>
+                                                <p4>
+                                                    <span t-esc="rec.name"></span>
+                                                </p4>
+                                                <p5>Balance:</p5>
+                                                <p6>
+                                                    <span t-esc="get_bal(rec.code)"></span>
+                                                </p6>
 
-                                                <td><b>   
-                                                    <span t-esc="t_c"></span>
-                                                </b></td>
+                                            </div>
 
-                                                <td><b>
-                                                    <span t-esc="t_b"></span>
-                                                </b></td>
-                                            </tr>
+                                            <table width="100%">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Type</th>
+                                                    <th>Date</th>
+                                                    <th>Reference</th>
+                                                    <th>Detail:</th>
+                                                    <th>Debit:</th>
+                                                    <th>Credit:</th>
+                                                    <th>Balance</th>
+                                                    
+                                                </tr>
+                                                <span t-esc="get_line(rec.code)"></span>
+                                                <t t-set='bal' t-value="get_bal(rec.code)"/>
+                                                <t t-set='t_d' t-value="0"/>
+                                                <t t-set='t_c' t-value="0"/>
+                                                <t t-set='t_b' t-value="0"/>
+                                                <t t-foreach="inner" t-as="line">
 
-                                        </table>
+                                                    <tr>
+                                                        <td>
+                                                            <span t-esc="line.move_id.name"></span>
+                                                        </td>
+                                                        <td>JC</td>
+                                                        <td>
+                                                            <span t-esc="line.move_id.date"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.move_id.ref"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.name"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.debit"></span>
+                                                            <t t-set='t_d' t-value="t_d+line.debit"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="line.credit"></span>
+                                                            <t t-set='t_c' t-value="t_c+line.credit"/>
+                                                        </td>
+                                                        <td>
+                                                            <t t-set='bal' t-value="bal+line.debit-line.credit"/>
+                                                            <span t-esc="bal"></span>
+                                                            <t t-set='t_b' t-value="t_b+bal"/>
+                                                        </td>
+                                                    </tr>
+
+                                                </t>
+
+                                                <tr>
+
+                                                    <td colspan="3"><b>Current Closing Balance:</b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_b"></span>
+                                                    </b></td>
+
+                                                    <td><b>Total</b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_d"></span>
+                                                    </b></td>
+
+                                                    <td><b>   
+                                                        <span t-esc="t_c"></span>
+                                                    </b></td>
+
+                                                    <td><b>
+                                                        <span t-esc="t_b"></span>
+                                                    </b></td>
+                                                </tr>
+
+                                            </table>
+
+                                        </t>
 
                                     </t>
 

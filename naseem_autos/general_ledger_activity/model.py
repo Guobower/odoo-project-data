@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.general_ledger_activity.customer_report'
@@ -53,19 +54,23 @@ class SampleDevelopmentReport(models.AbstractModel):
         for x in account:
             lisst.append(x)
 
+
+
         all_acc = []
-        all_account = self.env['account.account'].search([])
+        all_account = self.env['account.account'].search([('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
         for x in all_account:
             if x.name not in all_account:
                 if x.user_type_id.name != 'View Type':
-                    all_acc.append(x.name)
+                    all_acc.append(x)
+
+
 
 
 
         inner = []
         def get_line(attr):
             del inner[:]
-            main = self.env['account.move'].search([('date','>=',form),('date','<=',to)])
+            main = self.env['account.move'].search([('date','>=',form),('date','<=',to),('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund'))])
             for x in main:
                 for z in x.line_ids:
                     if attr == z.account_id.code:
@@ -75,7 +80,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             value = 0
             deb = 0
             cre = 0
-            balance = self.env['account.move'].search([('date','<=',form)])
+            balance = self.env['account.move'].search([('date','<=',form),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
             for x in balance:
                 for z in x.line_ids:
                     if z.account_id.code == attr:
@@ -110,6 +115,13 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return prov
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
         docargs = {
 
@@ -124,6 +136,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             'inner': inner,
             'get_bal': get_bal,
             'namer': namer,
+            'all_acc': all_acc,
+            'get_time': get_time,
             }
 
         return report_obj.render('general_ledger_activity.customer_report', docargs)

@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.product_price_list.customer_report'
@@ -41,6 +42,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         product = record_wizard.product
         slect_prod = record_wizard.slect_prod
+        slect_categ = record_wizard.slect_categ
 
         
         records = self.env['product.product'].search([])
@@ -52,6 +54,13 @@ class SampleDevelopmentReport(models.AbstractModel):
                 if x.id == z.id:
                     select.append(z)
 
+        cat = []
+        records = self.env['product.product'].search([])
+        for z in records:
+            if z.categ_id.id == slect_categ.id:
+                cat.append(z)
+
+
         count = [1]
 
 
@@ -62,8 +71,17 @@ class SampleDevelopmentReport(models.AbstractModel):
                 prov = product
             if product == "multi_prod":
                 prov = product
+            if product == "cat_wise":
+                prov = product
 
             return prov
+
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
 
 
 
@@ -76,6 +94,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             'records': records,
             'namer': namer,
             'select': select,
+            'cat': cat,
+            'get_time': get_time,
+
 
             }
 

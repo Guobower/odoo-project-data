@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.sale_invoice_summary.module_report'
@@ -46,7 +47,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         invoice_from = record_wizard.invoice_from
         invoice_to = record_wizard.invoice_to
         
-        records = self.env['account.invoice'].search([('type','=',('out_refund','out_invoice')),('date_invoice','>=',form),('date_invoice','<=',to)])
+        records = self.env['account.invoice'].search([('type','in',('out_refund','out_invoice')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel'))])
         count = [1]
 
         multi = []
@@ -90,6 +91,13 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return prov
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
       
 
@@ -105,6 +113,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'multi': multi,
             'records': records,
             'namer': namer,
+            'get_time': get_time,
        
             }
 

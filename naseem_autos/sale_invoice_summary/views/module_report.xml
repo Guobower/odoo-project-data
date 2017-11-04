@@ -141,7 +141,7 @@
 
                                         <!-- <p10><b>Time:</b></p10> -->
 
-                                        <p11><b>Time:</b><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p11>  
+                                        <p11><b>Time:</b><span t-esc="get_time()"/></p11>  
 
                                         <!-- <p12><b>Invoice No:</b></p12> -->
 

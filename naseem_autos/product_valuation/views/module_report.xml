@@ -113,18 +113,26 @@
                                                         <span t-esc="line.uom"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="hand(line.id)[1]"></span>
+                                                        <!-- <span t-esc="hand(line.id)[1]"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(line.id)[1])))"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="line.average_cost"></span>
+                                                        <!-- <span t-esc="line.average_cost"></span> -->
+
+                                                         <span t-esc="'{:0,}'.format(int(float(line.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="hand(line.id)[0]*line.average_cost"></span>
+                                                        <!-- <span t-esc="hand(line.id)[0]*line.average_cost"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(line.id)[0]*line.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="line.list_price_own"></span>
+                                                        <!-- <span t-esc="line.list_price_own"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(line.list_price_own)))"></span>
                                                     </td>
 
                                                 </tr>
@@ -146,18 +154,25 @@
                                                         <span t-esc="data.uom"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="hand(data.id)[1]"></span>
+                                                        <!-- <span t-esc="hand(data.id)[1]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(data.id)[1])))"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="data.average_cost"></span>
+                                                        <!-- <span t-esc="data.average_cost"></span>
+ -->
+                                                        <span t-esc="'{:0,}'.format(int(float(data.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="hand(data.id)[0]*data.average_cost"></span>
+                                                      <!--   <span t-esc="hand(data.id)[0]*data.average_cost"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(data.id)[0]*data.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="data.list_price_own"></span>
+                                                        <!-- <span t-esc="data.list_price_own"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(data.list_price_own)))"></span>
                                                     </td>
 
                                                 </tr>
@@ -179,18 +194,25 @@
                                                         <span t-esc="rec.uom"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="hand(rec.id)[1]"></span>
+                                                        <!-- <span t-esc="hand(rec.id)[1]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(rec.id)[1])))"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="rec.average_cost"></span>
+                                                        <!-- <span t-esc="rec.average_cost"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(rec.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="hand(rec.id)[0]*rec.average_cost"></span>
+                                                        <!-- <span t-esc="hand(rec.id)[0]*rec.average_cost"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(hand(rec.id)[0]*rec.average_cost)))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="rec.list_price_own"></span>
+                                                       <!--  <span t-esc="rec.list_price_own"></span> -->
+
+                                                       <span t-esc="'{:0,}'.format(int(float(rec.list_price_own)))"></span>
                                                     </td>
 
                                                 </tr>

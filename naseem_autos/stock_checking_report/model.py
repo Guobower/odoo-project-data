@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.stock_checking_report.customer_report'
@@ -59,6 +60,9 @@ class SampleDevelopmentReport(models.AbstractModel):
                 new.append(x.product_id.id)
 
 
+                
+
+
         def get_name(attr):
             name = " "
             get_cat = " "
@@ -66,9 +70,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             get_caton = 0
             caton_val = 0
             if record_wizard.location == "all_loc":
-                records = self.env['stock.history'].search([])
+                records = self.env['stock.history'].search([('location_id.usage','=','internal')])
             else:
-                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name)])
+                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name),('location_id.usage','=','internal')])
             for x in records:
                 if x.product_id.id == attr:
                     name = x.product_id.name
@@ -149,6 +153,13 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return prov
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
 
 
@@ -166,6 +177,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             # 'get_quan': get_quan,
             'get_loc': get_loc,
             'namer': namer,
+            'get_time': get_time,
      
             }
 

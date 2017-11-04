@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.product_location_wise.customer_report'
@@ -54,7 +55,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             record = self.env['stock.history'].search([])
             for x in record:
                 if x.location_id.name not in loc:
-                    loc.append(x.location_id.name)
+                    if x.location_id.usage == 'internal':
+                        loc.append(x.location_id.name)
 
         new_loc = []
         if product == "multi_prod":
@@ -62,7 +64,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             for x in record:
                 for z in slect_prod:
                     if z.id == x.product_id.id and x.location_id.name not in new_loc:
-                        new_loc.append(x.location_id.name)
+                        if x.location_id.usage == 'internal':
+                            new_loc.append(x.location_id.name)
 
 
         multi = []
@@ -94,6 +97,14 @@ class SampleDevelopmentReport(models.AbstractModel):
             return prov
 
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+
 
 
         docargs = {
@@ -108,6 +119,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'multi': multi,
             'get_amt': get_amt,
             'records': records,
+            'get_time': get_time,
      
             }
 

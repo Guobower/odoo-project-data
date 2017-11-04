@@ -116,7 +116,7 @@
 
                                         <p5><b>To:</b>&#032;WIPER FNL 20" (CN)</p5> -->
 
-                                        <p6><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p6>
+                                        <p6><b>Time:</b>&#032;<span t-esc="get_time()"/></p6>
 
                                     </div>
 

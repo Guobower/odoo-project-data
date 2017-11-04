@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.product_valuation_summary.customer_report'
@@ -65,6 +66,14 @@ class SampleDevelopmentReport(models.AbstractModel):
             return amt,amt1
 
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
+
         # def cost(attr):
         #     amt = 0
         #     new = 0
@@ -104,6 +113,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'data': data,
             'select': select,
             'hand': hand,
+            'get_time': get_time,
             # 'cost': cost,
             # 'first': first,
             # 'last': last,

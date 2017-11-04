@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.customer_top_sale.customer_report'
@@ -46,11 +47,23 @@ class SampleDevelopmentReport(models.AbstractModel):
         slect_cust = record_wizard.slect_cust
         slect_custmr = record_wizard.slect_custmr
 
+
         
-        records = self.env['account.invoice'].search([('type','=',"out_invoice"),('date_invoice','>=',form),('date_invoice','<=',to)])
+        records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel'))])
         count = [1]
 
 
+
+        # test = {}
+        # for x in records:
+        #     if x.partner_id.id not in test:
+        #         test[x.partner_id.id]=x.amount_total
+
+
+        # print test
+        # print "lllllllllllllll"
+        # print "lllllllllllllll"
+        # print "lllllllllllllll"
 
         multi = []
         if customer == "multi_cust":
@@ -145,6 +158,13 @@ class SampleDevelopmentReport(models.AbstractModel):
 
             return name
 
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
+
 
         def namer():
             prov = ""
@@ -178,7 +198,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_form': get_form,
             'get_to': get_to,
             'select': select,
-            'get_top': get_top
+            'get_top': get_top,
+            'get_time': get_time,
 
             }
 

@@ -92,13 +92,15 @@ class stock_picking_own(models.Model):
 
 	def do_new_transfer(self):
 		new_record = super(stock_picking_own, self).do_new_transfer()
-		if self.direct_inv == True and self.inv_type == 'credit':
-			sale_order = self.env['sale.order'].search([('name','=',self.origin)])
-			purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])	
+		sale_order = self.env['sale.order'].search([('name','=',self.origin)])
+		purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
+		self._invoice_creation_sale(sale_order ,self.pack_operation_product_ids)
+		print "lllllllllllllllllllll"
+		print "lllllllllllllllllllll"
+		print "lllllllllllllllllllll"
+	
 			# invoice = self.env['account.invoice'].search([])
-			# invoice_lines = self.env['account.invoice.line'].search([])
-			self._invoice_creation_sale(sale_order ,self.pack_operation_product_ids)
-
+			# invoice_lines = self.env['account.invoice.line'].search([
 			# if purchase_order:
 			# 	create_invoice = invoice.create({
 			# 		'journal_id': 3,
@@ -160,6 +162,9 @@ class stock_picking_own(models.Model):
 		# sale_order = self.env['sale.order'].search([('name','=',self.origin)])
 		# purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
 		if not self.account_inv_id and self.refund == False:
+			print "kkkkkkkkkkkkkkkkkkkkkkk"
+			print "kkkkkkkkkkkkkkkkkkkkkkk"
+			print "kkkkkkkkkkkkkkkkkkkkkkk"
 			
 			invoice = self.env['account.invoice'].search([])
 			invoice_lines = self.env['account.invoice.line'].search([])

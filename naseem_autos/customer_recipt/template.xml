@@ -8,7 +8,7 @@
             name="customer_recipt.customer_recipts"
             file="customer_recipt.customer_recipts"
             report_type="qweb-html"
-            string="Customer Recipts Summary"/>
+            string=" "/>
 
         <record id="customer_recipt_wizard" model="ir.ui.view">
             <field name="name">customer_recipt_wizard</field>
@@ -51,6 +51,6 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem id="cusromer_recipts_menu" name="Customer Receipts" parent="product_profile.sales_report_head_menu" action="cusromer_recipts_wizard_action" />
+        <menuitem id="cusromer_recipts_menu" name="Customer Receipts" parent="customer_profile.customer_wise_item" action="cusromer_recipts_wizard_action" sequence="18"/>
     </data>
 </openerp>

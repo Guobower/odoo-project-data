@@ -74,7 +74,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             return value,amt
 
         # upper = []partner_ledger_detail
-        main = self.env['account.invoice'].search([('type','=',('out_invoice','out_refund')),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to)])
+        main = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('partner_id.id','=',record_wizard.partner_ids.id),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel'))])
         act_move = self.env['account.move'].search([('date','>=',form),('date','<=',to)])
         amt_pay = self.env['customer.payment.bcube'].search([('date','>=',form),('date','<=',to),('partner_id.id','=',record_wizard.partner_ids.id),('receipts','=',True)])
 

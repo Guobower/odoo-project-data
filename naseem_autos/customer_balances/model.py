@@ -19,6 +19,7 @@
 #
 ###################################################
 from openerp import models, fields, api
+import time
 
 
 class SampleDevelopmentReport(models.AbstractModel):
@@ -56,30 +57,45 @@ class SampleDevelopmentReport(models.AbstractModel):
             return name
 
 
+
+
         def get_part(attr):
             last = []
             name = " "
+            amt = []
+            value = 0
             cust = self.env['customer.payment.bcube'].search([(('receipts','=',True))])
             for x in cust:
                 if x.partner_id.id == attr:
                     last.append(x)
                     newlist = sorted(last, key=lambda x: x.date)
                     name = newlist.pop().date
+                    amt.append(x)
+                    amtlist = sorted(last, key=lambda x: x.date)
+                    value = amtlist.pop().amount
 
-            return name
+            return name,value
 
 
-        def get_paid(attr):
-            last = []
-            name = " "
-            cust = self.env['customer.payment.bcube'].search([(('receipts','=',True))])
-            for x in cust:
-                if x.partner_id.id == attr:
-                    last.append(x)
-                    newlist = sorted(last, key=lambda x: x.date)
-                    name = newlist.pop().amount
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
 
-            return name
+            return new
+
+
+        # def get_paid(attr):
+        #     last = []
+        #     name = " "
+        #     cust = self.env['customer.payment.bcube'].search([(('receipts','=',True))])
+        #     for x in cust:
+        #         if x.partner_id.id == attr:
+        #             last.append(x)
+        #             newlist = sorted(last, key=lambda x: x.date)
+        #             name = newlist.pop().amount
+
+        #     return name
 
 
 
@@ -91,7 +107,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             'get_date': get_date,
             'get_amt': get_amt,
             'get_part': get_part,
-            'get_paid': get_paid,
+            'get_time': get_time,
+            # 'get_paid': get_paid,
 
 
             }

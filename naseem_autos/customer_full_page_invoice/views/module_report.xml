@@ -151,7 +151,7 @@
                                         <span t-esc="o.due_days"></span>
                                         </p6>
 
-                                        <p8><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/></p8>
+                                        <p8><b>Time:</b>&#032;<span t-esc="get_time()"/></p8>
 
                                         <p9><b>Sales Person:</b>&#032;
                                         <span t-esc="o.user_id.name"></span>

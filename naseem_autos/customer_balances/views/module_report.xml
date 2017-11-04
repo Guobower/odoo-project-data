@@ -76,7 +76,7 @@
 
                                     <p><b>Date:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"></span></p>
 
-                                    <p><b>Time:</b>&#032;<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"></span></p>
+                                    <p><b>Time:</b>&#032;<span t-esc="get_time()"></span></p>
 
                                 </div>
                                 
@@ -116,12 +116,14 @@
                                                 <span t-esc="get_amt(o.id)"></span>
                                             </td>
                                             <td>
-                                               <span t-esc="get_part(o.id)"></span> 
+                                               <span t-esc="get_part(o.id)[0]"></span> 
                                             </td>
                                             <td>
-                                               <span t-esc="get_paid(o.id)"></span> 
+                                               <span t-esc="get_part(o.id)[1]"></span> 
                                             </td>
-                                            <td>-</td>
+                                            <td>
+                                                <span t-esc="o.credit"></span>
+                                            </td>
                                         </tr>
 
                                     </t>

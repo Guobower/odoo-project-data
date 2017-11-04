@@ -104,7 +104,7 @@
 
                                         <div class="info-col-01">
 
-                                            <p>
+                                            <!-- <p>
                                                 <span class="solid">Customer From:</span>
                                                 <span class="liquid" t-esc="customer('first')"></span>
                                             </p>
@@ -112,7 +112,7 @@
                                             <p>
                                                 <span class="solid">To:</span> 
                                                 <span class="liquid" t-esc="customer('last')"></span>
-                                            </p>
+                                            </p> -->
 
                                             <p>
                                                 <span class="solid">Date From:</span>
@@ -134,7 +134,7 @@
 
                                             <p>
                                                 <span class="solid">Time:</span> 
-                                                <span class="liquid" t-esc="timed"></span>
+                                                <span class="liquid" t-esc="get_time()"></span>
                                             </p>
                                         </div>
                                     </div>

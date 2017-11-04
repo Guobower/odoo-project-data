@@ -26,6 +26,7 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.exceptions import Warning
+import time
 
 class SampleDevelopmentReport(models.AbstractModel):
     _name = 'report.top_sales.top_sales_wise'
@@ -55,7 +56,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         date = datetime.now().date()
         timed = datetime.now().time().strftime("%H:%M")
 
-        records = self.env['account.invoice'].search([('date_invoice','>',form),('date_invoice','<',to)])
+        records = self.env['account.invoice'].search([('date_invoice','>',form),('date_invoice','<',to),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
         entries = []
         for x in records:
             if x.partner_id.city not in entries:
@@ -75,6 +76,14 @@ class SampleDevelopmentReport(models.AbstractModel):
                         total_of_city = total_of_city + x.amount_total
 
             return total_of_city
+
+
+        def get_time():
+            t0 = time.time()
+            t1 = t0 + (60*60)*5 
+            new = time.strftime("%I:%M",time.localtime(t1))
+
+            return new
             
         docargs = {
             'doc_ids': docids,
@@ -86,7 +95,8 @@ class SampleDevelopmentReport(models.AbstractModel):
             'date': date,
             'timed': timed,
             'entries': entries,
-            'getamount': getamount
+            'getamount': getamount,
+            'get_time': get_time,
         }
 
         return report_obj.render('top_sales.top_sales_wise', docargs)

@@ -178,32 +178,47 @@
                                             <tr>
                                                 <td><span t-esc="data.strftime('%d-%m-%Y')"></span></td>
                                                 <td>
-                                                    <span t-esc="cashsale(data.strftime('%Y-%m-%d'))"></span>
+                                                    <!-- <span t-esc="cashsale(data.strftime('%Y-%m-%d'))"></span> -->
                                                     <!-- <t t-set="cash" t-value="cashsale()" /> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(cashsale(data.strftime('%Y-%m-%d')))))"></span>
+
                                                 </td>
                                                 
                                                 <td>
-                                                    <span t-esc="creditsale(data.strftime('%Y-%m-%d'))"></span>
+                                                    <!-- <span t-esc="creditsale(data.strftime('%Y-%m-%d'))"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(creditsale(data.strftime('%Y-%m-%d')))))"></span>
 
                                                     <!-- <t t-set="credit" t-value="creditsale()" /> -->
                                                 </td>
                                                 <td>
                                                     <t t-set="s_total" t-value="s_total+cashsale(data.strftime('%Y-%m-%d'))+creditsale(data.strftime('%Y-%m-%d'))"/>
-                                                    <span t-esc="s_total"></span>
+
+                                                    <span t-esc="'{:0,}'.format(int(float(s_total)))"></span>
+
+                                                    <!-- <span t-esc="s_total"></span> -->
                                                 </td>
-                                                    <!-- <span t-esc="cash + credit"></span></td>
-                                                    <t t-set="total_sale" t-value="cash + credit" /> -->
+                                                    
                                                     <td>
-                                                        <span t-esc="cashpay(data.strftime('%Y-%m-%d'))"></span>
+                                                        <!-- <span t-esc="cashpay(data.strftime('%Y-%m-%d'))"></span> -->
+
+                                                        <span t-esc="'{:0,}'.format(int(float(cashpay(data.strftime('%Y-%m-%d')))))"></span>
                                                     </td>
                                                     <!-- <t t-set="cashpay" t-value="cashpay()" /> -->
                                                 
                                                     <td>
-                                                        <span t-esc="bankpay(data.strftime('%Y-%m-%d'))"></span>
+                                                      
+
+                                                        <span t-esc="'{:0,}'.format(int(float(bankpay(data.strftime('%Y-%m-%d')))))"></span>
+
+
+
                                                     </td>
                                                     <td>
                                                         <t t-set="d_total" t-value="d_total+cashpay(data.strftime('%Y-%m-%d'))+bankpay(data.strftime('%Y-%m-%d'))"/>
-                                                    <span t-esc="d_total"></span>
+
+                                                        <span t-esc="'{:0,}'.format(int(float(d_total)))"></span>
+                                                    <!-- <span t-esc="d_total"></span> -->
                                                     </td>
                                                     <!-- <t t-set="bankpay" t-value="bankpay()" /> -->
                                                 <td>
