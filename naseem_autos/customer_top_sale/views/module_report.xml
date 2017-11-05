@@ -141,7 +141,8 @@
                                                 <td>All Customer</td>
                                                 <td>All Customer</td>
                                                 <td>
-                                                    <span t-esc="get_all()"></span>
+                                                    <!-- <span t-esc="get_all()"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_all())))"></span>
                                                     <t t-set="t_all" t-value="t_all+get_all()" />
                                                 </td>
 
@@ -160,7 +161,8 @@
                                                     <span t-esc="get_name()"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_spec()"></span>
+                                                    <!-- <span t-esc="get_spec()"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_spec())))"></span>
                                                     <t t-set="t_spec" t-value="t_spec+get_spec()" />
                                                 </td>
 
@@ -181,7 +183,8 @@
                                                         <span t-esc="data"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_multi(data)"></span>
+                                                        <!-- <span t-esc="get_multi(data)"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_multi(data))))"></span>
                                                         <t t-set="t_multi" t-value="t_multi+get_multi(data)" />
                                                     </td>
 
@@ -204,7 +207,8 @@
                                                         <span t-esc="line"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_top(line)"></span>
+                                                        <!-- <span t-esc="get_top(line)"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_top(line))))"></span>
                                                         <t t-set="t_top" t-value="t_top+get_top(line)" />
                                                     </td>
 

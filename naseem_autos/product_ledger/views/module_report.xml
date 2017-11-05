@@ -221,7 +221,10 @@
                                                         <span>SR</span>
                                                     </t>
                                                 </td>
-                                                <td><span t-esc="data.date"></span></td>
+                                                <td>
+                                                    <!-- <span t-esc="data.date"></span> -->
+                                                    <span t-esc="time.strftime('%d-%m-%Y',time.strptime(data.date,'%Y-%m-%d %H:%M:%S'))"/>
+                                                </td>
                                                 <td></td>
                                                 <td>
                                                     <span t-esc="data.move_id.picking_id.account_inv_id.partner_id.name"></span>
@@ -235,7 +238,8 @@
                                                             <span t-esc="line.price_unit"></span>
                                                         </t>
                                                     </t> -->
-                                                    <span t-esc="data.move_id.picking_id.account_inv_id.invoice_line_ids.price_unit"></span>
+                                                    <!-- <span t-esc="data.move_id.picking_id.account_inv_id.invoice_line_ids.price_unit"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.move_id.picking_id.account_inv_id.invoice_line_ids.price_unit)))"></span>
                                                 </td>
                                                 <!-- <td><span t-esc="line_data(data,'unit_price')"></span></td> -->
                                                 <!-- <td>
@@ -254,13 +258,15 @@
                                                 </td> -->
                                                 <td>
                                                     <t t-if="data.quantity &gt; 0">
-                                                        <span t-esc="data.quantity"></span>
+                                                        <!-- <span t-esc="data.quantity"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(data.quantity)))"></span>
                                                     </t>
                                                 </td>
 
                                                 <td>
                                                     <t t-if="data.quantity &lt; 0">
-                                                        <span t-esc="data.quantity"></span>
+                                                        <!-- <span t-esc="data.quantity"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(data.quantity)))"></span>
                                                     </t>
                                                 </td>
 
@@ -292,18 +298,21 @@
 
                                         <p>
                                             <span class="solid">Current In Stock:</span>
-                                            <span class="liquid" t-esc="get_price()[3]"></span>
+                                            <!-- <span class="liquid" t-esc="get_price()[3]"></span> -->
+                                            <span class="liquid" t-esc="'{:0,}'.format(int(float(get_price()[3])))"></span>
                                         </p>
 
                                         <p>
                                             <span class="solid">Last Buying Quantity:</span>
-                                            <span class="liquid" t-esc="get_price()[0]"></span>
+                                            <!-- <span class="liquid" t-esc="get_price()[0]"></span> -->
+                                            <span class="liquid" t-esc="'{:0,}'.format(int(float(get_price()[0])))"></span>
                                             <!-- <span class="liquid" t-esc="last_quantity('qty')"></span> -->
                                         </p>
 
                                         <p>
                                             <span class="solid">Last Buying Date:</span>
-                                            <span class="liquid" t-esc="get_price()[1]"></span>
+                                            <!-- <span class="liquid" t-esc="get_price()[1]"></span> -->
+                                            <span class="liquid" t-esc="time.strftime('%d-%m-%Y',time.strptime(get_price()[1],'%Y-%m-%d %H:%M:%S'))"/>
                                             <!-- <span class="liquid" t-esc="last_quantity('date')"></span> -->
                                         </p>
 

@@ -47,7 +47,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         invoice_from = record_wizard.invoice_from
         invoice_to = record_wizard.invoice_to
         
-        records = self.env['account.invoice'].search([('type','in',('out_refund','out_invoice')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel'))])
+        records = self.env['account.invoice'].search([('type','in',('out_refund','out_invoice')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
         count = [1]
 
         multi = []

@@ -70,9 +70,9 @@ class SampleDevelopmentReport(models.AbstractModel):
             get_caton = 0
             caton_val = 0
             if record_wizard.location == "all_loc":
-                records = self.env['stock.history'].search([('location_id.usage','=','internal')])
+                records = self.env['stock.history'].search([('location_id.usage','=','internal'),('date','<=',record_wizard.date)])
             else:
-                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name),('location_id.usage','=','internal')])
+                records = self.env['stock.history'].search([('location_id.name','=',record_wizard.slect_loc.name),('location_id.usage','=','internal'),('date','<=',record_wizard.date)])
             for x in records:
                 if x.product_id.id == attr:
                     name = x.product_id.name

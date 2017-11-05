@@ -201,13 +201,18 @@
                                                         <td></td>
 
                                                         <td>
-                                                            <span t-esc="data.total"></span>
+                                                            <!-- <span t-esc="data.total"></span> -->
+
+                                                            <span t-esc="'{:0,}'.format(int(float(data.total)))"></span>
+
                                                             <t t-set="net" t-value="data.total" />
                                                             <t t-set="user_net" t-value="user_net + net" />
                                                         </td>
 
                                                         <td>
-                                                            <span t-esc="data.t_total"></span>
+                                                            <!-- <span t-esc="data.t_total"></span> -->
+
+                                                            <span t-esc="'{:0,}'.format(int(float(data.t_total)))"></span>
                                                             <t t-set="tax" t-value="data.t_total" />
                                                             <t t-set="user_tax" t-value="user_tax + tax" />
                                                         </td>
@@ -215,7 +220,8 @@
                                                         <td>
                                                             <t t-set="gross" t-value="net - tax" />
                                                             <t t-set="user_gross" t-value="user_gross + gross" />
-                                                            <span t-esc="gross"></span>
+                                                            <!-- <span t-esc="gross"></span> -->
+                                                             <span t-esc="'{:0,}'.format(int(float(gross)))"></span>
                                                         </td>
 
                                                     </tr>
@@ -241,17 +247,20 @@
                                             <tr class="subtotal">
                                                 <td class="space" colspan="7">User's Receipt Total</td>
                                                 <td>
-                                                    <span t-esc="user_net"></span>
+                                                    <!-- <span t-esc="user_net"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(user_net)))"></span>
                                                     <t t-set="total_net" t-value="total_net + user_net" />
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="user_tax"></span>
+                                                    <!-- <span t-esc="user_tax"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(user_tax)))"></span>
                                                     <t t-set="total_tax" t-value="total_tax + user_tax" />
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="user_gross"></span>
+                                                    <!-- <span t-esc="user_gross"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(user_gross)))"></span>
                                                     <t t-set="total_gross" t-value="total_gross + user_gross" />
                                                 </td>
 
@@ -265,9 +274,18 @@
 
                                         <tr class="subtotal total">
                                             <td class="space" colspan="7">Total</td>
-                                            <td><span t-esc="total_net"></span></td>
-                                            <td><span t-esc="total_tax"></span></td>
-                                            <td><span t-esc="total_gross"></span></td>
+                                            <td>
+                                                <!-- <span t-esc="total_net"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(total_net)))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="total_tax"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(total_tax)))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="total_gross"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(total_gross)))"></span>
+                                            </td>
                                         </tr>
 
                                     </table>

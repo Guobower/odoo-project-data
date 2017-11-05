@@ -49,7 +49,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
 
         
-        records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel'))])
+        records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
         count = [1]
 
 

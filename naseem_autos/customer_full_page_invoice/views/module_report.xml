@@ -203,30 +203,37 @@
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.quantity"></span>
+                                                    <!-- <span t-esc="data.quantity"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.quantity)))"></span>
                                                     <t t-set="t_1" t-value="t_1 + data.quantity"/>
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.carton"></span>
+                                                    <!-- <span t-esc="data.carton"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.carton)))"></span>
                                                     <t t-set="t_2" t-value="t_2 + data.carton"/>
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.price_unit"></span>
+                                                    <!-- <span t-esc="data.price_unit"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.price_unit)))"></span>
                                                 </td>
 
                                                 <td>
                                                     <span t-esc="data.discount"></span>
                                                 </td>
 
+
                                                 <td>
-                                                    <span t-esc="data.customer_price"></span>
+                                                    <!-- <span t-esc="data.customer_price"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.customer_price)))"></span>
                                                     <t t-set="t_3" t-value="t_3 + data.customer_price"/>
                                                 </td>
 
                                                 <td>
-                                                    <span t-esc="data.price_subtotal"></span>
+                                                    <!-- <span t-esc="data.price_subtotal"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(data.price_subtotal)))"></span>
                                                     <t t-set="t_4" t-value="t_4 + data.price_subtotal"/>
                                                 </td>
 
@@ -240,18 +247,22 @@
                                         <tr>
                                             <th colspan="3">Total</th>
                                             <th>
-                                                <span t-esc="t_1"></span>
+                                                <!-- <span t-esc="t_1"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(t_1)))"></span>
                                             </th>
 
                                             <th>
-                                               <span t-esc="t_2"></span> 
+                                               <!-- <span t-esc="t_2"></span> -->
+                                               <span t-esc="'{:0,}'.format(int(float(t_2)))"></span>
                                             </th>
                                             <th colspan="2">Total</th>
                                             <th>
-                                                <span t-esc="t_3"></span>
+                                                <!-- <span t-esc="t_3"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(t_3)))"></span>
                                             </th>
                                             <th>
-                                                <span t-esc="t_4"></span>
+                                                <!-- <span t-esc="t_4"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(t_4)))"></span>
                                             </th>
                                             <th></th>
                                         </tr>

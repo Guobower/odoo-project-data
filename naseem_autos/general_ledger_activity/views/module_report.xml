@@ -240,7 +240,8 @@
                                                 </p4>
                                                 <p5>Balance:</p5>
                                                 <p6>
-                                                    <span t-esc="get_bal(data.code)"></span>
+                                                    <!-- <span t-esc="get_bal(data.code)"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_bal(data.code))))"></span>
                                                 </p6>
 
                                             </div>
@@ -279,16 +280,20 @@
                                                             <span t-esc="line.name"></span>
                                                         </td>
                                                         <td>
-                                                            <span t-esc="line.debit"></span>
+                                                            <!-- <span t-esc="line.debit"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(line.debit)))"></span>
                                                             <t t-set='t_d' t-value="t_d+line.debit"/>
                                                         </td>
                                                         <td>
-                                                            <span t-esc="line.credit"></span>
+                                                            <!-- <span t-esc="line.credit"></span> -->
+
+                                                            <span t-esc="'{:0,}'.format(int(float(line.credit)))"></span>
                                                             <t t-set='t_c' t-value="t_c+line.credit"/>
                                                         </td>
                                                         <td>
                                                             <t t-set='bal' t-value="bal+line.debit-line.credit"/>
-                                                            <span t-esc="bal"></span>
+                                                            <!-- <span t-esc="bal"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(bal)))"></span>
                                                             <t t-set='t_b' t-value="t_b+bal"/>
                                                         </td>
                                                     </tr>
@@ -300,21 +305,25 @@
                                                     <td colspan="3"><b>Current Closing Balance:</b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_b"></span>
+                                                        <!-- <span t-esc="t_b"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
 
                                                     <td><b>Total</b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_d"></span>
+                                                        <!-- <span t-esc="t_d"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_d)))"></span>
                                                     </b></td>
 
                                                     <td><b>   
-                                                        <span t-esc="t_c"></span>
+                                                        <!-- <span t-esc="t_c"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_b"></span>
+                                                        <!-- <span t-esc="t_b"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
                                                 </tr>
 
@@ -339,7 +348,8 @@
                                                 </p4>
                                                 <p5>Balance:</p5>
                                                 <p6>
-                                                    <span t-esc="get_bal(rec.code)"></span>
+                                                    <!-- <span t-esc="get_bal(rec.code)"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_bal(rec.code))))"></span>
                                                 </p6>
 
                                             </div>
@@ -378,16 +388,19 @@
                                                             <span t-esc="line.name"></span>
                                                         </td>
                                                         <td>
-                                                            <span t-esc="line.debit"></span>
+                                                            <!-- <span t-esc="line.debit"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(line.debit)))"></span>
                                                             <t t-set='t_d' t-value="t_d+line.debit"/>
                                                         </td>
                                                         <td>
-                                                            <span t-esc="line.credit"></span>
+                                                            <!-- <span t-esc="line.credit"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(line.credit)))"></span>
                                                             <t t-set='t_c' t-value="t_c+line.credit"/>
                                                         </td>
                                                         <td>
                                                             <t t-set='bal' t-value="bal+line.debit-line.credit"/>
-                                                            <span t-esc="bal"></span>
+                                                            <!-- <span t-esc="bal"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(bal)))"></span>
                                                             <t t-set='t_b' t-value="t_b+bal"/>
                                                         </td>
                                                     </tr>
@@ -399,23 +412,28 @@
                                                     <td colspan="3"><b>Current Closing Balance:</b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_b"></span>
+                                                        <!-- <span t-esc="t_b"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
 
                                                     <td><b>Total</b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_d"></span>
+                                                        <!-- <span t-esc="t_d"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_d)))"></span>
                                                     </b></td>
 
                                                     <td><b>   
-                                                        <span t-esc="t_c"></span>
+                                                        <!-- <span t-esc="t_c"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
 
                                                     <td><b>
-                                                        <span t-esc="t_b"></span>
+                                                        <!-- <span t-esc="t_b"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(t_b)))"></span>
                                                     </b></td>
                                                 </tr>
+
 
                                             </table>
 

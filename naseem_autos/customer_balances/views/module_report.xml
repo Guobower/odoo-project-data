@@ -113,16 +113,20 @@
                                                 <span t-esc="get_date(o.id)"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_amt(o.id)"></span>
+                                                <!-- <span t-esc="get_amt(o.id)"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_amt(o.id))))"></span>
                                             </td>
                                             <td>
                                                <span t-esc="get_part(o.id)[0]"></span> 
                                             </td>
                                             <td>
-                                               <span t-esc="get_part(o.id)[1]"></span> 
+                                               <!-- <span t-esc="get_part(o.id)[1]"></span> -->
+                                               <span t-esc="'{:0,}'.format(int(float(get_part(o.id)[1])))"></span> 
                                             </td>
                                             <td>
-                                                <span t-esc="o.credit"></span>
+                                                <!-- <span t-esc="o.credit"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.credit)))"></span>
+
                                             </td>
                                         </tr>
 

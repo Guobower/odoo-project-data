@@ -195,9 +195,13 @@
                                     <br class="clearfloat"/>
 
                                     <div class="current">
-                                        <p><b>Current Month Payment:</b><span t-esc="payment()"></span></p>
+                                        <p><b>Current Month Payment:</b>
+                                        <!-- <span t-esc="payment()"></span> -->
+                                        <span t-esc="'{:0,}'.format(int(float(payment())))"></span>
+                                        </p>
                                         <p><b>Current Month Sales:</b>&#032;&#032;
-                                        <span t-esc="get_sale()"></span>
+                                        <!-- <span t-esc="get_sale()"></span> -->
+                                        <span t-esc="'{:0,}'.format(int(float(get_sale())))"></span>
                                         </p>
                                     </div>
                                     <div class="contact">
@@ -223,29 +227,49 @@
 
                                         <tr class="right">
                                             <td>Receipt</td>
-                                            <td><span t-esc="get_month_values()[0][0]"></span></td>
-                                            <td><span t-esc="get_month_values()[0][1]"></span></td>
-                                            <td><span t-esc="get_month_values()[0][2]"></span></td>
-                                            <td><span t-esc="get_month_values()[0][3]"></span></td>
-                                            <td><span t-esc="get_month_values()[0][4]"></span></td>
+                                            <td>
+                                                <!-- <span t-esc="get_month_values()[0][0]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[0][0])))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="get_month_values()[0][1]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[0][1])))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="get_month_values()[0][2]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[0][2])))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="get_month_values()[0][3]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[0][3])))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="get_month_values()[0][4]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[0][4])))"></span>
+                                            </td>
 
                                         </tr>
                                         <tr>
                                             <td>SALES</td>
                                             <td>
-                                                <span t-esc="get_month_values()[1][0]"></span>
+                                                <!-- <span t-esc="get_month_values()[1][0]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[1][0])))"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_month_values()[1][1]"></span>
+                                                <!-- <span t-esc="get_month_values()[1][1]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[1][1])))"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_month_values()[1][2]"></span>
+                                                <!-- <span t-esc="get_month_values()[1][2]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[1][2])))"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_month_values()[1][3]"></span>
+                                                <!-- <span t-esc="get_month_values()[1][3]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[1][3])))"></span>
                                             </td>
                                             <td>
-                                                <span t-esc="get_month_values()[1][4]"></span>
+                                                <!-- <span t-esc="get_month_values()[1][4]"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(get_month_values()[1][4])))"></span>
                                             </td>
                                         </tr>
                                     </table>
@@ -273,28 +297,46 @@
                                                     <span t-esc="line"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_lastprice(line)"></span>
+                                                    <!-- <span t-esc="get_lastprice(line)"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_lastprice(line))))"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[1][0]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[1][0]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[1][0])))"></span>
+
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][0]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][0]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][0])))"></span>
+
+
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][1]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][1]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][1])))"></span>
+
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][2]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][2]"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][2])))"></span>
+
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][3]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][3]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][3])))"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][4]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][4]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][4])))"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="get_product_values(line)[0][5]"></span>
+                                                    <!-- <span t-esc="get_product_values(line)[0][5]"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(get_product_values(line)[0][5])))"></span>
                                                 </td>
 
                                             </tr>

@@ -180,7 +180,9 @@
                                                     <t t-foreach="new_loc" t-as="data">
 
                                                         <td>
-                                                            <span t-esc="get_amt(line.id,data)"></span>
+                                                            <!-- <span t-esc="get_amt(line.id,data)"></span> -->
+
+                                                            <span t-esc="'{:0,}'.format(int(float(get_amt(line.id,data))))"></span>
                                                         </td>
 
                                                     </t>
@@ -223,7 +225,8 @@
                                                     <t t-foreach="loc" t-as="data">
 
                                                         <td>
-                                                            <span t-esc="get_amt(line.id,data)"></span>
+                                                            <!-- <span t-esc="get_amt(line.id,data)"></span> -->
+                                                            <span t-esc="'{:0,}'.format(int(float(get_amt(line.id,data))))"></span>
                                                         </td>
 
                                                     </t>

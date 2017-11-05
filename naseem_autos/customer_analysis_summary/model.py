@@ -63,7 +63,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         def get_sale(attr):
             value = 0 
-            sale = self.env['account.invoice'].search([('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to)])
+            sale = self.env['account.invoice'].search([('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to),('journal_id.type','=','cash')])
             for x in sale:
                 if attr == x.partner_id.id:
                     value = value + x.amount_total

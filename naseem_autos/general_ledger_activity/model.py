@@ -57,7 +57,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
 
         all_acc = []
-        all_account = self.env['account.account'].search([('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
+        all_account = self.env['account.account'].search([])
         for x in all_account:
             if x.name not in all_account:
                 if x.user_type_id.name != 'View Type':
@@ -70,7 +70,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         inner = []
         def get_line(attr):
             del inner[:]
-            main = self.env['account.move'].search([('date','>=',form),('date','<=',to),('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund'))])
+            main = self.env['account.move'].search([('date','>=',form),('date','<=',to)])
             for x in main:
                 for z in x.line_ids:
                     if attr == z.account_id.code:
@@ -80,7 +80,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             value = 0
             deb = 0
             cre = 0
-            balance = self.env['account.move'].search([('date','<=',form),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
+            balance = self.env['account.move'].search([('date','<=',form)])
             for x in balance:
                 for z in x.line_ids:
                     if z.account_id.code == attr:

@@ -96,7 +96,7 @@
                                     text-align: center;
                                     border-collapse: collapse;
                                     padding: 5px;
-                                    margin-bottom: 10px;
+                                    margin-bottom: -3px;
                                 }
                                 .custom{
                                     width: 20%;
@@ -125,6 +125,7 @@
                                 }
                                 .amount {
                                     width: 100%;
+                                    margin-top: 12px;
 
                                 }
                                 .amount p1{
@@ -157,7 +158,7 @@
                                 .custom {
                                     width: 100%;
                                     border: 1px solid;
-                                    margin-bottom: 15px;
+                                    margin-bottom: -5px;
                                     margin-top: 15px;
                                     padding: 3px;
 
@@ -188,6 +189,11 @@
                                 }
                                 .custom p7 {
                                     width: 15%;
+                                    float: left;
+                                }
+
+                                .invoice {
+                                    width: 90%;
                                     float: left;
                                 }
     
@@ -240,10 +246,15 @@
                                         <p7><b>Previous Balance:</b></p7>
                                         <p8></p8>
                                         <p9>
-                                            <span t-esc="get_bal(o.id)[0]"></span>
+                                            <!-- <span t-esc="get_bal(o.id)[0]"></span> -->
+                                            <span t-esc="'{:0,}'.format(int(float(get_bal(o.id)[0])))"></span>
                                         </p9>
                                     </div>
-                                    <!-- <h2>VOICES</h2> -->
+
+                                    <div class="invoice">
+                                        <h3>Invoices</h3>
+                                    </div>
+
                                     <table width="100%">
 
                                         <tr>
@@ -289,7 +300,8 @@
                                                         <span t-esc="line.product_id.name"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="line.price_subtotal"></span>
+                                                        <!-- <span t-esc="line.price_subtotal"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(line.price_subtotal)))"></span>
                                                         <t t-set="d_total" t-value="d_total+line.price_subtotal"/>
                                                         <t t-set="gd_total" t-value="gd_total+d_total"/>
                                                     </td>
@@ -303,7 +315,8 @@
                                             <tr>
                                                 <th colspan="5">Total:</th>
                                                 <td><b>
-                                                    <span t-esc="d_total"></span>
+                                                    <!-- <span t-esc="d_total"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(d_total)))"></span>
                                                 </b></td>
                                                 <!-- <td><b>0</b></td>
                                                 <td><b>0</b></td> -->
@@ -314,13 +327,18 @@
                                         <tr>
                                             <th colspan="5">Total:</th>
                                             <td><b>
-                                                <span t-esc="gd_total"></span>
+                                                <!-- <span t-esc="gd_total"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(gd_total)))"></span>
                                             </b></td>
                                             <!-- <td><b>0</b></td>
                                             <td><b>0</b></td> -->
                                         </tr>
 
                                     </table>
+
+                                    <div class="invoice">
+                                        <h3>Payments</h3>
+                                    </div>
 
                                     <table width="100%">
 
@@ -347,7 +365,9 @@
                                                     <span t-esc="data.name"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="data.debit"></span>
+                                                    <!-- <span t-esc="data.debit"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.debit)))"></span>
+
                                                     <t t-set="py_total" t-value="py_total+data.debit"/>
 
                                                 </td>
@@ -360,7 +380,8 @@
 
                                             <td colspan="3"><b>Total</b></td>
                                             <td>
-                                                <b><span t-esc="py_total"></span></b>
+                                                <!-- <b><span t-esc="py_total"></span></b> -->
+                                                <b><span t-esc="'{:0,}'.format(int(float(py_total)))"></span></b>
                                             </td>
 
                                         </tr>
@@ -372,15 +393,18 @@
                                     <div class="amount">
                                         <p1>Amount Ouststanding:</p1>
                                         <p2>
-                                            <span t-esc="get_bal(o.id)[1]"></span>
+                                            <!-- <span t-esc="get_bal(o.id)[1]"></span> -->
+                                            <b><span t-esc="'{:0,}'.format(int(float(get_bal(o.id)[1])))"></span></b>
                                         </p2>
                                         <p3>Amount Paid This Period:</p3>
                                         <p4>
-                                            <span t-esc="get_pay()"></span>
+                                            <!-- <span t-esc="get_pay()"></span> -->
+                                            <b><span t-esc="'{:0,}'.format(int(float(get_pay())))"></span></b>
                                         </p4>
                                         <p5>Credit Limit:</p5>
                                         <p6>
-                                            <span t-esc="float(o.credit_limit)"></span>
+                                            <!-- <span t-esc="float(o.credit_limit)"></span> -->
+                                            <b><span t-esc="'{:0,}'.format(int(float(float(o.credit_limit))))"></span></b>
                                         </p6>
                                     </div>
 

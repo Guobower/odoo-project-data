@@ -124,20 +124,25 @@
 
                                                     <td>
                                                         <span t-esc="get_name(line)[0]"></span>
+
                                                     </td>
 
                                                     <td>
                                                         <span t-esc="get_name(line)[1]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_name(line)[2]"></span>
+                                                        <!-- <span t-esc="get_name(line)[2]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(line)[2])))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_name(line)[3]"></span>
+                                                        <!-- <span t-esc="get_name(line)[3]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(line)[3])))"></span>
+
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_name(line)[2]"></span>
+                                                        <!-- <span t-esc="get_name(line)[2]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(line)[2])))"></span>
                                                     </td>
                                                     <td></td>
                                                     <td></td>
@@ -167,14 +172,17 @@
                                                         <span t-esc="get_name(data)[1]"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_name(data)[2]"></span>
+                                                        <!-- <span t-esc="get_name(data)[2]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(data)[2])))"></span>
                                                     </td>
 
                                                     <td>
-                                                        <span t-esc="get_name(data)[3]"></span>
+                                                        <!-- <span t-esc="get_name(data)[3]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(data)[3])))"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="get_name(data)[2]"></span>
+                                                        <!-- <span t-esc="get_name(data)[2]"></span> -->
+                                                        <span t-esc="'{:0,}'.format(int(float(get_name(data)[2])))"></span>
                                                     </td>
                                                     <td></td>
                                                     <td></td>

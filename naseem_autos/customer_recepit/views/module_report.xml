@@ -185,7 +185,10 @@
                                     </div>
 
                                     <div class="rupees">
-                                        <P><b>Rs:</b>&#032;<span t-esc="o.amount"></span></P>
+                                        <P><b>Rs:</b>&#032;
+                                        <!-- <span t-esc="o.amount"></span> -->
+                                        <span t-esc="'{:0,}'.format(int(float(o.amount)))"></span>
+                                    </P>
                                     </div>
 
                                     <div class="from">

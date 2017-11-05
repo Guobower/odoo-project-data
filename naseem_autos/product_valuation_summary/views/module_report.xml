@@ -129,11 +129,15 @@
                                                     <span t-esc="data.name"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="hand(data.id)[0]"></span>
+                                                    <!-- <span t-esc="hand(data.id)[0]"></span> -->
+
+                                                    <span t-esc="'{:0,}'.format(int(float(hand(data.id)[0])))"></span>
+
                                                     <t t-set="stok" t-value="stok+hand(data.id)[0]"/>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="hand(data.id)[1]"></span>
+                                                    <!-- <span t-esc="hand(data.id)[1]"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(hand(data.id)[1])))"></span>
                                                     <t t-set="val" t-value="val+hand(data.id)[1]"/>
                                                 </td>
                                             </tr>
@@ -142,10 +146,12 @@
                                         <tr>
                                             <th colspan="2">Total:</th>
                                             <th>
-                                                <span t-esc="stok"></span>
+                                                <!-- <span t-esc="stok"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(stok)))"></span>
                                             </th>
                                             <th>
-                                                <span t-esc="val"></span>
+                                                <!-- <span t-esc="val"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(val)))"></span>
                                             </th>
                                         </tr>
                                 

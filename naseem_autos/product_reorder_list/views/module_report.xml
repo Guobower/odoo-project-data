@@ -94,10 +94,12 @@
                                                     <span t-esc="o.name"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="hand(o.id)"></span>
+                                                    <!-- <span t-esc="hand(o.id)"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(hand(o.id))))"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="o.minimum_level"></span>
+                                                    <!-- <span t-esc="o.minimum_level"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(o.minimum_level)))"></span>
                                                 </td>
                                                 <td>
                                                     <span t-esc="get_supp(o.id)"></span>

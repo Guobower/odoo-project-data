@@ -43,7 +43,7 @@ class SampleDevelopmentReport(models.AbstractModel):
         record_wizard_del.unlink()
         
         records = self.env['res.partner'].search([('id','=',record_wizard.customer.id)])
-        product = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel'))])
+        product = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
 
         lissst = []
         for x in product:
@@ -75,7 +75,7 @@ class SampleDevelopmentReport(models.AbstractModel):
 
         def get_sale():
             value = 0 
-            sale = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund'),('state','not in',('draft','cancel')))])
+            sale = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
             for x in sale:
                 check = str(x.date_invoice[:7])
                 test = str(date[:7])
@@ -91,7 +91,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             l_date = []
             name = 0
             new = " "
-            sale = sale = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund'))])
+            sale = sale = self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('state','not in',('draft','cancel')),('type','in',('out_invoice','out_refund')),('journal_id.type','=','cash')])
             for x in sale:
                 for z in x.invoice_line_ids:
                     if attr == z.product_id.name:
@@ -134,7 +134,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             date = str(year) + "-" + str(month) + "-" + str(day) + " 00:00:00.0000"
             date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
             payments =  self.env['customer.payment.bcube'].search([('partner_id.id','=',record_wizard.customer.id),('receipts','=',True)])
-            sales =  self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund'),('state','not in',('draft','cancel')))])
+            sales =  self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
             all_values = []
             sale_values = []
             for x in range(0,5):
@@ -160,7 +160,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             day = int(date[8:10])
             date = str(year) + "-" + str(month) + "-" + str(day) + " 00:00:00.0000"
             date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
-            sales =  self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund'),('state','not in',('draft','cancel')))])
+            sales =  self.env['account.invoice'].search([('partner_id.id','=',record_wizard.customer.id),('type','in',('out_invoice','out_refund')),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
             sale_values = []
             old_values = []
             for x in range(0,6):

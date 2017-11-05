@@ -489,7 +489,7 @@
 
 
 
-        <record id="product.product_normal_action_sell" model="ir.actions.act_window">
+        <!-- <record id="product.product_normal_action_sell" model="ir.actions.act_window">
             <field name="name">Product</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">product.product</field>
@@ -497,7 +497,7 @@
             <field name="view_type">form</field>
             <field name="context">{"search_default_filter_to_sell":1}</field>
             <field name="domain" >[('foc', '!=',True)]</field>
-        </record>
+        </record> -->
 
         <record id="product.product_template_action" model="ir.actions.act_window">
             <field name="name">Products</field>
@@ -517,11 +517,11 @@
             action="action_cfc"
             sequence="100" />
 
-        <menuitem id="sale.menu_products"
+        <!-- <menuitem id="sale.menu_products"
             name="Products"
             action="product.product_normal_action_sell"
             parent="sales_team.menu_sales"
-            groups="product.group_product_variant" sequence="99"/>
+            groups="product.group_product_variant" sequence="99"/> -->
 
 
          <record id="x_hide_quotation2" model="res.groups">
