@@ -46,10 +46,10 @@
 								table, th, td {
 									border: 1px solid;
 									border-collapse: collapse;
-									border-color: #b4b4b4;
 									text-align: center;
 									padding: 10px;
 									margin-bottom: 15px;
+									font-size: 17px;
 								}
 								.engineering {
 									widows: 30%;
@@ -58,6 +58,15 @@
 								.no-margin {
 									margin-top: 0px;
 									margin-bottom: 0px;
+								}
+
+								hr {
+								    display: block;
+								    height: 1px;
+								    border: 0;
+								    border-top: 1px solid black;
+								    padding: 0; 
+
 								}
 
 
@@ -70,7 +79,7 @@
 
 									<div class="heading">
 										<h2 class="no-margin">M/S UPPAL ENGINEERING COMPANY</h2>
-										<p class="no-margin">99 Railway Road, Lahore. Ph: 042-7666128</p>
+										<p class="no-margin" style="font-size:17px">99 Railway Road, Lahore. Ph: 042-7666128</p>
 									</div>
 
 									<div class="logo">
@@ -81,16 +90,17 @@
 
 									<div class="challan">
 										<h2>DELIVERY CHALLAN</h2>
-										<p><span class="solid">DC NO.</span><span class="liquid" t-esc="o.origin"></span></p>
-										<p><span class="solid">Dated:</span><span class="liquid" t-esc="o.min_date"></span></p>
-										<p><span class="solid">CUSTOMER:</span>
+										<p style="font-size:17px"><span class="solid">DC NO.</span><span class="liquid" t-esc="o.origin"></span></p>
+										<p style="font-size:17px"><span class="solid">Dated:</span><span class="liquid" t-esc="o.min_date"></span></p>
+										<p style="font-size:17px"><span class="solid">CUSTOMER:</span>
 										<span class="liquid" t-esc="o.partner_id.name"></span><br></br>
 										<span class="liquid" t-esc="o.partner_id.street"></span><br></br>
 										<span class="liquid" t-esc="o.partner_id.city"></span><br></br>
+										<br></br>
 										<span class="liquid"><b>Ph:</b>
 										<t t-esc="o.partner_id.phone"/>
 										</span></p><br></br>
-										<p><span class="solid">Storage Location:</span><span class="liquid">Do14 Engineering Store Spares.</span></p>
+										<!-- <p><span class="solid">Storage Location:</span><span class="liquid">Do14 Engineering Store Spares.</span></p> -->
 									</div>
 
 									<table width="100%">
@@ -111,7 +121,7 @@
                                                 	<t t-set="i" t-value="i+1"/>
 												</td>
 												<td>
-													<span t-esc="o.name"></span>
+													<span t-esc="get_po()"></span>
 												</td>
 												<td>-</td>
 												<td>
@@ -124,15 +134,16 @@
 											</tr>
 										</t>
 										<tr>
-											<td colspan="4">Total Quantity</td>
+											<td colspan="4"><b>Total Quantity</b></td>
 											<td>
 												<span t-esc="amt"></span>
 											</td>
 										</tr>
 									</table>
-									<p>Verified that the above material is delivered in good condition.</p>
-									<div class="engineering">
-										<p class="no-margin">For Uppal Engineering Company</p>
+									<p style="font-size:17px">Verified that the above material is delivered in good condition.</p>
+									<div class="engineering" style="font-size:17px">
+										<p class="no-margin"><b>For Uppal Engineering Company</b></p>
+										<br></br>
 										<p class="no-margin">0300-8417170</p>
 									</div>
 								</div>

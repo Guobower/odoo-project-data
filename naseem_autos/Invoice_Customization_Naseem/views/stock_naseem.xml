@@ -16,9 +16,9 @@
         <header>
          <!--    <button name="do_button" string="Print DO" type="object" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
             <button name="dc_button" string="Print DC" type="object" class="btn-primary" attrs="{'invisible': [('print_do', '=',False)]}"/> -->
-            <button name="close_order" string="Close" type="object" class="btn-primary"/>
-            <!-- <button name="cancel_order" string="Cancel" type="object" class="btn-primary"/> -->
-            <!-- <field name="state" widget="statusbar" statusbar_visible="close" /> -->
+            <!-- <button name="close_order" string="Close" type="object" class="btn-primary"/> -->
+            <button name="approve" string="Approval" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in',('waiting_approve','ready','dispatch','done'))]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,waiting_approve,ready,dispatch,done"/>
             <button name="submitt_bilty" string="Confirm Bilty" type="object" class="btn-primary"/>            
         </header>
 
@@ -38,9 +38,9 @@
         <xpath expr="//button[@name='action_cancel']" position="replace">
         </xpath>
         <xpath expr="//field[@name='origin']" position="after">
-            <field name="print_do"/>
-            <field name="direct_inv"/>
-            <field name="refund"/>
+            <field name="print_do" invisible="1"/>
+            <field name="direct_inv" invisible="1"/>
+            <field name="refund" invisible="1"/>
         </xpath>
        <!--  <xpath expr="//page[@name='extra']" position="replace">
         </xpath> -->
@@ -51,6 +51,14 @@
             <field name="carton_done"/>
         </xpath>
 
+        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='qty_done']" position="attributes">
+            <attribute name="string">Pieces Done</attribute>
+        </xpath>
+
+        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='product_qty']" position="attributes">
+            <attribute name="string">Pieces To Do</attribute>
+        </xpath>
+
         <!-- <xpath expr="//page[1]" position="attributes">
                 
             <attribute name="attrs">
@@ -58,6 +66,12 @@
             </attribute>
 
         </xpath> -->
+
+        <xpath expr="//button[@name='do_new_transfer']" position="attributes">
+            <attribute name="attrs">
+                {'invisible': [('state','in', ('waiting','draft','waiting_approve','ready','done'))]}
+            </attribute>
+        </xpath>
 
         <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='from_loc']" position="replace">
             <!-- <field name="carton_done"/> -->
@@ -70,12 +84,16 @@
                     <field name="bilty_no" />
                    <!--  <field name="bilty_recieved" attrs="{'invisible': [('picking_type_code', '=','incoming')]}"/> -->
                     <field name="bilty_paid"/>
+                    <!-- <field name="bilty_amt_paid" /> -->
+                    <field name="bilty_amt_recev" />
+                    <field name="bilty_attach" />
                     <field name="warehouse" widget="selection" domain="[('journal_id','=',2)]" />
                     <field name="packing_expense"/>
+                    <field name="pack_exp_recev" />
                     <field name="del_records" invisible="1"/>
-                    <field name="inv_type"/>
+                    <field name="inv_type" invisible="1"/>
                     <field name="cash_book_id"/>
-                    <field name="account_inv_id"/>
+                    <field name="account_inv_id" invisible="1"/>
                  </group>
                 <group string="Other Details" >
                     <field name="reference_no" />
@@ -83,6 +101,8 @@
                     <field name="bundle_no" />
                     <field name="delivered_by" />
                     <field name="received_by" />
+                    <!-- <field name="pack_exp_paid" /> -->
+                    
                      <field name="transporter" domain="[('check_trans','=',True)]" widget="selection" />
                 </group>
              </group>
@@ -120,6 +140,17 @@
         <field name="arch" type="xml"> 
             <xpath expr="//button[@name='process_cancel_backorder']"    position="replace">
                 <button name="process_cancel_backorder" invisible="1" />
+            </xpath>
+        </field>
+</record>
+
+<record id="changing_warehouse_address" model="ir.ui.view"> 
+        <field name="name">changing_warehouse_address</field> 
+        <field name="model">stock.warehouse</field> 
+        <field name="inherit_id" ref="stock.view_warehouse"/> 
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="address"/>
             </xpath>
         </field>
 </record>

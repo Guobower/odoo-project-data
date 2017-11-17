@@ -1,0 +1,411 @@
+<openerp>
+    <data>
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%customer_form_naseem_bcube%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+            <!--========================[Form View-START]=====================-->
+ 
+                <record id="reg_form_form_view" model="ir.ui.view">
+                    <field name="name">reg_form_form_view</field>
+                    <field name="model">reg.form</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="Registration Form">
+
+                            <header>
+                                <field name="stages" widget="statusbar" statusbar_visible="draft,validate"/>
+                            </header>
+                            
+                            <sheet>
+                                <group string="REGISTRATION FORM">
+                                    <group>
+                                        <field name="package"/>
+                                        <field name="joining"/>
+                                        <field name="monthly"/>
+                                        <field name="ref_no"/>
+                                        
+                                    </group>
+                                    <group>
+                                        <field name="branch"/>
+                                        <field name="assesment"/>
+                                        <field name="total"/>
+                                        <field name="advance"/>
+                                        <field name="balance"/>
+                                    </group>
+                                </group>
+
+                                <group string="PERSONAL INFORMATION">
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="dob"/>
+                                        <field name="cnic"/>
+                                        <field name="home_addres"/>
+                                        <field name="tel_home"/>
+                                        <field name="mob"/>
+                                        
+                                    </group>
+                                    <group>
+                                        <field name="profession"/>
+                                        <field name="organization"/>
+                                        <field name="job_title"/>
+                                        <field name="office_addres"/>
+                                        <field name="tel_office"/>
+                                        <field name="email"/>
+                                    </group>
+                                </group>
+
+                                <group string="HOW WOULD YOU LIKE TO BE UPDATED ?">
+                                    <group>
+
+                                        <field name="sms"/>
+                                        
+                                    </group>
+                                    <group>
+
+                                        <field name="bol_email"/>
+                                 
+                                    </group>
+                                </group>
+
+                                <group>
+                                    <group string="EMERGENCY CONTACT 1">
+
+                                        <field name="emg_name"/>
+                                        <field name="emg_addres"/>
+                                        <field name="emg_contact"/>
+                                        
+                                    </group>
+                                    <group string="EMERGENCY CONTACT 2">
+
+                                        <field name="emg_name_1"/>
+                                        <field name="emg_addres_1"/>
+                                        <field name="emg_contact_1"/>
+                                 
+                                    </group>
+                                </group>
+
+                                <group string="WHAT IS THE CONVENIENT TIME FOR YOU TO VISIT STRUCTURE GYM ?">
+                                    <group>
+
+                                        <field name="morning"/>
+                                        <field name="afternoon"/>
+                                        
+                                    </group>
+                                    <group>
+
+                                        <field name="noon"/>
+                                        <field name="evening"/>
+                                 
+                                    </group>
+                                </group>
+
+                                <group string="REFERENCES">
+                                    <group>
+
+                                        <field name="ref_name"/>
+                                        <field name="ref_contact"/>
+                                        <field name="ref_addres"/>
+                                        <field name="ref_realtion"/>
+                                        
+                                    </group>
+                                    <group>
+
+                                        <field name="ref_name_1"/>
+                                        <field name="ref_contact_1"/>
+                                        <field name="ref_addres_1"/>
+                                        <field name="ref_realtion_1"/>
+                                 
+                                    </group>
+
+                                </group>
+
+                                <group string="HEALTH ASSESSMENT">
+                                    <group>
+
+                                        <field name="bmi"/>
+                                        <field name="weight"/>
+
+                                        
+                                    </group>
+                                    <group>
+
+                                        <field name="fat"/>
+                                 
+                                    </group>
+                                    
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+            <!--************************[Form View-ENDS]**********************-->
+             <!--========================[Search View-START]===================-->
+                <record id="view_tree_reg_form" model="ir.ui.view"> 
+                    <field name="name">view_tree_reg_form</field> 
+                    <field name="model">reg.form</field> 
+                    <field name="type">tree</field> 
+                    <field name="arch" type="xml"> 
+                        <tree> 
+                 
+                            <field name="package"/>
+                            <field name="name"/>
+                            <field name="joining"/>
+                            <field name="monthly"/>
+                            <field name="branch"/>
+     
+                        </tree> 
+                    </field> 
+            
+                </record>
+
+                
+            <!--************************[Search View-ENDS]********************-->
+
+            <!--========================[Action-START]========================-->
+                <record model="ir.actions.act_window" id="action_reg_form">
+                    <field name="name">Registration Form</field>
+                    <field name="res_model">reg.form</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                </record>
+            <!--************************[Action-ENDS]*************************-->
+
+            <!--========================[Menu-START]==========================-->
+                <menuitem name="Members" id="reg_form_parent"/>
+                <menuitem name="Registration" id="reg_form_heading" parent="reg_form_parent" sequence="1"/>
+                <menuitem name="Training" id="reg_form_train" parent="reg_form_parent" sequence="2"/>
+                <menuitem name="Registration Form" id="reg_form_child" parent="reg_form_heading" action="action_reg_form" sequence="1"/>
+            <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+                <record id="package_form_view" model="ir.ui.view">
+                    <field name="name">package_form_view</field>
+                    <field name="model">reg.package</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="PACKAGES">
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="branch"/>
+                                    </group>
+
+                                    <group>
+                                        <field name="total"/>
+                                        <field name="monthly"/>
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+
+
+                <record model="ir.actions.act_window" id="action_packages">
+                    <field name="name">PACKAGES</field>
+                    <field name="res_model">reg.package</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                </record>
+
+
+                <menuitem name="Packages" id="reg_packages" parent="reg_form_heading" action="action_packages" sequence="3"/>
+
+
+                <record id="view_tree_package_form" model="ir.ui.view"> 
+                    <field name="name">view_tree_package_form</field> 
+                    <field name="model">reg.package</field> 
+                    <field name="type">tree</field> 
+                    <field name="arch" type="xml"> 
+                        <tree> 
+                 
+                            <field name="name"/>
+                            <field name="monthly"/>
+                            <field name="total"/>
+                            <field name="branch"/>
+     
+                        </tree> 
+                    </field> 
+                
+                </record>
+
+            <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+                <record id="struct_train_form_view" model="ir.ui.view">
+                    <field name="name">struct_train_form_view</field>
+                    <field name="model">struct.training</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="Training">
+                            <sheet>
+                                <group>
+                                    <group>
+
+                                        <field name="customer"/>
+                                        <field name="start_date"/>
+                                        
+                                    </group>
+                                    <group>
+                                        
+                                        <field name="training"/>
+                                        <field name="end_date"/>
+                                        
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+
+
+                <record model="ir.actions.act_window" id="action_training">
+                    <field name="name">TRAINING</field>
+                    <field name="res_model">struct.training</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                </record>
+
+
+                <menuitem name="Training" id="reg_training" parent="reg_form_train" action="action_training" sequence="1"/>
+
+
+                <record id="view_tree_training" model="ir.ui.view"> 
+                    <field name="name">view_tree_training</field> 
+                    <field name="model">struct.training</field> 
+                    <field name="type">tree</field> 
+                    <field name="arch" type="xml"> 
+                        <tree> 
+                 
+                            <field name="customer"/>
+                            <field name="training"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+     
+                        </tree> 
+                    </field> 
+                
+                </record>
+
+            <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+                <record id="account_reg_form_view"   model="ir.ui.view"> 
+                    <field name="name">account_reg_form_view</field> 
+                    <field name="model">account.invoice</field> 
+                    <field name="inherit_id" ref="account.invoice_form"/> 
+                    <field name="arch" type="xml">
+                        <xpath expr="//field[@name='payment_term_id']" position="after">
+                          <field name="branch" />
+                        </xpath>
+
+                    </field> 
+                </record>
+
+        <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+
+                <record id="move_form_view"   model="ir.ui.view"> 
+                    <field name="name">move_form_view</field> 
+                    <field name="model">account.move</field> 
+                    <field name="inherit_id" ref="account.view_move_form"/> 
+                    <field name="arch" type="xml">
+
+                        <xpath expr="//field[@name='ref']" position="after">
+                          <field name="branch" />
+                        </xpath>
+
+                    </field> 
+                </record>
+
+        <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+
+                <record id="customer_sale_action" model="ir.actions.act_window">
+                    <field name="name">Customers</field>
+                    <field name="type">ir.actions.act_window</field>
+                    <field name="res_model">res.partner</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,kanban,form</field>
+                    <field name="domain" >[('customer', '=',True)]</field>
+                    <field name="context" eval="{'default_customer':1}"/>
+                    <!-- <field name="search_view_id" ref="view_res_partner_filter"/> -->
+                    <field name="help" type="html">
+                      <p class="oe_view_nocontent_create">
+                        Click to add a contact in your address book.
+                      </p><p>
+                        Odoo helps you easily track all activities related to
+                        a customer: discussions, history of business opportunities,
+                        documents, etc.
+                      </p>
+                    </field>
+                </record>
+
+                <menuitem id="new_menu_partner" name="Members" parent="reg_form_heading" 
+                    action="customer_sale_action" sequence="2"/>
+
+        <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+                <record id="schedule_form_view" model="ir.ui.view">
+                    <field name="name">schedule_form_view</field>
+                    <field name="model">training.schedule</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="TRAINING SCHEDULE">
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                    </group>
+
+                                    <group>
+                                        <field name="responsible"/>
+                                    </group>
+                                </group>
+
+                                <field name="tree_id" nolabel='1'>
+                                    <tree editable="bottom">                                   
+                                        <field name="time"/>
+                                        <field name="activity"/>
+                                        <field name="desc"/>
+                                        <field name="status"/>
+
+                                    </tree>
+                                </field>
+
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+
+
+                <record model="ir.actions.act_window" id="action_schedule">
+                    <field name="name">TRAINING SCHEDULE</field>
+                    <field name="res_model">training.schedule</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                </record>
+
+                <menuitem name="Training Schedule" id="reg_schedule" parent="reg_form_train" action="action_schedule" sequence="2"/>
+
+                <record id="view_tree_schedule" model="ir.ui.view"> 
+                    <field name="name">view_tree_schedule</field> 
+                    <field name="model">training.schedule</field> 
+                    <field name="type">tree</field> 
+                    <field name="arch" type="xml"> 
+                        <tree> 
+                 
+                            <field name="name"/>
+                            <field name="responsible"/>
+
+                        </tree> 
+                    </field> 
+                
+                </record>
+
+
+    </data>
+</openerp>

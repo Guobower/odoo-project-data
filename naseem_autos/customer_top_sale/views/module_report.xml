@@ -225,7 +225,8 @@
                                             <t t-if="num == 'spec_cust'">
 
                                                 <td><b>
-                                                    <span t-esc="t_spec"></span>
+                                                    <!-- <span t-esc="t_spec"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(t_spec)))"></span>
                                                 </b></td>
 
                                             </t>
@@ -233,7 +234,8 @@
                                             <t t-if="num == 'all_cust'">
 
                                                 <td><b>
-                                                    <span t-esc="t_all"></span>
+                                                    <!-- <span t-esc="t_all"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(t_all)))"></span>
                                                 </b></td>
 
                                             </t>
@@ -241,7 +243,8 @@
                                             <t t-if="num == 'multi_cust'">
 
                                                 <td><b>
-                                                    <span t-esc="t_multi"></span>
+                                                    <!-- <span t-esc="t_multi"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(t_multi)))"></span>
                                                 </b></td>
 
                                             </t>
@@ -249,7 +252,8 @@
                                             <t t-if="num == 'top_cust'">
 
                                                 <td><b>
-                                                    <span t-esc="t_top"></span>
+                                                    <!-- <span t-esc="t_top"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(t_top)))"></span>
                                                 </b></td>
 
                                             </t>

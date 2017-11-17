@@ -74,8 +74,8 @@
 									<hr width="100%"></hr>
 									<div class="challan">
 										<h2>DELIVERY CHALLAN</h2>
-										<p><span class="solid">DC NO.</span><span t-esc="o.name"></span></p>
-										<p><span class="solid">Dated:</span><span t-esc="o.min_date"></span></p>
+										<p><span class="solid">DC NO.</span><span t-esc="o.delivery_id.name"></span></p>
+										<p><span class="solid">Dated:</span><span t-esc="o.delivery_id.min_date"></span></p>
 										<p><span class="solid">CUSTOMER:</span>
 										<span t-esc="o.partner_id.name"></span></p>
 										<span class="liquid" t-esc="o.partner_id.street"></span><br></br>
@@ -85,7 +85,7 @@
 										<span class="liquid"><b>Ph:</b><span t-esc="o.partner_id.phone"></span></span><br></br>
 										<br></br>
 										<p><span class="solid">Warehouse:</span>
-										<span class="liquid" t-esc="o.location_dest_id.location_id.name"></span></p>
+										<span class="liquid" t-esc="o.delivery_id.location_dest_id.location_id.name"></span></p>
 									</div>
 
 

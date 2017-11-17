@@ -31,8 +31,13 @@ class stock_picking_own(models.Model):
 	refund			= fields.Boolean(string="Refund")
 	inv_type		= fields.Char(string="Invoice Type")
 	# bilty_recieved  = fields.Float(string="Billty Expense Received")
-	packing_expense = fields.Float(string="Packing Expense")
-	bilty_paid 		= fields.Float(string="Billty Amount")
+	packing_expense = fields.Float(string="Packing Expenses Paid")
+	bilty_paid 		= fields.Float(string="Bilty Amount Paid")
+	# bilty_amt_paid  = fields.Float(string="Bilty Amount Paid")
+	bilty_amt_recev = fields.Float(string="Bilty Amount Recev")
+	bilty_attach    = fields.Binary(string="Bilty Attachment")
+	# pack_exp_paid   = fields.Float(string="Packing Expenses Paid")
+	pack_exp_recev  = fields.Float(string="Packing Expenses Received")
 	received_by 	= fields.Char(string="Received by")
 	transporter 	= fields.Many2one('res.partner',string="Transporter")
 
@@ -45,18 +50,99 @@ class stock_picking_own(models.Model):
 	state = fields.Selection([
 		('draft', 'Draft'),
 		('cancel', 'Cancelled'),
-		('waiting', 'Waiting Another Operation'),
 		('confirmed', 'Waiting Availability'),
 		('partially_available', 'Partially Available'),
-		('assigned', 'Available'),
+		('assigned', 'Collect Cargo'),
+		('waiting_approve', 'Waiting For Approval'),
+		('ready', 'Ready For Delivery'),
+		('dispatch', 'Dispatch Cargo'),
 		('done', 'Done'),
 		('close', 'Closed'),
 		], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+
+	@api.model
+	def create(self, vals):
+		new_record = super(stock_picking_own, self).create(vals)
+
+		records = self.env['sale.order'].search([('name','=',new_record.origin)])
+		if records.direct_invoice_check == False:
+			new_record.transporter = records.transporter
+
+		return new_record
+
+
+	@api.multi
+	def approve(self):
+		self.state = 'waiting_approve'
+
+		for x in self.pack_operation_product_ids:
+			if x.qty_done == 0:
+				x.qty_done = x.product_qty
+			if x.carton_done == 0:
+				x.carton_done = x.carton_to
+
+		sale_order = self.env['sale.order'].search([('name','=',self.origin)])
+		invoice = self.env['account.invoice'].search([])
+		invoice_lines = self.env['account.invoice.line'].search([])
+		if sale_order:
+			create_invoice = invoice.create({
+				'journal_id': sale_order.journal.id,
+				'partner_id':sale_order.partner_id.id,
+				'transporter':sale_order.transporter.id,
+				'remaining_payment_days':sale_order.remaining_payment_days,
+				'due' : sale_order.due,
+				'user_id' : sale_order.user_id.id,
+				'payment_term_id' : sale_order.payment_term_id.id,
+				'due_days' : sale_order.due_days,
+				'date_invoice' : sale_order.date_order,
+				'incoterm' : sale_order.incoterm.id,
+				'source' : sale_order.name,
+				'stock_id' : self.id,
+				})
+
+			self.account_inv_id = create_invoice.id
+
+			for x in sale_order.order_line:
+				amt = 0
+				qty = 0
+				for y in self.pack_operation_product_ids:
+					amt = amt + y.qty_done
+				for y in self.pack_operation_product_ids:
+					if amt == 0:
+						qty = y.product_qty
+					else:
+						qty = y.qty_done
+					if x.product_id.id == y.product_id.id:
+						if x.product_id.property_account_income_id.id:
+							account_id = x.product_id.property_account_income_id.id
+						else:
+							account_id = x.product_id.categ_id.property_account_income_categ_id.id	
+						create_invoice_lines= invoice_lines.create({
+							'product_id':x.product_id.id,
+							'uom':x.uom,
+							'quantity': qty,
+							'carton': qty/x.product_id.pcs_per_carton,
+							'last_sale': x.last_sale,
+							'price': x.price.id,
+							'price_unit': x.price_unit,
+							'discount': x.discount,
+							'customer_price': x.customer_price,
+							'price_subtotal': x.price_subtotal,
+							'promo_code': x.promo_code.id,
+							'account_id': account_id,
+							'name' : x.name,
+							'invoice_id' : create_invoice.id,
+							})
+
+
+
 
 
 
 	@api.multi
 	def submitt_bilty(self):
+
+		self.state = 'dispatch'
 
 		if self.cash_book_id:
 			for x in self.cash_book_id:
@@ -162,9 +248,6 @@ class stock_picking_own(models.Model):
 		# sale_order = self.env['sale.order'].search([('name','=',self.origin)])
 		# purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
 		if not self.account_inv_id and self.refund == False:
-			print "kkkkkkkkkkkkkkkkkkkkkkk"
-			print "kkkkkkkkkkkkkkkkkkkkkkk"
-			print "kkkkkkkkkkkkkkkkkkkkkkk"
 			
 			invoice = self.env['account.invoice'].search([])
 			invoice_lines = self.env['account.invoice.line'].search([])
@@ -320,3 +403,21 @@ class stock_backorder_transfer_naseem(models.TransientModel):
 		sale_order = self.env['sale.order'].search([('name','=',stock_picking_id1.origin)])
 		stock_picking_id1._invoice_creation_sale(sale_order, stock_picking_id1.pack_operation_product_ids)
 		return result
+
+
+class stock_warehouse_extension(models.Model):
+	_inherit 	= 'stock.warehouse'
+
+	address = fields.Char(string="Address")
+
+class stock_user(models.Model):
+	_inherit 	= 'res.users'
+
+	@api.model
+	def create(self, vals):
+		new_record = super(stock_user, self).create(vals)
+		new_record.partner_id.customer = False
+
+
+		return new_record
+

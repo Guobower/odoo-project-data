@@ -63,10 +63,33 @@
 									border: 1px solid;
 									border-collapse: collapse;
 									text-align: center;
-									padding: 12px;
-									border-color: #b4b4b4;
+									padding: 15px;
 									margin-bottom: 25px;
 									margin-top: 150px;
+									font-size: 16px;
+								}
+
+                                table tr td.space {
+                                    width: 120px;
+                                    min-width: 120px;
+                                    max-width: 120px;
+                                }
+								
+								hr {
+								    display: block;
+								    height: 1px;
+								    border: 0;
+								    border-top: 1px solid black;
+								    padding: 0; 
+
+								}
+
+								.delivery {
+									width: 50%;
+									float: left;
+									font-size: 17px;
+									font-weight: bold;
+									margin-left: 5px;
 								}
 								
 							</style>
@@ -80,9 +103,14 @@
 									<div class="heading">
 
 										<h2>M/S UPPAL ENGINEERING COMPANY</h2>
-										<p>Uppal Center Ist Floor, 1st Floor ,99 Australia Building Railway Road, Lahore. Ph: 042-7666128</p>
-										<p><span class="solid">S.T.Reg #</span><span class="liquid">03-11-8412-002-55</span></p>
-										<p><span class="solid">N.T.N.</span><span class="liquid">1433222-1</span></p>
+										<p style="font-size:17px">Uppal Center Ist Floor, 1st Floor ,99 Australia Building</p><br></br>
+										<br></br>
+										<p style="font-size:17px">Railway Road, Lahore. Ph: 042-7666128</p>
+										<br></br>
+										<br></br>
+										<p style="font-size:17px"><span class="solid">S.T.Reg #</span>
+										<span class="liquid">03-11-8412-002-55   </span>
+										<span class="solid">N.T.N.</span><span class="liquid">1433222-1</span></p>
 
 									</div>
 
@@ -96,14 +124,20 @@
 
 									<br class="clearfloat"/>
 
-									<div class="inquiry">
+									<div class="inquiry" style="font-size:17px">
 										<p><span class="solid" t-esc="o.partner_id.name"></span><span class="liquid"></span></p>
+										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.street"></span><span class="liquid"></span></p>
+										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.street2"></span><span class="liquid"></span></p>
+										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.city"></span><span class="liquid"></span></p>
+										<br></br>
 										<p><span class="solid">Quoatation No:</span><span class="liquid" t-esc="o.name"></span></p>
-										<p><span class="solid">Dated</span><span class="liquid" t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"></span></p>
-										<p><span class="solid">Inquiry No:</span><span class="liquid">20000010099</span></p>
+										<br></br>
+										<p><span class="solid">Dated</span><span class="liquid" t-esc="time.strftime('%d %B %Y',time.strptime(o.date_order,'%Y-%m-%d %H:%M:%S'))"></span></p>
+										<br></br>
+										<p><span class="solid">Inquiry No:</span><span class="liquid" t-esc="o.inquiry_no"></span></p>
 									</div>
 
 									<div class="quotation">
@@ -127,20 +161,20 @@
 										<t t-foreach="lisst" t-as="line">
 
 											<tr>
-												<td>
+												<td class="space">
 													<t t-esc="i"/>
                                                 	<t t-set="i" t-value="i+1"/>
 												</td>
-												<td>
+												<td style="text-align:left">
 													<span t-esc="line.product_id.name"></span>
 												</td>
-												<td>
+												<td class="space">
 													<span t-esc="'{:0,}'.format(int(float(line.price_unit)))"></span>
 												</td>
-												<td>
-													<span t-esc="line.product_uom_qty"></span>
+												<td class="space">
+													<span t-esc="'{:0,}'.format(int(float(line.product_uom_qty)))"></span>
 												</td>
-												<td>
+												<td class="space">
 													<span t-esc="'{:0,}'.format(int(float(line.price_subtotal)))"></span>
 													<t t-set="amount" t-value="amount+line.price_subtotal"/>
 													<t t-set="rate" t-value="line.tax_id.amount"/>
@@ -149,7 +183,7 @@
 										</t>
 										<tr>
 											<td></td>
-											<td><b>Total</b></td>
+											<td style="text-align:right"><b>Total</b></td>
 											<td></td>
 											<td></td>
 											<td>
@@ -159,7 +193,7 @@
 										</tr>
 										<tr>
 											<td></td>
-											<td><b>GST 17%</b></td>
+											<td style="text-align:right"><b>GST 17%</b></td>
 											<td></td>
 											<td></td>
 											<td>
@@ -169,7 +203,7 @@
 										</tr>
 										<tr>
 											<td></td>
-											<td><b>Total W/Gst</b></td>
+											<td style="text-align:right"><b>Total W/Gst</b></td>
 											<td></td>
 											<td></td>
 											<td>
@@ -180,16 +214,24 @@
 
 									<div class="delivery">
 
-										<p><span class="solid">Deliver:</span><span class="liquid">Dalda Factory SITE Karachi. Three week after Po , thru TCS Overland Express Note prices quoted are inclusive of deliver charges.</span></p>
-										<p><span class="solid">Payment</span><span class="liquid">100% After Delivery, within 30 days</span></p>
-										<p><span class="solid">Tax</span><span class="liquid">Prices quoted inclusive of all taxes</span></p>
-										<p><span class="solid">Warranty</span><span class="liquid">Uppal Spares guarenteed for one year against manufacturing defect</span></p>
-										<p><span class="solid">Validity</span><span class="liquid">30 Days</span></p>
+										<span t-esc="o.note"></span>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<span t-esc="o.note_1"></span>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<span t-esc="o.note_2"></span>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<span t-esc="o.note_3"></span>
 
 									</div>
-
-									<p class="uppal">Fawad Uppal</p>
-									<p><span class="solid">Cell:</span><span class="liquid">0300-8417170</span></p>
 
 								</div>
 

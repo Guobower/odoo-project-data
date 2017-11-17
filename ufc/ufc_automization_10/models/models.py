@@ -34,7 +34,8 @@ class ufc_automization(models.Model):
 	dest_name                   = fields.Char(string="Destination")
 	reg_code                    = fields.Char(string="Area Code")
 	plan                        = fields.Char('Plan No')
-	plan_date                   = fields.Date('Plan Date')
+	plan_date                   = fields.Char('Plan Date')
+	new_plan_date               = fields.Date('New Plan Date')
 	weight                      = fields.Float()
 	relevant_purchase_invoice   = fields.Many2one('ufc.auto',string="Relevant Purchase Invoice")
 	sale_price                  = fields.Float(string="Company Price")
@@ -101,6 +102,11 @@ class ufc_automization(models.Model):
 		self.state = 'cancel'
 
 
+	@api.multi
+	def reset(self):
+		self.state = 'draft'
+
+
 
 	# @api.multi
 	# def change_date(self):
@@ -110,6 +116,8 @@ class ufc_automization(models.Model):
 	# 			line = re.sub('-', '', x.plan_date)
 	# 			value = datetime.strptime(line, '%d%m%Y').date()
 	# 			x.new_date = value
+
+
 
 
 
@@ -135,6 +143,7 @@ class ufc_automization(models.Model):
 		users = self.env['res.users'].search([('id','=',self._uid)])
 		if self.customer:
 			self.branch = users.Branch.id
+
 
 
 	@api.onchange('add_per')
@@ -347,54 +356,56 @@ class ufc_automization(models.Model):
 	def create(self, vals):
 		vals['order_no'] = self.env['ir.sequence'].next_by_code('ufc.auto.seq')
 		new_record = super(ufc_automization, self).create(vals)
-		
-		cash_enteries = self.env['account.bank.statement'].search([('branch.name','=',new_record.branch.name),('state','=','open')])
-		if cash_enteries:
-			inv = []
-			for invo in new_record.driver_payment_id:
-				inv.append({
-					'date':invo.date,
-					'name':"payment",
-					'partner_id':new_record.customer.id,
-					'ref':new_record.order_no,
-					'amount':invo.amount*(-1),
-					'line_ids':cash_enteries.id,
-					})
-			
-			cash_enteries.line_ids = inv
-			inv=[]
 
 		return new_record
-
-	# ===================unlinking previous lines and creating edited lines on write fun======
-	# ===================unlinking previous lines and creating edited lines on write fun======
-
-
-	@api.multi
-	def write(self, vals):
-		super(ufc_automization, self).write(vals)
-
-		cash_enteries = self.env['account.bank.statement'].search([('branch.name','=',self.branch.name),('state','=','open')])
-		if cash_enteries:
-			for x in cash_enteries.line_ids:
-				if x.ref == self.order_no:
-					x.unlink()
-
-			lisst= []
-
-			for invo in self.driver_payment_id:
-				lisst.append({
-					'date':invo.date,
-					'name':"payment",
-					'partner_id':self.customer.id,
-					'ref':self.order_no,
-					'amount':invo.amount*(-1),
-					'line_ids':cash_enteries.id,
-					})
+		
+		# cash_enteries = self.env['account.bank.statement'].search([('branch.name','=',new_record.branch.name),('state','=','open')])
+		# if cash_enteries:
+		# 	inv = []
+		# 	for invo in new_record.driver_payment_id:
+		# 		inv.append({
+		# 			'date':invo.date,
+		# 			'name':"payment",
+		# 			'partner_id':new_record.customer.id,
+		# 			'ref':new_record.order_no,
+		# 			'amount':invo.amount*(-1),
+		# 			'line_ids':cash_enteries.id,
+		# 			})
 			
-			cash_enteries.line_ids = lisst
+		# 	cash_enteries.line_ids = inv
+		# 	inv=[]
 
-		return True
+		
+
+	# ===================unlinking previous lines and creating edited lines on write fun======
+	# ===================unlinking previous lines and creating edited lines on write fun======
+
+
+	# @api.multi
+	# def write(self, vals):
+	# 	super(ufc_automization, self).write(vals)
+
+	# 	cash_enteries = self.env['account.bank.statement'].search([('branch.name','=',self.branch.name),('state','=','open')])
+	# 	if cash_enteries:
+	# 		for x in cash_enteries.line_ids:
+	# 			if x.ref == self.order_no:
+	# 				x.unlink()
+
+	# 		lisst= []
+
+	# 		for invo in self.driver_payment_id:
+	# 			lisst.append({
+	# 				'date':invo.date,
+	# 				'name':"payment",
+	# 				'partner_id':self.customer.id,
+	# 				'ref':self.order_no,
+	# 				'amount':invo.amount*(-1),
+	# 				'line_ids':cash_enteries.id,
+	# 				})
+			
+	# 		cash_enteries.line_ids = lisst
+
+	# 	return True
 
 	
 	# ===================creating models and tree views required for preinvoice==============
@@ -411,8 +422,52 @@ class driver_payments(models.Model):
 	cnic    = fields.Char(string = "CNIC")
 	date = fields.Date(required= True)
 	amount = fields.Float(required= True)
+	bank_id = fields.Many2one('account.bank.statement.line')
 
 	driver_payment = fields.Many2one('ufc.auto')
+
+	@api.model
+	def create(self, vals):
+		new_record = super(driver_payments, self).create(vals)
+		
+		cash_enteries = self.env['account.bank.statement'].search([('branch.name','=',new_record.driver_payment.branch.name),('state','=','open')])
+		lineCreationIds = cash_enteries.line_ids
+		if cash_enteries:
+			for x in new_record:
+				lineCreation = lineCreationIds.create({
+					'date':x.date,
+					'name':"payment",
+					'partner_id':x.driver_payment.customer.id,
+					'ref':x.driver_payment.order_no,
+					'amount':x.amount*(-1),
+					'statement_id':cash_enteries.id,
+					})
+				x.bank_id = lineCreation.id
+
+
+		return new_record
+
+	@api.multi
+	def write(self, vals):
+		super(driver_payments, self).write(vals)
+
+		for record in self:
+			record.bank_id.date = self.date
+			record.bank_id.amount = self.amount*(-1)
+
+		return True
+
+
+	@api.multi
+	def unlink(self):
+
+		cash_book = self.env['account.bank.statement.line'].search([('id','=',self.bank_id.id)])
+		for data in cash_book:
+			data.unlink()
+		super(driver_payments, self).unlink()
+
+		return True
+
 
 
 

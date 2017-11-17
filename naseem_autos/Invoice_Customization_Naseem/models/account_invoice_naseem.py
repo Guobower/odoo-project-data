@@ -53,6 +53,12 @@ class sale_invoice_customized(models.Model):
 
 	@api.multi
 	def action_invoice_open(self):
+		to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+		if to_open_invoices.filtered(lambda inv: inv.state not in ['proforma2', 'draft','refund']):
+			raise UserError(_("Invoice must be in draft or Pro-forma state in order to validate it."))
+		to_open_invoices.action_date_assign()
+		if to_open_invoices.journal_id.type != 'cash':
+			to_open_invoices.action_move_create()
 		if self.state != 'open':
 			if self.payment_term_id.name == 'Immediate Payment':
 				JournalEntries = self.env['account.move'].search([('partner_id','=',self.partner_id.id)])
@@ -71,7 +77,7 @@ class sale_invoice_customized(models.Model):
 					'view_mode': 'form',
 					'target' : 'new',
 					'context': {'default_partner_id': self.partner_id.id,'default_receipts': True}
-					}		
+					}
 		if not self.pdc_module:
 			if self.payment_term_id.name == 'Cheque Before Delivery':
 				self.state == 'draft'
@@ -88,20 +94,22 @@ class sale_invoice_customized(models.Model):
 		credit_limit1 = self.partner_id.credit_limit
 		stop = self.partner_id.stop_invoice
 		self._check_total(credit1,credit_limit1,stop)
-		res = super(sale_invoice_customized, self).action_invoice_open()
-		rec = self.env['stock.picking'].search([('id','=',self.stock_id.id)])
-		if self.stock_id.id:
-			rec.print_do = True
+		if to_open_invoices.stock_id:
+			print to_open_invoices.stock_id.id
+			to_open_invoices.stock_id.print_do = True
+			to_open_invoices.stock_id.state = 'ready'
 		sale_order = self.env['sale.order'].search([('name','=',self.source)])
 		count = 0
-		if self.source:
+		if to_open_invoices.source:
 			if sale_order.direct_invoice_check == False:
 				for x in sale_order.picking_ids:
 					if x.state == 'done':
 						count = count + 1
 				if count == len(sale_order.picking_ids):
 					sale_order.state = 'complete'
-		return res
+		res = super(sale_invoice_customized, self).action_invoice_open()
+
+		return to_open_invoices.invoice_validate()
 
 
 	@api.multi
@@ -146,15 +154,21 @@ class sale_invoice_customized(models.Model):
 
 		})
 
+		self.stock_id = create_inventory.id
+
 		for x in self.invoice_line_ids:
-			create_inventory_lines= inventory_lines.create({
+			create_inventory_lines= inventory_lines_move.create({
 				'product_id':x.product_id.id,
-				'carton_to':x.quantity,
-				'qty_done': x.quantity,
+				'product_uom_qty':x.quantity,
+				'product_uom': x.product_id.uom_id.id,
 				'location_id':15,
 				'location_dest_id': 9,
+				'name':"test",
 				'picking_id': create_inventory.id,
 				})
+
+			create_inventory.action_assign()
+
 		# for x in self.invoice_line_ids:
 		# 	create_inventory_lines_move= inventory_lines_move.create({
 		# 				'product_id':x.product_id.id,
@@ -216,13 +230,13 @@ class sale_invoice_line_extension(models.Model):
 					if self.product_id.id == y.product_id.id:
 						if data.date_invoice == new:
 							self.price_unit = y.price_unit
-							print y.price_unit
 
 	@api.onchange('quantity')
 	def _onchange_cartons(self):
 		if self.invoice_id.type == "out_refund":
 			if self.quantity > 1:
-				self.cartons = self.quantity / self.product_id.pcs_per_carton
+				self.carton = self.quantity / self.product_id.pcs_per_carton
+				print self.carton
 
 
 

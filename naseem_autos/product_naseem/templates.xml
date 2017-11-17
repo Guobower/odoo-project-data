@@ -276,6 +276,7 @@
 
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="foc"/>
+                    
                 </xpath>
 
             <xpath expr="//label[@for='purchase_ok']" position="replace">
@@ -339,6 +340,7 @@
                 <field name="standard_price" readonly="1"/> 
             </xpath>
             <xpath expr="//field[@name='foc']" position="after">
+                <field name="free_sellable"/>
                 <field name="inventory_prod"/>
                 </xpath>
 
@@ -517,11 +519,11 @@
             action="action_cfc"
             sequence="100" />
 
-        <!-- <menuitem id="sale.menu_products"
+        <menuitem id="sale.menu_products"
             name="Products"
             action="product.product_normal_action_sell"
             parent="sales_team.menu_sales"
-            groups="product.group_product_variant" sequence="99"/> -->
+            groups="product.group_product_variant" sequence="99"/>
 
 
          <record id="x_hide_quotation2" model="res.groups">

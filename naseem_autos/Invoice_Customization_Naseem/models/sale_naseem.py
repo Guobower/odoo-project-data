@@ -91,6 +91,14 @@ class sale_order_customized(models.Model):
 ###################################################
 	instant_promo = fields.One2many('instant.promo.so','instant_promo_id')
 
+	@api.onchange('instant_promo')
+	def get_per_carton(self):
+
+		for x in self.instant_promo:
+			if x.qty > 0:
+				if x.product_id.pcs_per_carton > 0:
+					x.qty_per_crt = x.qty / x.product_id.pcs_per_carton
+
 	@api.one
 	def compute_remaining_days(self):
 		current_date = fields.Datetime.now()
@@ -188,6 +196,7 @@ class sale_order_customized(models.Model):
 				'direct_inv': True,
 				'inv_type': self.types,
 				'print_do': True,
+				'transporter': self.transporter.id,
 				'picking_type_id' : 4,
 				'location_dest_id' : 9,
 				'origin':self.name,
@@ -264,6 +273,7 @@ class sale_order_customized(models.Model):
 				'location_id':15,
 				'direct_inv': True,
 				'inv_type': self.types,
+				'transporter': self.transporter.id,
 				'print_do': True,
 				'picking_type_id' : 4,
 				'location_dest_id' : 9,
@@ -507,11 +517,11 @@ class sale_order_customized(models.Model):
 						for a in self.instant_promo:
 							ids.append(a.product_id.id)
 						if x.product_id.id not in ids and reward_quantity > 0:
-							self.instant_promo |= self.instant_promo.new({'product_id':x.product_id.id,'qty': reward_quantity,'instant_promo_id': self.id,})
+							self.instant_promo |= self.instant_promo.new({'product_id':x.product_id.id,'qty': reward_quantity,'instant_promo_id': self.id,'manual':True})
 						elif x.product_id.id in ids:
 							for c in self.instant_promo:
 								if c.product_id.id == x.product_id.id:
-									if c.manual != True:
+									if c.manual == True:
 										c.qty = reward_quantity
 
 			product_lst = []
@@ -519,10 +529,11 @@ class sale_order_customized(models.Model):
 				product_lst.append(y.product_id.id)
 			for lines in self.instant_promo:
 				if lines.product_id.id not in product_lst:
-					if lines.manual != True:
+					if lines.manual == True:
 						lines.qty = 0
 		for x in self.order_line:
-			x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
+			if x.product_id.pcs_per_carton > 0:
+				x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
 
 	def _prepare_instant_promo(self, product_id, qty, id):
 		data = {
@@ -654,14 +665,18 @@ class sale_order_line_extension(models.Model):
 	@api.onchange('price')
 	def get_price(self):
 		self.pricelist_ext = self.price.pricelist_id.id
+		print self.pricelist_ext
+		print self.pricelist_ext
 
-	@api.onchange('product_id','product_uom_qty','price_unit','customer_price')
+	@api.onchange('product_id','product_uom_qty','price_unit','customer_price','pricelist_ext')
 	def _onchange_product_line(self):
+		# print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 		if self.product_id and self.pricelist_ext:
 			for item in self.pricelist_ext.item_ids:
 				if item.product_id.id == self.product_id.id:
 					if item.compute_price == 'fixed':
 						if item.fixed_price != 0.0:
+							print "here we are "
 							self.price_unit = item.fixed_price
 					elif item.compute_price == 'formula':
 						if item.price_discount != 0.0:

@@ -16,7 +16,8 @@ class summary_orient(models.Model):
 	date_from    = fields.Date()
 	date_to      = fields.Date()
 	amt_total    = fields.Float(string="Amount Total")
-	bl_number    = fields.Char(string="B/L Number")
+	# bl_number    = fields.Many2one(string="B/L Number")
+	bl_number    = fields.Many2one('bill.num',string = "B/L Number")
 	orient_link  = fields.Many2one('account.invoice',string="Invoice Link")
 	sum_ids2     = fields.One2many('ufc.auto','orient_summary')
 	stages       = fields.Selection([
@@ -33,6 +34,14 @@ class summary_orient(models.Model):
 			self.name = "Summary of "+str(self.customer.name)
 
 
+
+	@api.onchange('customer')
+	def get_branch(self):
+		users = self.env['res.users'].search([('id','=',self._uid)])
+		if self.customer:
+			self.branch = users.Branch.id
+
+
 	@api.multi
 	def draft(self):
 		self.stages = "draft"
@@ -45,16 +54,36 @@ class summary_orient(models.Model):
 		self.stages = "validate"
 
 		if self.customer:
-			records = self.env['account.invoice'].search([('summary_id','=',self.id)])
+			if self.orient_link:
+			# records = self.env['account.invoice'].search([('summary_id','=',self.id)])
+				for data in self.orient_link:
+					data.partner_id = self.customer.id
+					data.date_invoice = self.invoice_date
+					data.bill_num = self.bl_number.name
+					data.branch = self.branch.id
+					data.invoice_line_ids.name = "Orient Invoice"
+					data.invoice_line_ids.price_unit = self.amt_total
 
-			for data in records:
-				
-				data.partner_id = self.customer.id
-				data.date_invoice = self.invoice_date
-				data.bill_num = self.bl_number
-				data.branch = self.branch.id
-				data.invoice_line_ids.name = "Orient Invoice"
-				data.invoice_line_ids.price_unit = self.amt_total
+			else:
+
+				data = self.env['account.invoice'].create({
+				'partner_id':self.customer.id,
+				'date_invoice':self.invoice_date,
+				'bill_num':self.bl_number.name,
+				'branch':self.branch.id,
+
+				})
+
+				self.orient_link = data.id
+
+				data.invoice_line_ids.create({
+					'name':"Orient Invoice",
+					'price_unit':self.amt_total,
+					'account_id':17,
+					'quantity':1,
+					'invoice_id' : data.id
+
+					})
 
 
 # =================creating customer invoice on generate button=============================
@@ -63,25 +92,19 @@ class summary_orient(models.Model):
 	@api.multi
 	def generate(self):
 
-		data = self.env['account.invoice'].create({
-				'partner_id':self.customer.id,
-				'date_invoice':self.invoice_date,
-				'bill_num':self.bl_number,
-				'branch':self.branch.id,
-				'summary_id': self.id
+		records = self.env['ufc.auto'].search([('customer.id','=',self.customer.id),('bl_number','=',self.bl_number.name)])
 
-				})
+		company_tot = 0
+		for data in records:
+			print data.sale_price
+			company_tot = company_tot + data.sale_price
 
-		self.orient_link = data.id
 
-		data.invoice_line_ids.create({
-			'name':"Orient Invoice",
-			'price_unit':self.amt_total,
-			'account_id':17,
-			'quantity':1,
-			'invoice_id' : data.id
+		for y in records:
+			y.orient_summary = self.id
 
-			})
+		self.amt_total = company_tot
+		
 
 
 

@@ -260,9 +260,10 @@
                     <group string="Free Products">
                     <field name="instant_promo" nolabel='1' >
                                 <tree editable="bottom">
-                                    <field name="product_id" domain="[('foc', '=', True)]" />
+                                    <field name="product_id" domain="['|',('foc', '=', True),('free_sellable', '=', True)]" />
                                     <field name="qty"/>
-                                    <field name="manual"/>
+                                    <field name="qty_per_crt"/>
+                                    <field name="manual" invisible="1"/>
                                 </tree>
                             </field>
                             </group>

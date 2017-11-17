@@ -8,7 +8,7 @@ class account_extend(models.Model):
 	branch      = fields.Many2one('branch',string="Branch")
 	bill_num    = fields.Char(string="B/L Number")
 	m_tons      = fields.Float(string="M Tons")
-	summary_id  = fields.Many2one('summary.ffc')
+	# summary_id  = fields.Many2one('summary.ffc')
 
 # ==================punching branch in account.move on validate button using fun super========
 # ==================punching branch in account.move on validate button using fun super========

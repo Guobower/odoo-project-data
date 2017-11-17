@@ -34,6 +34,12 @@ class SampleDevelopmentReport(models.AbstractModel):
         for x in records.pack_operation_product_ids:
             lisst.append(x)
 
+        def get_po():
+            cust_po = " "
+            data = self.env['sale.order'].search([('name','=',records.origin)])
+            cust_po = data.customer_po
+            return cust_po
+
                     
                            
 
@@ -42,6 +48,7 @@ class SampleDevelopmentReport(models.AbstractModel):
             'doc_model': 'stock.picking',
             'docs': records,
             'data': data,
+            'get_po': get_po,
             'lisst': lisst,
 
             }

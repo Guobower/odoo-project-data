@@ -7,6 +7,6 @@
             name="uppal_qoute.module_report"
             file="uppal_qoute.module_report"
             report_type="qweb-html"
-            string="Quotation"/> 
+            string="Quotation UEC"/> 
     </data>
 </openerp>

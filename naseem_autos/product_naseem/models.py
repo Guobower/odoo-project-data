@@ -13,6 +13,7 @@ class product_template_extension(models.Model):
     minimum_level      = fields.Float (string = "Minimum Level")
     maximum_level      = fields.Float (string = "Maximum Level")
     foc                = fields.Boolean('Free of Cost')
+    free_sellable      = fields.Boolean('Free & Sellable')
     qty_per_carton     = fields.Integer (string = "Qty per Carton")
     net_weight         = fields.Float(string ="Net Weight")
     gross_weight       = fields.Float(string = "Gross Weight")

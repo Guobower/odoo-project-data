@@ -49,15 +49,24 @@ class SampleDevelopmentReport(models.AbstractModel):
 
 
         
-        records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to),('state','not in',('draft','cancel')),('journal_id.type','=','cash')])
+        records = self.env['account.invoice'].search([('type','in',('out_invoice','out_refund')),('date_invoice','>=',form),('date_invoice','<=',to)])
         count = [1]
 
 
 
-        # test = {}
+        # all_part = []
         # for x in records:
-        #     if x.partner_id.id not in test:
-        #         test[x.partner_id.id]=x.amount_total
+        #     if x.partner_id.id not in all_part:
+        #         all_part.append(x.partner_id.id)
+
+
+        # test = {}
+        # new = 0
+        # for x in records:
+        #     for y in all_part:
+        #         if x.partner_id.id == y:
+        #             new = new + x.amount_total
+        #             test[y]=new
 
 
         # print test

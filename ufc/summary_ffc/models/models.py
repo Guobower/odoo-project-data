@@ -17,8 +17,8 @@ class summary_ffc(models.Model):
 	sin_fuel_deduct 	= fields.Float(string="Sindh Fuel Deduction")
 	m_tons_punjab 		= fields.Char(string="M Tons Punjab")
 	m_tons_sindh 		= fields.Char(string="M Tons Sindh")
-	val_excl_punjab_st  = fields.Float(string="Value Excel Punjab S.T")
-	val_excl_sindh_st   = fields.Float(string="Value Excel Sindh S.T")
+	val_excl_punjab_st  = fields.Float(string="Value Excl Punjab S.T")
+	val_excl_sindh_st   = fields.Float(string="Value Excl Sindh S.T")
 	pun_invoice 		= fields.Many2one('account.invoice',string="Punjab Invoice")
 	sin_invoice 		= fields.Many2one('account.invoice',string="Sindh Invoice")
 	invoice_link 		= fields.Many2one('account.invoice',string="Invoice Link")
@@ -27,6 +27,7 @@ class summary_ffc(models.Model):
 	value_ids 			= fields.One2many('ufc.auto','ufc_dharki')
 	stages    			= fields.Selection([
         				('draft', 'Draft'),
+        				('update', 'Updated'),
         				('validate', 'Validate'),
         				],default='draft')
 
@@ -43,40 +44,50 @@ class summary_ffc(models.Model):
 	def draft(self):
 		self.stages = "draft"
 
+
+	@api.onchange('Customer')
+	def get_branch(self):
+		users = self.env['res.users'].search([('id','=',self._uid)])
+		if self.Customer:
+			self.Branch = users.Branch.id
+
+
+
 # ===========================updating invoice already created on generate button==============
 # ===========================updating invoice already created on generate button==============
 
 	@api.multi
 	def validate(self):
 		self.stages = "validate"
-
 		if self.Customer:
-			records = self.env['account.invoice'].search([('summary_id','=',self.id)])
-			if self.Customer.name== "FFC Goth Machi" or self.Customer.name== "FFC Mir Pur Mathelo":
+			if self.pun_invoice and self.sin_invoice:
+				# records = self.env['account.invoice'].search([('summary_id','=',self.id)])
+				if self.Customer.name== "FFC Goth Machi" or self.Customer.name== "FFC Mir Pur Mathelo":
 
-				for data in records:
-					if data.province == "Punjab":
-						data.partner_id = self.Customer.id
-						data.date_invoice = self.invoice_date
-						data.bill_no = self.bill_no
-						data.province = "Punjab"
-						data.branch = self.Branch.id
-						data.m_tons = self.m_tons_punjab
-						data.invoice_line_ids.name = "Value Excel Punjab S.T"
-						data.invoice_line_ids.price_unit = self.val_excl_punjab_st
-					if data.province == "Sindh":
-						data.partner_id = self.Customer.id
-						data.date_invoice = self.invoice_date
-						data.bill_no = self.bill_no
-						data.province = "Sindh"
-						data.branch = self.Branch.id
-						data.m_tons = self.m_tons_sindh
-						data.invoice_line_ids.name = "Value Excel Punjab S.T"
-						data.invoice_line_ids.price_unit = self.val_excl_sindh_st
+					for data in self.pun_invoice:
+						if data.province == "Punjab":
+							data.partner_id = self.Customer.id
+							data.date_invoice = self.invoice_date
+							data.bill_no = self.bill_no
+							data.province = "Punjab"
+							data.branch = self.Branch.id
+							data.m_tons = self.m_tons_punjab
+							data.invoice_line_ids.name = "Value Excl Punjab S.T"
+							data.invoice_line_ids.price_unit = self.val_excl_punjab_st
+					for data in self.sin_invoice:
+						if data.province == "Sindh":
+							data.partner_id = self.Customer.id
+							data.date_invoice = self.invoice_date
+							data.bill_no = self.bill_no
+							data.province = "Sindh"
+							data.branch = self.Branch.id
+							data.m_tons = self.m_tons_sindh
+							data.invoice_line_ids.name = "Value Excl Punjab S.T"
+							data.invoice_line_ids.price_unit = self.val_excl_sindh_st
 			
-			else:
+			if self.invoice_link:
 
-				for data in records:
+				for data in self.invoice_link:
 				
 					data.partner_id = self.Customer.id
 					data.date_invoice = self.invoice_date
@@ -84,6 +95,78 @@ class summary_ffc(models.Model):
 					data.branch = self.Branch.id
 					data.invoice_line_ids.name = "Company Price"
 					data.invoice_line_ids.price_unit = self.amt_total
+
+
+		if not self.pun_invoice and not self.sin_invoice:
+			if self.Customer.name== "FFC Goth Machi" or self.Customer.name== "FFC Mir Pur Mathelo":
+
+				records = self.env['account.invoice'].create({
+					'partner_id':self.Customer.id,
+					'date_invoice':self.invoice_date,
+					'bill_no':self.bill_no,
+					'province':"Punjab",
+					'branch':self.Branch.id,
+					'm_tons': self.m_tons_punjab,
+					# 'summary_id': self.id
+
+					})
+
+				self.pun_invoice = records.id
+
+				records.invoice_line_ids.create({
+					'name':"Value Excl Punjab S.T",
+					'price_unit':self.val_excl_punjab_st,
+					'account_id':17,
+					'quantity':1,
+					'invoice_id' : records.id
+
+					})
+
+				records_sin = self.env['account.invoice'].create({
+					'partner_id':self.Customer.id,
+					'date_invoice':self.invoice_date,
+					'bill_no':self.bill_no,
+					'province':"Sindh",
+					'branch':self.Branch.id,
+					'm_tons': self.m_tons_sindh,
+					# 'summary_id': self.id
+					})
+
+				self.sin_invoice = records_sin.id
+
+				records_sin.invoice_line_ids.create({
+					'name':"Value Excl Sindh S.T",
+					'price_unit':self.val_excl_sindh_st,
+					'account_id':17,
+					'quantity':1,
+					'invoice_id' : records_sin.id
+
+					})
+
+		if not self.invoice_link:
+			if self.Customer.name != "FFC Goth Machi" and self.Customer.name != "FFC Mir Pur Mathelo":
+
+				data = self.env['account.invoice'].create({
+					'partner_id':self.Customer.id,
+					'date_invoice':self.invoice_date,
+					'bill_no':self.bill_no,
+					'branch':self.Branch.id,
+					# 'summary_id': self.id
+
+					})
+
+				self.invoice_link = data.id
+
+				data.invoice_line_ids.create({
+					'name':"Company Price",
+					'price_unit':self.amt_total,
+					'account_id':17,
+					'quantity':1,
+					'invoice_id' : data.id
+
+					})
+
+		
 					
 
 # ===================creating Customer invoice on generate button from bill summary===========			
@@ -92,73 +175,88 @@ class summary_ffc(models.Model):
 
 	@api.multi
 	def generate(self):
-		
-		if self.Customer.name== "FFC Goth Machi" or self.Customer.name== "FFC Mir Pur Mathelo":
 
-			records = self.env['account.invoice'].create({
-				'partner_id':self.Customer.id,
-				'date_invoice':self.invoice_date,
-				'bill_no':self.bill_no,
-				'province':"Punjab",
-				'branch':self.Branch.id,
-				'm_tons': self.m_tons_punjab,
-				'summary_id': self.id
+		self.stages = 'update'
 
-				})
+		for x in self.sum_ids:
+			if x.sum_id.id == self.id:
+				x.unlink()
 
-			self.pun_invoice = records.id
 
-			records.invoice_line_ids.create({
-				'name':"Value Excel Punjab S.T",
-				'price_unit':self.val_excl_punjab_st,
-				'account_id':17,
-				'quantity':1,
-				'invoice_id' : records.id
+		records = self.env['ufc.auto'].search([('customer.id','=',self.Customer.id),('invoice_date','>=',self.date_from),('invoice_date','<=',self.date_to),('remaining','=',0)])
+		entries = []
+		for x in records:
+			if x.region.code not in entries:
+				entries.append(x.region.code)
 
-				})
 
-			records_sin = self.env['account.invoice'].create({
-				'partner_id':self.Customer.id,
-				'date_invoice':self.invoice_date,
-				'bill_no':self.bill_no,
-				'province':"Sindh",
-				'branch':self.Branch.id,
-				'm_tons': self.m_tons_sindh,
-				'summary_id': self.id
-				})
+		for line in records:
+			line.Bill_No = self.bill_no
 
-			self.sin_invoice = records_sin.id
 
-			records_sin.invoice_line_ids.create({
-				'name':"Value Excel Sindh S.T",
-				'price_unit':self.val_excl_sindh_st,
-				'account_id':17,
-				'quantity':1,
-				'invoice_id' : records_sin.id
+		def get_amt():
+			active_ids = []
+			grand_tot = 0
+			for x in entries:
+				del active_ids[:]
+				for y in records:
+					if y.region.code == x:
+						active_ids.append(y)
+				amount = 0
+				for b in active_ids:
+					amount = amount + b.sale_price
+				grand_tot = grand_tot + amount
 
-				})
+			return grand_tot
 
-		else:
+		self.amt_total = get_amt()
 
-			data = self.env['account.invoice'].create({
-				'partner_id':self.Customer.id,
-				'date_invoice':self.invoice_date,
-				'bill_no':self.bill_no,
-				'branch':self.Branch.id,
-				'summary_id': self.id
 
-				})
+		for y in records:
+			y.ufc_summary = self.id
 
-			self.invoice_link = data.id
+	
+		for y in records:
+			y.ufc_dharki = self.id
 
-			data.invoice_line_ids.create({
-				'name':"Company Price",
-				'price_unit':self.amt_total,
-				'account_id':17,
-				'quantity':1,
-				'invoice_id' : data.id
+		active_ids = []
+		grand_tot = 0
+		for x in entries:
 
-				})
+			del active_ids[:]
+
+			for y in records:
+				if y.region.code == x:
+					active_ids.append(y)
+
+			number_of_records = len(active_ids)/10
+			sheets = number_of_records
+			if number_of_records < 1:
+				sheets = 1
+
+			weight = 0
+			for a in active_ids:
+				weight = weight + int(a.weight)
+
+			amount = 0
+			for b in active_ids:
+				amount = amount + b.sale_price
+
+			grand_tot = grand_tot + amount
+
+			region = ""
+			for z in active_ids:
+				region = z.region.name
+
+
+			create_records = self.env['summary.tree'].create({
+				'Region': x,
+				'region_name': region,
+				'sum_id': self.id,
+				'Sheet': sheets,
+				'M_tons': weight,
+				'Amount': amount
+			})
 
 # =========================creating models and tree view required for bill summary===========
 # =========================creating models and tree view required for bill summary===========

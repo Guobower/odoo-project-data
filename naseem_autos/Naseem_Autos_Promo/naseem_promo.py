@@ -728,8 +728,15 @@ class instant_promo_so(models.Model):
 
 	product_id = fields.Many2one('product.product', string = "Product")
 	qty        = fields.Float(string = "Quantity")
+	qty_per_crt= fields.Float(string = "Quantity Per Cartons")
 	manual     = fields.Boolean(string="Manual")
 	instant_promo_id = fields.Many2one('sale.order')
+
+	@api.onchange('qty','product_id')
+	def on_change_qty_carton(self):
+		if self.qty > 0:
+			if self.product_id.pcs_per_carton > 0:
+				self.qty_per_crt = self.qty / self.product_id.pcs_per_carton
 
 
 class generate_products(models.TransientModel):

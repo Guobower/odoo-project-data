@@ -14,6 +14,10 @@ class sale_order_extension(models.Model):
 		('invoiced', 'Fully Invoiced'),
 		],string="Order State")
 	customer_po      = fields.Char(string="Customer PO #")
+	inquiry_no       = fields.Char(string="Inquiry No.")
+	note_1       = fields.Text(string=" ")
+	note_2       = fields.Text(string=" ")
+	note_3      = fields.Text(string=" ")
 	entity = fields.Many2one('ecube.entity',string="Entity")
 
 

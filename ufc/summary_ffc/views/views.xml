@@ -11,9 +11,9 @@
 
            <header>
 
-            <button name="generate" string="Create Invoice" type="object" attrs="{'invisible':[('stages','in',['validate'])]}" class="oe_highlight"/>
+            <button name="generate" string="Update" type="object" attrs="{'invisible':[('stages','in',['validate','update'])]}" class="oe_highlight"/>
             <button name="validate" string="Validate" type="object" attrs="{'invisible':[('stages','in',['validate'])]}"  class="oe_highlight"/>
-            <button name="draft" string="Reset To Draft" type="object" attrs="{'invisible':[('stages','in',['draft'])]}" class="oe_highlight"/>
+            <button name="draft" string="Reset To Draft" type="object" class="oe_highlight" attrs="{'invisible':[('stages','in',['update','draft'])]}"/>
             <field name="stages" widget="statusbar" />
 
           </header>
@@ -22,19 +22,19 @@
 
               <group name="left">
 
-                <field name="Customer"/>
-                <field name="Region"/>
-                <field name="date_from"/>
-                <field name="date_to"/>
+                <field name="Customer" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="Region" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="date_from" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="date_to" attrs="{'readonly':[('stages','in','validate')]}"/>
 
               </group>
 
               <group name="right">
 
-                <field name="invoice_date"/>
-                <field name="Branch"/>
-                <field name="bill_no"/>
-                <field name="invoice_link"/>
+                <field name="invoice_date" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="Branch" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="bill_no" attrs="{'readonly':[('stages','in','validate')]}"/>
+                <field name="invoice_link" attrs="{'readonly':[('stages','in','validate')]}"/>
 
               </group>
 
@@ -48,15 +48,15 @@
                     <group name="top">
 
                       <group name="left">
-                        <field name="val_excl_punjab_st"/>
-                        <field name="m_tons_punjab"/>
-                        <field name="pun_invoice"/>
+                        <field name="val_excl_punjab_st" attrs="{'readonly':[('stages','in','validate')]}"/>
+                        <field name="m_tons_punjab" attrs="{'readonly':[('stages','in','validate')]}"/>
+                        <field name="pun_invoice" attrs="{'readonly':[('stages','in','validate')]}"/>
                       </group>
 
                       <group name="right">
-                        <field name="val_excl_sindh_st"/>
-                        <field name="m_tons_sindh"/>
-                        <field name="sin_invoice"/>
+                        <field name="val_excl_sindh_st" attrs="{'readonly':[('stages','in','validate')]}"/>
+                        <field name="m_tons_sindh" attrs="{'readonly':[('stages','in','validate')]}"/>
+                        <field name="sin_invoice" attrs="{'readonly':[('stages','in','validate')]}"/>
                       </group>
 
                     </group>
@@ -65,15 +65,15 @@
 
                 <group name="group_top">
 
-                    <field name="sum_ids" nolabel='1'>
-                      <tree editable="bottom">
+                    <field name="sum_ids" nolabel='1' attrs="{'readonly':[('stages','=', 'validate')]}">
+                      <tree editable="bottom" >
 
-                        <field name="Region"/>
-                        <field name="region_name"/>
-                        <field name="Sheet"/>
-                        <field name="M_tons"/>
-                        <field name="Amount"/>
-                        <field name="Remarks"/>
+                        <field name="Region" />
+                        <field name="region_name" />
+                        <field name="Sheet" />
+                        <field name="M_tons" />
+                        <field name="Amount" />
+                        <field name="Remarks" />
 
                       </tree>
                     </field>
@@ -96,18 +96,19 @@
                     <group name="top">
 
                       <group name="left">
-                        <field name="pun_fuel_deduct"/>
+                        <field name="pun_fuel_deduct" attrs="{'readonly':[('stages','=', 'validate')]}"/>
                       </group>
 
                       <group name="right">
-                        <field name="sin_fuel_deduct"/>
+                        <field name="sin_fuel_deduct" attrs="{'readonly':[('stages','=', 'validate')]}"/>
                       </group>
 
                     </group>
 
                 <group name="group_top">
 
-                    <field name="sum_ids2" nolabel='1'>
+                    <field name="sum_ids2" nolabel='1'
+                      attrs="{'readonly':[('stages','=', 'validate')]}">
                       <tree editable="bottom">
 
                         
@@ -139,11 +140,12 @@
               </page>
 
 
-              <page string="Additionl Freight"> 
+              <page string="Additional Freight"> 
     
                 <group name="group_top">
 
-                    <field name="value_ids" nolabel='1'>
+                    <field name="value_ids" nolabel='1'
+                      attrs="{'readonly':[('stages','=', 'validate')]}">
                       <tree editable="bottom">
 
                         <field name="reg_code"/>

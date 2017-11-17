@@ -56,15 +56,10 @@ class CustomerPayment(models.Model):
 
 	@api.onchange('partner_id')
 	def get_branch(self):
-		users = self.env['res.users'].search([])
-		print "0000000000000000000000000000000"
-		print users
+		users = self.env['res.users'].search([('id','=',self._uid)])
 		if self.partner_id:
-			print "999999999999999999999999999"
-			print users.Branch.id
 			self.branch = users.Branch.id
-			print "ppppppppppppppppppppppppppppp"
-			print self.branch
+
 
 
 	# @api.multi
