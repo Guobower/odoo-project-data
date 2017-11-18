@@ -52,8 +52,8 @@
 									font-size: 17px;
 								}
 								.engineering {
-									widows: 30%;
-									margin-top: 50px;
+									width: 30%;
+									margin-top: 80px;
 								}
 								.no-margin {
 									margin-top: 0px;
@@ -142,9 +142,10 @@
 									</table>
 									<p style="font-size:17px">Verified that the above material is delivered in good condition.</p>
 									<div class="engineering" style="font-size:17px">
+										<hr></hr>
 										<p class="no-margin"><b>For Uppal Engineering Company</b></p>
 										<br></br>
-										<p class="no-margin">0300-8417170</p>
+										<p class="no-margin" style="margin-left:50px">0300-8417170</p>
 									</div>
 								</div>
 

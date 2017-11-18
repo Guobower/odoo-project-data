@@ -41,6 +41,9 @@ class sale_order_customized(models.Model):
 	('sent', 'Quotation Sent'),
 	('sale', 'Sales Order'),
 	('done', 'Locked'),
+	('assigned', 'Collect Cargo'),
+	('waiting_approve', 'Waiting For Approval'),
+	('ready', 'Ready For Delivery'),
 	('cancel', 'Cancelled'),
 	('partial', 'Partial'),
 	('complete', 'Complete'),
@@ -531,9 +534,15 @@ class sale_order_customized(models.Model):
 				if lines.product_id.id not in product_lst:
 					if lines.manual == True:
 						lines.qty = 0
-		for x in self.order_line:
-			if x.product_id.pcs_per_carton > 0:
-				x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
+			# for x in self.order_line:
+			# 	if x.product_id.pcs_per_carton > 0:
+			# 		print x.product_id.pcs_per_carton
+			# 		print x.product_uom_qty
+			# 		print x.carton
+			# 		print "llllllllllllllllll"
+			# 		print "llllllllllllllllll"
+			# 		x.carton = x.product_uom_qty / x.product_id.pcs_per_carton
+			# 		print x.carton
 
 	def _prepare_instant_promo(self, product_id, qty, id):
 		data = {
@@ -579,6 +588,7 @@ class sale_order_line_extension(models.Model):
 	price 			= fields.Many2one('product.pricelist.item')
 	check_boolean 	= fields.Boolean()
 	set_list_price 	= fields.Boolean()
+	# price_check 	= fields.Boolean()
 	check_promo 	= fields.Boolean(string="Promo ?", default=False)
 	trial_price_unit 	= fields.Float(string="local Price")
 	
@@ -602,6 +612,7 @@ class sale_order_line_extension(models.Model):
 				if x.product_id.id == self.product_id.id or x.categ_id.id == self.product_id.categ_id.id:
 					self.pricelist_ext = self.order_id.partner_id.linked_pricelist.id
 					self.check_boolean = True
+			
 
 			for x in promoList:
 				if x.promotion.applicable_on == "product": 
@@ -616,31 +627,36 @@ class sale_order_line_extension(models.Model):
 						self.pricelist_ext = 2 
 					else:
 						self.set_list_price = False
-		all_records = self.env['account.invoice'].search([])
-		all_promotions = self.env['naseem.sales.promo'].search([])
+			all_records = self.env['account.invoice'].search([])
+			all_promotions = self.env['naseem.sales.promo'].search([])
 
 ########################################
 #       Checking Invoice
 ########################################
 
-		for a in all_promotions:
-			if self.product_id == a.prod_name:
-				self.promo_code = a.id
-				self.check_promo = True
-			else:
-				self.promo_code = False
-				self.check_promo = False
+			for a in all_promotions:
+				if self.product_id == a.prod_name:
+					self.promo_code = a.id
+					self.check_promo = True
+				else:
+					self.promo_code = False
+					self.check_promo = False
 
 ########################################
 #       Last Sale Price
 ########################################
 
-		for x in all_records:
-			if self.order_id.partner_id == x.partner_id:	
-				for y  in x.invoice_line_ids:
-					if self.product_id == y.product_id:
-						self.last_sale = y.customer_price
-						return
+			for x in all_records:
+				if self.order_id.partner_id == x.partner_id:	
+					for y in x.invoice_line_ids:
+						if self.product_id == y.product_id:
+							self.last_sale = y.customer_price
+
+			if self.product_id.pcs_per_carton > 0:
+				self.carton = self.product_uom_qty / self.product_id.pcs_per_carton
+				return
+
+
 
 	@api.onchange('discount','price_unit')
 	def calculate_customer_price(self):
@@ -665,27 +681,37 @@ class sale_order_line_extension(models.Model):
 	@api.onchange('price')
 	def get_price(self):
 		self.pricelist_ext = self.price.pricelist_id.id
-		print self.pricelist_ext
-		print self.pricelist_ext
 
-	@api.onchange('product_id','product_uom_qty','price_unit','customer_price','pricelist_ext')
+
+	@api.onchange('product_id','product_uom_qty','customer_price','pricelist_ext')
 	def _onchange_product_line(self):
-		# print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 		if self.product_id and self.pricelist_ext:
 			for item in self.pricelist_ext.item_ids:
 				if item.product_id.id == self.product_id.id:
 					if item.compute_price == 'fixed':
 						if item.fixed_price != 0.0:
-							print "here we are "
 							self.price_unit = item.fixed_price
 					elif item.compute_price == 'formula':
 						if item.price_discount != 0.0:
 							self.price_unit = self.product_id.with_context(pricelist=item.base_pricelist_id.id).price
 							self.discount = item.price_discount
+
 					else:
 						raise Warning('Pls select compute price to fix or formula in the pricelist.')
 
-	
+	@api.onchange('product_id')
+	def check_price_new(self):
+		if self.product_id:
+			new = self.env['product.pricelist.item'].search([('pricelist_id.name','=','List Price'),('product_id','=',self.product_id.id)])
+			if self.check_boolean == False and self.check_promo == False:
+				self.price = new.id
+
+
+	@api.onchange('price_unit')
+	def _onchange_price(self):
+		if self.price_unit != 1 and self.price_unit != self.price.fixed_price:
+			self.price = False
+
 class sale_order_line_extension(models.Model):
 	_name = "sale.approve"
 

@@ -47,7 +47,7 @@
 									float: none;
 								}
 								.inquiry {
-									width: 50%;
+									width: 95%;
 									float: left;
 									margin-top: 30px;
 								}
@@ -85,11 +85,19 @@
 								}
 
 								.delivery {
-									width: 50%;
+									width: 98%;
 									float: left;
 									font-size: 17px;
 									font-weight: bold;
 									margin-left: 5px;
+								}
+
+								.sign {
+									width: 24%;
+									float: left;
+									font-weight: bold;
+									margin-left: 10px;
+									margin-top: 10px;
 								}
 								
 							</style>
@@ -125,6 +133,9 @@
 									<br class="clearfloat"/>
 
 									<div class="inquiry" style="font-size:17px">
+										<h2 style="margin-left:550px">QUOTATION</h2>
+										<br></br>
+										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.name"></span><span class="liquid"></span></p>
 										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.street"></span><span class="liquid"></span></p>
@@ -140,9 +151,9 @@
 										<p><span class="solid">Inquiry No:</span><span class="liquid" t-esc="o.inquiry_no"></span></p>
 									</div>
 
-									<div class="quotation">
+									<!-- <div class="quotation">
 										<h2>QUOTATION</h2>
-									</div>
+									</div> -->
 
 									<table width="100%">
 										<tr>
@@ -231,6 +242,17 @@
 										<br></br>
 										<span t-esc="o.note_3"></span>
 
+									</div>
+
+									<div class="sign">
+										<hr></hr>
+										<span>FOR UPPAL ENGINEERING COMPANY</span>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<span style="margin-left:50px">0300-8417170</span>
 									</div>
 
 								</div>

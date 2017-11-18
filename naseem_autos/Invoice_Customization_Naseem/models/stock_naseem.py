@@ -41,7 +41,7 @@ class stock_picking_own(models.Model):
 	received_by 	= fields.Char(string="Received by")
 	transporter 	= fields.Many2one('res.partner',string="Transporter")
 
-	reference_no 	= fields.Char(string="Reference No.")
+	reference_no 	= fields.Char(string="Reference")
 	carton_no		= fields.Char(string="No. of Carton")
 	bundle_no		= fields.Char(string="No. of Bundles")
 	delivered_by	= fields.Char(string="Delivered By")
@@ -55,7 +55,7 @@ class stock_picking_own(models.Model):
 		('assigned', 'Collect Cargo'),
 		('waiting_approve', 'Waiting For Approval'),
 		('ready', 'Ready For Delivery'),
-		('dispatch', 'Dispatch Cargo'),
+		('dispatch', 'Cargo Dispatch'),
 		('done', 'Done'),
 		('close', 'Closed'),
 		], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
@@ -143,6 +143,9 @@ class stock_picking_own(models.Model):
 	def submitt_bilty(self):
 
 		self.state = 'dispatch'
+
+	@api.multi
+	def post_enteries(self):
 
 		if self.cash_book_id:
 			for x in self.cash_book_id:
@@ -420,4 +423,14 @@ class stock_user(models.Model):
 
 
 		return new_record
+
+class stock_loc_wise(models.Model):
+	_inherit 	= 'stock.quant'
+
+	carton = fields.Float(string="Cartons", compute="compute_cartons")
+
+	@api.one
+	def compute_cartons(self):
+		if self.product_id.pcs_per_carton > 0:
+			self.carton = self.qty / self.product_id.pcs_per_carton
 

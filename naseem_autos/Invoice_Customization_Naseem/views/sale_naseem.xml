@@ -32,7 +32,7 @@
                     <button name="complete_order" string="Complete" type="object"  class="btn-primary" attrs="{'invisible': [('state', '!=', 'sale')]}"/>                    
                     <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft','sent','sale'))]}"/>
                     
-                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,assigned,waiting_approve,ready,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
 
                     <field name="state2" widget="statusbar" statusbar_visible="draft,validate,cancel" attrs="{'invisible': [('direct_invoice_check', '=', False)]}" />
 
@@ -65,7 +65,7 @@
                         <group colspan="2">
                             <field name="due_days" attrs="{'readonly':[('state', 'not in', 'draft')]}"/> 
                             <field name="date_order" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
-                            <field name="journal"/>
+                            <field name="journal" invisible="1"/>
                         </group>
                         <group colspan="6">
                             <field name="due" readonly="1" attrs="{'readonly':[('state', 'not in', 'draft')]}"/>
@@ -73,7 +73,7 @@
                     </group>
                     <notebook>
                         <page string="Order Lines">
-                            <field name="order_line" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('done','cancel'))]}">
+                            <field name="order_line" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('done','cancel','sale'))]}">
                                 <form string="Sales Order Lines">
                                     <group>
                                         <group>
@@ -143,7 +143,7 @@
                                     <field name="price_unit" attrs="{'readonly': ['|',('qty_invoiced', '&gt;', 0),('check_promo','=', True)]}" string="Price"/>
                                     
                                     <field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
-                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="discount"/>
                                     <field name="customer_price" readonly="1"/>
                                     <field name="price_subtotal" widget="monetary" groups="sale.group_show_price_subtotal" string="TOTAL"/>
                                     <field name="price_total" widget="monetary" groups="sale.group_show_price_total" />

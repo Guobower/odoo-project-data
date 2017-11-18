@@ -282,7 +282,7 @@ class wizard_class(models.TransientModel):
     def generate_products(self):
       new_data = []
       if self.category:
-        all_products = self.env['product.product'].search([])
+        all_products = self.env['product.product'].search([('foc','=',False)])
         all_product_qty = self.env['stock.change.product.qty'].search([])
         print self.category.id 
         for x in all_products:

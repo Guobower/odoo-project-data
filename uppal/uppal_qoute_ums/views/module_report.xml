@@ -47,12 +47,12 @@
 									float: none;
 								}
 								.inquiry {
-									width: 50%;
+									width: 95%;
 									float: left;
 									margin-top: 30px;
 								}
 								.quotation {
-									width: 50%;
+									width: 30%;
 									float: left;
 									margin-top: 30px;
 								}
@@ -85,11 +85,19 @@
 								}
 
 								.delivery {
-									width: 50%;
+									width: 80%;
 									float: left;
 									font-size: 17px;
 									font-weight: bold;
 									margin-left: 5px;
+								}
+
+								.sign {
+									width: 22%;
+									float: left;
+									font-weight: bold;
+									margin-left: 10px;
+									margin-top: 10px;
 								}
 								
 							</style>
@@ -103,14 +111,14 @@
 									<div class="heading">
 
 										<h2>M/S UPPAL MACHINERY STORE</h2>
-										<p style="font-size:17px">Uppal Center Ist Floor, 1st Floor ,99 Australia Building</p><br></br>
+										<p style="font-size:17px">98-Railway Road,Lahore</p><br></br>
 										<br></br>
-										<p style="font-size:17px">Railway Road, Lahore. Ph: 042-7666128</p>
+										<p style="font-size:17px">Ph: 042-37662541</p>
 										<br></br>
 										<br></br>
 										<p style="font-size:17px"><span class="solid">S.T.Reg #</span>
-										<span class="liquid">03-11-8412-002-55   </span>
-										<span class="solid">N.T.N.</span><span class="liquid">1433222-1</span></p>
+										<span class="liquid">03-11-8412-002-55</span>
+										<span class="solid">N.T.N.</span><span class="liquid">0144838-2</span></p>
 
 									</div>
 
@@ -125,6 +133,9 @@
 									<br class="clearfloat"/>
 
 									<div class="inquiry" style="font-size:17px">
+										<h2 style="margin-left:550px">QUOTATION</h2>
+										<br></br>
+										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.name"></span><span class="liquid"></span></p>
 										<br></br>
 										<p><span class="solid" t-esc="o.partner_id.street"></span><span class="liquid"></span></p>
@@ -140,9 +151,9 @@
 										<p><span class="solid">Inquiry No:</span><span class="liquid" t-esc="o.inquiry_no"></span></p>
 									</div>
 
-									<div class="quotation">
+									<!-- <div class="quotation">
 										<h2>QUOTATION</h2>
-									</div>
+									</div> -->
 
 									<table width="100%">
 										<tr>
@@ -231,6 +242,19 @@
 										<br></br>
 										<span t-esc="o.note_3"></span>
 
+									</div>
+
+									<br></br>
+
+									<div class="sign">
+										<hr></hr>
+										<span>FOR UPPAL MACHINERY STORE</span>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<br></br>
+										<span style="margin-left:50px">0300-8417170</span>
 									</div>
 
 								</div>

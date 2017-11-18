@@ -52,8 +52,8 @@
 									font-size: 17px;
 								}
 								.engineering {
-									widows: 30%;
-									margin-top: 50px;
+									width: 30%;
+									margin-top: 80px;
 								}
 								.no-margin {
 									margin-top: 0px;
@@ -79,7 +79,7 @@
 
 									<div class="heading">
 										<h2 class="no-margin">M/S UPPAL MACHINERY STORE</h2>
-										<p class="no-margin" style="font-size:17px">99 Railway Road, Lahore. Ph: 042-7666128</p>
+										<p class="no-margin" style="font-size:17px">98 Railway Road, Lahore. Ph: 042-7666128</p>
 									</div>
 
 									<div class="logo">
@@ -142,9 +142,10 @@
 									</table>
 									<p style="font-size:17px">Verified that the above material is delivered in good condition.</p>
 									<div class="engineering" style="font-size:17px">
-										<p class="no-margin"><b>For Uppal Engineering Company</b></p>
+										<hr></hr>
+										<p class="no-margin"><b>FOR UPPAL MACHINERY STORE</b></p>
 										<br></br>
-										<p class="no-margin">0300-8417170</p>
+										<p class="no-margin" style="margin-left:50px">0300-8417170</p>
 									</div>
 								</div>
 
