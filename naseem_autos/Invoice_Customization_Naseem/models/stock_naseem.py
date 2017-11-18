@@ -55,8 +55,8 @@ class stock_picking_own(models.Model):
 		('assigned', 'Collect Cargo'),
 		('waiting_approve', 'Waiting For Approval'),
 		('ready', 'Ready For Delivery'),
-		('dispatch', 'Cargo Dispatch'),
 		('done', 'Done'),
+		('complete', 'Complete'),
 		('close', 'Closed'),
 		], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
@@ -142,7 +142,7 @@ class stock_picking_own(models.Model):
 	@api.multi
 	def submitt_bilty(self):
 
-		self.state = 'dispatch'
+		self.state = 'complete'
 
 	@api.multi
 	def post_enteries(self):

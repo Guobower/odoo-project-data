@@ -80,7 +80,7 @@
                 <button name="action_invoice_open" type="object" states="proforma2" string="Validate" groups="account.group_account_invoice"/>
                 <button name="action_invoice_proforma2" type="object" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
 
-                <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+                <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice"/>
                 <button name="action_invoice_draft" states="cancel" string="Reset to Draft" type="object" groups="account.group_account_invoice"/>
                 <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,open,paid"/>
             </header>
@@ -144,7 +144,7 @@
                                 <field name="price"/> 
                                 <field name="uom_id" groups="product.group_uom"/>
                                 <field name="price_unit" string="Price"/>
-                                <field name="discount" groups="base.group_no_one"/>
+                                <field name="discount"/>
                                 <field name="customer_price"/>
                              
                                 <field name="price_subtotal" string="TOTAL"/>
@@ -245,6 +245,8 @@
 
 
 
+
+
 <!-- Removing Sale Team Field (team_id) from sales invoice form veiw -->
 
 <record id="sale.account_invoice_form" model="ir.ui.view">
@@ -283,7 +285,7 @@
                     <button name="action_invoice_open" type="object" states="proforma2" string="Validate" groups="account.group_account_invoice"/>
                     <button name="action_invoice_proforma2" type="object" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
 
-                    <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+                    <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice"/>
                     <button name="action_invoice_draft" states="cancel" string="Reset to Draft" type="object" groups="account.group_account_invoice"/>
                     <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,refund,open,paid"/>
                 </header>
@@ -302,13 +304,13 @@
                         <group colspan="2">
                             <field name="number" string="S.No."/>
                             <field name="pdc_module" invisible="1"/>
-                            <field string="Customer" name="partner_id" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" domain="[('customer', '=', True)]"/>
+                            <field string="Customer" name="partner_id" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" domain="[('customer', '=', True)]" readonly='0'/>
                         <field name="transporter" domain="[('check_trans', '=', True)]" />
                         <field name="reference"/>
                         <field name="remaining_payment_days" invisible="1" />
                     </group>
                         <group colspan="2">
-                            <field name="user_id"/>
+                            <field name="user_id" readonly='0'/>
                              <field name="payment_term_id" readonly="1"/>
                              <field name="balance"/>
                              <field name="source"/>
@@ -318,7 +320,7 @@
                         </group>
                         <group colspan="2">
                             <field name="due_days"/>
-                            <field name="date_invoice"/>
+                            <field name="date_invoice" readonly='0'/>
                             <field name="incoterm" string="Delivery Term" widget="selection" groups="base.group_user"/>
                             <field name="warehouse"/>
                            
@@ -346,10 +348,9 @@
                                     <field name="quantity" string="Quanitity (PCS)"/>
                                     <field name="carton"/>
                                     <field name="last_sale"/>
-                                    <field name="price"/> 
                                     <field name="uom_id" groups="product.group_uom"/>
                                     <field name="price_unit" string="Price"/>
-                                    <field name="discount" groups="base.group_no_one"/>
+                                    <field name="discount"/>
                                     <field name="customer_price"/>
                                  
                                     <field name="price_subtotal" string="TOTAL"/>
@@ -447,21 +448,25 @@
 
     </record>
 
-   <!--  <record id="view_tree_refund_invoice" model="ir.ui.view"> 
-            <field name="name">view_tree_refund_invoice</field> 
+   <record id="invoice_refund_tree" model="ir.ui.view"> 
+            <field name="name">invoice_refund_tree</field> 
             <field name="model">account.invoice</field> 
             <field name="type">tree</field> 
             <field name="arch" type="xml"> 
             <tree> 
                 <field name="partner_id"/>
-                <field name="type"/>
                 <field name="date_invoice"/>
+                <field name="number"/>
+                <field name="user_id"/>
+                <field name="amount_total"/>
+                <field name="source"/>
+                <field name="state"/>
 
 
             </tree> 
             </field> 
             
-        </record> -->
+        </record>
 
 
     <record id="action_sales_return" model="ir.actions.act_window">
@@ -472,7 +477,7 @@
         <field name="context" eval="{'default_type': 'out_refund'}"/>
         <field name="search_view_id" ref="account.view_account_invoice_filter"/>                         
         <field name="view_ids" eval="[(5, 0, 0), 
-            (0, 0, {'view_mode': 'tree'}), 
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('invoice_refund_tree')}), 
             (0, 0, {'view_mode': 'form', 'view_id': ref('invoice_refund_form')})]"/>
     </record>
 
@@ -503,7 +508,7 @@
                     <button name="action_invoice_open" type="object" states="proforma2" string="Validate" groups="account.group_account_invoice"/>
                     <button name="action_invoice_proforma2" type="object" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
 
-                    <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+                    <button name="action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice"/>
                     <button name="action_invoice_draft" states="cancel" string="Reset to Draft" type="object" groups="account.group_account_invoice"/>
                     <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,refund,open,paid"/>
                 </header>
@@ -522,13 +527,13 @@
                         <group colspan="2">
                             <field name="number" string="S.No."/>
                             <field name="pdc_module" invisible="1"/>
-                            <field string="Customer" name="partner_id" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" domain="[('customer', '=', True)]"/>
+                            <field name="partner_id" readonly='0'/>
                         <field name="transporter" domain="[('check_trans', '=', True)]" />
                         <field name="reference"/>
                         <field name="remaining_payment_days" invisible="1" />
                     </group>
                         <group colspan="2">
-                            <field name="user_id"/>
+                            <field name="user_id" readonly='0'/>
                              <field name="payment_term_id" readonly="1"/>
                              <field name="balance"/>
                              <field name="source"/>
@@ -538,7 +543,7 @@
                         </group>
                         <group colspan="2">
                             <field name="due_days"/>
-                            <field name="date_invoice"/>
+                            <field name="date_invoice" readonly='0'/>
                             <field name="incoterm" string="Delivery Term" widget="selection" groups="base.group_user"/>
                             <field name="warehouse"/>
                            
@@ -569,7 +574,7 @@
                                     <field name="price"/> 
                                     <field name="uom_id" groups="product.group_uom"/>
                                     <field name="price_unit" string="Price"/>
-                                    <field name="discount" groups="base.group_no_one"/>
+                                    <field name="discount"/>
                                     <field name="customer_price"/>
                                  
                                     <field name="price_subtotal" string="TOTAL"/>
@@ -675,6 +680,26 @@
         <field name="domain">[('state', '=', 'open'),('type', '=', 'out_invoice'),('due_days', '&gt;=', '1')]</field>
     </record> -->
 
+     <record id="view_tree_due_invoice" model="ir.ui.view"> 
+            <field name="name">view_tree_due_invoice</field> 
+            <field name="model">account.invoice</field> 
+            <field name="type">tree</field> 
+            <field name="arch" type="xml"> 
+            <tree> 
+                <field name="partner_id"/>
+                <field name="date_invoice"/>
+                <field name="number"/>
+                <field name="user_id"/>
+                <field name="amount_total"/>
+                <field name="source"/>
+                <field name="state"/>
+
+
+            </tree> 
+            </field> 
+            
+        </record>
+
     <record id="action_due_invoices" model="ir.actions.act_window">
         <field name="name">Due Invoices</field>
         <field name="type">ir.actions.act_window</field>
@@ -682,7 +707,7 @@
         <field name="domain">[('type','=','out_invoice'),('state', '=', 'open')]</field>
         <field name="search_view_id" ref="account.view_account_invoice_filter"/>                         
         <field name="view_ids" eval="[(5, 0, 0), 
-            (0, 0, {'view_mode': 'tree'}), 
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_tree_due_invoice')}), 
             (0, 0, {'view_mode': 'form', 'view_id': ref('due_invoice_form')})]"/>
     </record>
 
@@ -692,10 +717,10 @@
         parent="sale.menu_sale_invoicing" 
         sequence="1101"/>
 
-   <!--  <record id="due_extension_tree" model="ir.ui.view">
+    <record id="due_extension_tree" model="ir.ui.view">
         <field name="name">due_extension_tree</field>
         <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+        <field name="inherit_id" ref="Invoice_Customization_Naseem.view_tree_due_invoice"/>
         <field name="type">tree</field>
         <field name="arch" type="xml">
              <xpath expr="//tree" position="attributes">
@@ -704,7 +729,7 @@
             </xpath>
         </field>
 
-    </record> -->
+    </record>
 
 
      <!-- <record id="action_sales_return" model="ir.actions.act_window">

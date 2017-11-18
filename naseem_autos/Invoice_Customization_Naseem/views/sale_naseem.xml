@@ -32,7 +32,7 @@
                     <button name="complete_order" string="Complete" type="object"  class="btn-primary" attrs="{'invisible': [('state', '!=', 'sale')]}"/>                    
                     <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|',('direct_invoice_check', '=', True),('state', 'not in', ('draft','sent','sale'))]}"/>
                     
-                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,assigned,waiting_approve,ready,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,partial,complete" attrs="{'invisible': [('direct_invoice_check', '=', True)]}"/>
 
                     <field name="state2" widget="statusbar" statusbar_visible="draft,validate,cancel" attrs="{'invisible': [('direct_invoice_check', '=', False)]}" />
 

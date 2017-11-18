@@ -112,6 +112,17 @@ class sale_invoice_customized(models.Model):
 		return to_open_invoices.invoice_validate()
 
 
+	def action_invoice_cancel(self):
+		new_record = super(sale_invoice_customized, self).action_invoice_cancel()
+
+		if self.stock_id:
+			self.stock_id.state = 'cancel'
+
+		return new_record
+
+		# [('type','in',('out_invoice', 'out_refund'))]
+
+
 	@api.multi
 	@api.constrains()
 	def _check_total(self,credit,credit_limit,stop):
@@ -231,10 +242,11 @@ class sale_invoice_line_extension(models.Model):
 						if data.date_invoice == new:
 							self.price_unit = y.price_unit
 
-	@api.onchange('quantity')
+
+	@api.onchange('quantity','product_id')
 	def _onchange_cartons(self):
 		if self.invoice_id.type == "out_refund":
-			if self.quantity > 1:
+			if self.product_id.pcs_per_carton > 0:
 				self.carton = self.quantity / self.product_id.pcs_per_carton
 				print self.carton
 

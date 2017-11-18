@@ -17,9 +17,9 @@
          <!--    <button name="do_button" string="Print DO" type="object" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
             <button name="dc_button" string="Print DC" type="object" class="btn-primary" attrs="{'invisible': [('print_do', '=',False)]}"/> -->
             <!-- <button name="close_order" string="Close" type="object" class="btn-primary"/> -->
-            <button name="approve" string="Approval" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in',('waiting_approve','ready','dispatch','done'))]}"/>
-            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,waiting_approve,ready,dispatch,done"/>
-            <button name="submitt_bilty" string="Confirm Bilty" type="object" class="btn-primary"/>            
+            <button name="approve" string="Approval" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in',('waiting_approve','ready','dispatch','done','complete'))]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,cancel,waiting_approve,ready,dispatch,done,complete"/>
+            <button name="submitt_bilty" string="Complete" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=','done')]}"/>          
         </header>
 
         <xpath expr="//button[@name='do_unreserve']" position="replace">
@@ -79,7 +79,7 @@
 
         <xpath expr="//button[@name='do_new_transfer']" position="attributes">
             <attribute name="attrs">
-                {'invisible': [('state','in', ('waiting','draft','waiting_approve','ready','done'))]}
+                {'invisible': [('state','in', ('waiting','draft','waiting_approve','ready','done','complete'))]}
             </attribute>
         </xpath>
 
@@ -91,22 +91,22 @@
             
             <group>
                 <group string="Bilty Details"  >
-                    <field name="bilty_no" />
+                    <field name="bilty_no" attrs="{'readonly': [('state', '=','complete')]}"/>
                    <!--  <field name="bilty_recieved" attrs="{'invisible': [('picking_type_code', '=','incoming')]}"/> -->
-                    <field name="bilty_paid"/>
+                    <field name="bilty_paid" attrs="{'readonly': [('state', '=','complete')]}"/>
                     <!-- <field name="bilty_amt_paid" /> -->
-                    <field name="bilty_amt_recev" />
+                    <field name="bilty_amt_recev" attrs="{'readonly': [('state', '=','complete')]}"/>
                     <field name="bilty_attach" />
-                    <field name="warehouse" widget="selection" domain="[('journal_id','=',2)]" />
-                    <field name="packing_expense"/>
-                    <field name="pack_exp_recev" />
+                    <field name="warehouse" widget="selection" domain="[('journal_id','=',2)]" attrs="{'readonly': [('state', '=','complete')]}"/>
+                    <field name="packing_expense" attrs="{'readonly': [('state', '=','complete')]}"/>
+                    <field name="pack_exp_recev" attrs="{'readonly': [('state', '=','complete')]}"/>
                     <field name="del_records" invisible="1"/>
                     <field name="inv_type" invisible="1"/>
                     <field name="cash_book_id"/>
                     <field name="account_inv_id" invisible="1"/>
                  </group>
                 <group string="Other Details" >
-                    <field name="reference_no" />
+                    <field name="reference_no" attrs="{'readonly': [('state', '=','complete')]}"/>
                     <field name="carton_no" />
                     <field name="bundle_no" />
                     <field name="delivered_by" />
