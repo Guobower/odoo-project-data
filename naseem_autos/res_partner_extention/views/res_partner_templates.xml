@@ -58,6 +58,8 @@
                 </group>
             </xpath>
 
+            
+
             <xpath expr="//group[@name='acc_sale']" position="replace">
                 <group name="acc_sale" string="Sale" attrs="{'invisible':['|',('supplier','=',True),('check_trans','!=',False)]}">
                     <field name="credit"  attrs="{'invisible':[('supplier','=',True)]}"/>
@@ -190,6 +192,7 @@
                 <field name="check_trans" invisible="1"/>
             </xpath>
 
+
         </field>
     </record>
 
@@ -220,8 +223,22 @@
             <xpath expr="//field[@name='phone']" position="after">
                 <field name="clearing_agent" attrs="{'invisible': [('supplier','=',False)]}" widget="selection" domain="[('check_clearing_agent', '=', True)]"/>
             </xpath>
+            <!-- <xpath expr="//field[@name='contact_address']/tree/field[@name='phone']" position="attributes">
+                <attribute name="string">Phone 1</attribute>
+            </xpath> -->
         </field> 
     </record>
+
+   <!--  <record id="add_mob_phone"   model="ir.ui.view"> 
+        <field name="name">add_mob_phone</field> 
+        <field name="model">address.contacts</field> 
+        <field name="inherit_id" ref="base.view_partner_form"/> 
+        <field name="arch" type="xml"> 
+            <xpath expr="//field[@name='contact_address']/tree/field[@name='phone']" position="attributes">
+                <attribute name="string">Phone 1</attribute>
+            </xpath>
+        </field> 
+    </record> -->
 
 
 

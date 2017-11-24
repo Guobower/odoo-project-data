@@ -15,7 +15,7 @@
 		    <field name="inherit_id" ref="stock.view_picking_form"/> 
 		    <field name="arch" type="xml"> 
 		        <header>
-	         		<button name="%(report_for_naseem_delivery_order)d" string="Print DO" type="action" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
+	         		<button name="%(report_for_naseem_delivery_order)d" string="Print DO" type="action" class="btn-primary"  attrs="{'invisible': ['|',('print_do', '=',True),('state', 'in','cancel')]}" />
 	         	</header>
 	        </field>
 

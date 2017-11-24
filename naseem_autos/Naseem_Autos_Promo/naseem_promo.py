@@ -738,6 +738,11 @@ class instant_promo_so(models.Model):
 			if self.product_id.pcs_per_carton > 0:
 				self.qty_per_crt = self.qty / self.product_id.pcs_per_carton
 
+	@api.onchange('qty_per_crt')
+	def get_pieces(self):
+		if self.qty_per_crt:
+			self.qty = self.qty_per_crt * self.product_id.pcs_per_carton
+
 
 class generate_products(models.TransientModel):
 	_name = "generate.products"

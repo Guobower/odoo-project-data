@@ -18,11 +18,12 @@
                         <group name="group_left"> 
                             <field name="region"/>
                             <field name="customer"/>
+                            <field name="bol_chk" invisible="1"/>
                         </group>
                         <group name="group_right">
                             <field name="form"/>
                             <field name="to"/>
-                            <field name="types"/>
+                            <field name="types" attrs="{'invisible':[('bol_chk','=',False)]}"/>
 
                         </group>
                     </group>

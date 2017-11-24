@@ -660,9 +660,11 @@ class sale_order_line_extension(models.Model):
 
 	@api.onchange('discount','price_unit')
 	def calculate_customer_price(self):
-		if self.discount:
-			discounted_amount = (self.price_unit/100)*self.discount
-			self.customer_price = self.price_unit - discounted_amount
+		# if self.discount:
+		discounted_amount = (self.price_unit/100)*self.discount
+		self.customer_price = self.price_unit - discounted_amount
+		print self.price_unit
+		print self.customer_price
 		# if self.check_boolean == False:
 		# 	if self.price_unit != self.trial_price_unit:
 		# 		self.price = ""
@@ -681,6 +683,12 @@ class sale_order_line_extension(models.Model):
 	@api.onchange('price')
 	def get_price(self):
 		self.pricelist_ext = self.price.pricelist_id.id
+
+
+	@api.onchange('carton')
+	def get_pieces(self):
+		if self.carton:
+			self.product_uom_qty = self.carton * self.product_id.pcs_per_carton
 
 
 	@api.onchange('product_id','product_uom_qty','customer_price','pricelist_ext')

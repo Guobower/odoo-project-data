@@ -1,5 +1,6 @@
 from openerp import models, fields, api
 from datetime import datetime
+from openerp.exceptions import ValidationError
 import re
 
 
@@ -444,6 +445,9 @@ class driver_payments(models.Model):
 					})
 				x.bank_id = lineCreation.id
 
+		else:
+			raise ValidationError('Open Concerned Cash Book First')
+
 
 		return new_record
 
@@ -557,4 +561,15 @@ class rates(models.Model):
 	company_name = fields.Many2one('res.partner',string = 'Company Name',required=True)
 
 	rates_table = fields.One2many('rates.table', 'rates_table_id')
+
+class stock_user(models.Model):
+	_inherit 	= 'res.users'
+
+	@api.model
+	def create(self, vals):
+		new_record = super(stock_user, self).create(vals)
+		new_record.partner_id.customer = False
+
+
+		return new_record
 

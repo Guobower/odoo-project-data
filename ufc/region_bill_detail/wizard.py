@@ -28,7 +28,18 @@ class RegionWiseDetail(models.Model):
     to = fields.Date("To")
     customer = fields.Many2one('res.partner',string="Customer Name")
     region = fields.Many2one('regions')
+    bol_chk = fields.Boolean(string="bol")
     types = fields.Selection([('war','Warehouse'),('sal','Salepoint')],string="Types")
+
+    @api.onchange('customer')
+    def get_dharki(self):
+
+        if self.customer.name == "FFC Goth Machi":
+            self.bol_chk = True
+        else:
+            self.bol_chk = False
+
+
 
 class regionWiseDetail(models.Model):
     _inherit = "summary.ffc"    

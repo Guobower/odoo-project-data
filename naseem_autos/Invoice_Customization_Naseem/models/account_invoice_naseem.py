@@ -250,6 +250,11 @@ class sale_invoice_line_extension(models.Model):
 				self.carton = self.quantity / self.product_id.pcs_per_carton
 				print self.carton
 
+	@api.onchange('carton')
+	def get_pieces(self):
+		if self.carton:
+			self.quantity = self.carton * self.product_id.pcs_per_carton
+
 
 
 

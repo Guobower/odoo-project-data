@@ -35,7 +35,7 @@
               <group string="">
                 <field name="order_no"/>
                 <field name="customer" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
-                <field name="orient"/>
+                <field name="orient" invisible="1"/>
                 <field name="dharki" invisible="1"/>
                 <field name="engro" invisible="1"/>
                 <field name="gotmachi" invisible="1"/>
@@ -340,13 +340,13 @@
 <menuitem id="menu_new_module_child1" name="Pre Invoices" parent="menu_new_module" action="action_new_module" sequence="1"/>
 
   <record model="ir.rule" id="ir_values_active_branch">
-        <field name="name">Active User Branch Rule</field>
-        <field name="model_id" ref="model_your_model_name"/>
-        <field name="domain_force">[('branch','=',user.branch.id)]</field>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
+      <field name="name">Active User Branch Rule</field>
+      <field name="model_id" ref="ufc_automization_10.model_ufc_auto"/>
+      <field name="domain_force">[('branch','=',user.Branch.id)]</field>
+      <field name="perm_read" eval="True"/>
+      <field name="perm_write" eval="True"/>
+      <field name="perm_unlink" eval="True"/>
+      <field name="perm_create" eval="True"/>
     </record>
 
     

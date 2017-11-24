@@ -53,6 +53,12 @@ class account_extension(models.Model):
 
     acct_type = fields.Selection([('credit','Credit'),('debit','Debit')],string="Account Type")
 
+# class addrerss_mob_phone(models.Model): 
+#     _inherit = 'address.contacts'
+
+#     mob_1 = fields.Char(string="Mobile 1")
+#     phn_1 = fields.Char(string="Phone 1")
+
 
 
 

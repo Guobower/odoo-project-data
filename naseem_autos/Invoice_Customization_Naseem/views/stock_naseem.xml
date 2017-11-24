@@ -17,8 +17,8 @@
          <!--    <button name="do_button" string="Print DO" type="object" class="btn-primary"  attrs="{'invisible': [('print_do', '=',True)]}" />
             <button name="dc_button" string="Print DC" type="object" class="btn-primary" attrs="{'invisible': [('print_do', '=',False)]}"/> -->
             <!-- <button name="close_order" string="Close" type="object" class="btn-primary"/> -->
-            <button name="approve" string="Approval" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in',('waiting_approve','ready','dispatch','done','complete'))]}"/>
-            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,cancel,waiting_approve,ready,dispatch,done,complete"/>
+            <button name="approve" string="Approval" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in',('waiting_approve','ready','done','complete','cancel'))]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,cancel,waiting_approve,ready,done,complete"/>
             <button name="submitt_bilty" string="Complete" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=','done')]}"/>          
         </header>
 
@@ -33,6 +33,8 @@
         <xpath expr="//button[@name='force_assign']" position="replace">
         </xpath>
         <xpath expr="//button[@name='action_assign']" position="replace">
+        </xpath>
+        <xpath expr="//button[@name='do_prepare_partial']" position="replace">
         </xpath>
 
        <!--  <xpath expr="//button[@name='action_cancel']" position="replace">
@@ -79,11 +81,15 @@
 
         <xpath expr="//button[@name='do_new_transfer']" position="attributes">
             <attribute name="attrs">
-                {'invisible': [('state','in', ('waiting','draft','waiting_approve','ready','done','complete'))]}
+                {'invisible': [('state','in', ('waiting','draft','waiting_approve','ready','done','complete','cancel'))]}
             </attribute>
         </xpath>
 
-        <xpath expr="//field[@name='pack_operation_product_ids']/tree/field[@name='from_loc']" position="replace">
+        <xpath expr="//field[@name='pack_operation_product_ids']" position="attributes">
+            <attribute name="attrs">
+                {'readonly': [('state','in',('waiting_approve','done'))]}
+            </attribute>
+
             <!-- <field name="carton_done"/> -->
         </xpath>
 
@@ -107,10 +113,10 @@
                  </group>
                 <group string="Other Details" >
                     <field name="reference_no" attrs="{'readonly': [('state', '=','complete')]}"/>
-                    <field name="carton_no" />
-                    <field name="bundle_no" />
-                    <field name="delivered_by" />
-                    <field name="received_by" />
+                    <field name="carton_no" attrs="{'readonly': [('state', 'in','waiting_approve')]}"/>
+                    <field name="bundle_no" attrs="{'readonly': [('state', 'in','waiting_approve')]}"/>
+                    <field name="delivered_by" attrs="{'readonly': [('state', 'in','waiting_approve')]}"/>
+                    <field name="received_by" attrs="{'readonly': [('state', 'in','waiting_approve')]}"/>
                     <!-- <field name="pack_exp_paid" /> -->
                     
                      <field name="transporter" domain="[('check_trans','=',True)]" widget="selection" />

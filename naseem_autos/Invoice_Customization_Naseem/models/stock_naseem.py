@@ -358,7 +358,7 @@ class stock_picking_own(models.Model):
 class stock_pack_extension(models.Model):
 	_inherit 	= 'stock.pack.operation'
 
-	carton_to 	= fields.Float(string="Carton To Do")
+	carton_to 	= fields.Float(string="Carton To Do",readonly=True)
 	carton_done = fields.Float(string="Carton Done")
 
 	@api.onchange('product_qty')
@@ -370,6 +370,7 @@ class stock_pack_extension(models.Model):
 	def round_carton_to(self):
 		if self.carton_to:
 			self.carton_to = round(self.carton_to)
+			self.product_qty = int(self.carton_to * self.product_id.pcs_per_carton)
 
 			# self.qty_done = self.product_id.pcs_per_carton * self.product_qty
 			# self.carton_done = self.qty_done / self.product_id.pcs_per_carton 
