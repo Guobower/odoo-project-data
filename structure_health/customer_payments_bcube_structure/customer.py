@@ -34,24 +34,24 @@ class CustomerPayment(models.Model):
 					], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
 	
-	@api.model
-	def create(self, vals):
-		new_record = super(CustomerPayment, self).create(vals)
-		if new_record.receipts == True:
-			new_record.number = self.env['ir.sequence'].next_by_code('customer.payment.bcube')
-		else:
-			new_record.number = self.env['ir.sequence'].next_by_code('supplier.payment.bcube')
-		withold = self.env['tax.withold'].search([])
-		create_tax_withholding = withold.create({
-				'supplier' : new_record.partner_id.name,
-				'date': new_record.date,
-				'name': new_record.name,
-				'amount':new_record.amount ,
-				'tax': new_record.t_total,
-				'ref_no': new_record.number,
-				})
+	# @api.model
+	# def create(self, vals):
+	# 	new_record = super(CustomerPayment, self).create(vals)
+	# 	if new_record.receipts == True:
+	# 		new_record.number = self.env['ir.sequence'].next_by_code('customer.payment.bcube')
+	# 	else:
+	# 		new_record.number = self.env['ir.sequence'].next_by_code('supplier.payment.bcube')
+	# 	withold = self.env['tax.withold'].search([])
+	# 	create_tax_withholding = withold.create({
+	# 			'supplier' : new_record.partner_id.name,
+	# 			'date': new_record.date,
+	# 			'name': new_record.name,
+	# 			'amount':new_record.amount ,
+	# 			'tax': new_record.t_total,
+	# 			'ref_no': new_record.number,
+	# 			})
 
-		return new_record
+	# 	return new_record
 
 
 	# @api.multi
@@ -62,15 +62,15 @@ class CustomerPayment(models.Model):
 	# 	return super(CustomerPayment,self).unlink()
 
 
-	@api.multi
-	def unlink(self):
-		if self.state == "post":
-			raise  ValidationError('Cannot Delete in Posted State')
-		withhold = self.env['tax.withold'].search([('challan_no','=',self.number)])
-		if withhold:
-			withhold.unlink()
-		super(CustomerPayment,self).unlink()
-		return True
+	# @api.multi
+	# def unlink(self):
+	# 	if self.state == "post":
+	# 		raise  ValidationError('Cannot Delete in Posted State')
+	# 	withhold = self.env['tax.withold'].search([('challan_no','=',self.number)])
+	# 	if withhold:
+	# 		withhold.unlink()
+	# 	super(CustomerPayment,self).unlink()
+	# 	return True
 
 	@api.onchange('partner_id')
 	def load_invoice(self):

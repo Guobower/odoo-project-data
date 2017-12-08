@@ -51,9 +51,11 @@ class RegForm(models.Model):
     emg_contact_1 = fields.Char(string="CONTACT")
     emg_addres_1 = fields.Char(string="ADDRESS")
     stages = fields.Selection([
-        ('draft', 'Draft'),
-        ('validate', 'Validate'),
-        ],default='draft')
+        ('leads', 'Leads'),
+        ('app_form', 'Application Form'),
+        ('member', 'Member'),
+        ('non_member', 'Non Active Members'),
+        ],default='leads')
 
 
     @api.onchange('package')
@@ -63,14 +65,6 @@ class RegForm(models.Model):
             self.total = self.package.total
 
 
-
-class RegPackage(models.Model):
-    _name = 'reg.package'
-
-    name = fields.Char(string='Name')
-    total = fields.Float(string='Total')
-    monthly = fields.Float(string='Monthly')
-    branch = fields.Many2one('reg.branch',string='Branch')
 
 
 class RegBranch(models.Model):
@@ -123,4 +117,107 @@ class RegActivity(models.Model):
 
     name = fields.Char(string='Name')
 
+class RegAppoint(models.Model):
+    _name = 'struct.appointment'
+
+    name = fields.Char(string='Name')
+    contact = fields.Char(string='Contact')
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
+
+class RegVisitor(models.Model):
+    _name = 'struct.visitor'
+
+    name = fields.Char(string='Name')
+
+class RegVisitorDaily(models.Model):
+    _name = 'struct.visitor.daily'
+
+    name = fields.Char(string='Name')
+
+
+class RegVisitorMonthly(models.Model):
+    _name = 'struct.visitor.monthly'
+
+    name = fields.Char(string='Name')
+
+class RegAttend(models.Model):
+    _name = 'struct.attend'
+
+    name = fields.Char(string='Name')
+
+
+class RegAttendReport(models.Model):
+    _name = 'struct.attend.report'
+
+    name = fields.Char(string='Name')
+
+class RegJoining(models.Model):
+    _name = 'struct.joining'
+
+    name = fields.Char(string='Name')
+
+class RegReJoining(models.Model):
+    _name = 'struct.rejoining'
+
+    name = fields.Char(string='Name')
+
+class RegContinue(models.Model):
+    _name = 'struct.continue'
+
+    name = fields.Char(string='Name')
+
+class RegDisContinue(models.Model):
+    _name = 'struct.discontinue'
+
+    name = fields.Char(string='Name')
+
+class RegPaid(models.Model):
+    _name = 'struct.paid'
+
+    name = fields.Char(string='Name')
+
+class RegUnPaid(models.Model):
+    _name = 'struct.unpaid'
+
+    name = fields.Char(string='Name')
+
+
+class RegService(models.Model):
+    _name = 'struct.service'
+
+    name = fields.Char(string='Name')
+
+class RegPackage(models.Model):
+    _name = 'reg.package'
+
+    name = fields.Char(string='Name')
+    pakg_tree = fields.One2many('reg.package.tree','pakg_id')
+
+class RegPackageTree(models.Model):
+    _name = 'reg.package.tree'
+
+    service = fields.Char(string="Services")
+    amount = fields.Float(string="Amount")
+    pakg_id = fields.Many2one('reg.package')
+
+class RegTrainer(models.Model):
+    _name = 'struct.trainer'
+
+    name = fields.Char(string='Name')
+
+class RegSlots(models.Model):
+    _name = 'struct.slots'
+
+    name = fields.Char(string='Name')
+
+class RegBranches(models.Model):
+    _name = 'struct.branches'
+
+    name = fields.Char(string='Name')
+
+class RegVisitorType(models.Model):
+    _name = 'struct.visit.type'
+
+    name = fields.Char(string='Name')
     

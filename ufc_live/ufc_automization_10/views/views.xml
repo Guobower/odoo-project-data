@@ -1,0 +1,451 @@
+<?xml version="1.0"?> 
+<odoo> 
+
+    <record id="view_form_new_module" model="ir.ui.view"> 
+      <field name="name">ufc Form</field> 
+      <field name="model">ufc.auto</field> 
+      <field name="arch" type="xml"> 
+
+        <form> 
+
+          <header>
+
+              <field name="state" widget="statusbar" statusbar_visible="draft,plan,bilty,done,paid,cancel"/>
+
+              <button name="reset" type="object" string="Reset To Draft" class="oe_highlight"/>
+
+              <button name="plane" type="object" string="Plan" class="oe_highlight"
+              attrs="{'invisible':[('state','!=','draft')]}"/>
+
+              <button name="bilty" type="object" string="Bilty" class="oe_highlight" attrs="{'invisible':[('state','!=','plan')]}"/>
+
+              <button name="done" type="object" string="Done" class="oe_highlight" 
+                attrs="{'invisible':[('state','!=','bilty')]}"/>
+
+              <button name="cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible':[('state','=','draft')]}"/>
+
+
+            
+          </header> 
+
+          <sheet>
+            
+            <group >
+
+              <group string="">
+                <field name="order_no"/>
+                <field name="customer" domain="[('customer','=',True)]" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="orient" invisible="1"/>
+                <field name="dharki" invisible="1"/>
+                <field name="engro" invisible="1"/>
+                <field name="gotmachi" invisible="1"/>
+                <field name="sequence" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="fiscal_position" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+              </group>
+
+              <group string="">
+                <field name="invoice_date" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                <field name="journal" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="account" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="branch" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+              </group>
+
+            </group>
+            
+            <group >
+
+              <group string="Shipment Details">
+                <field name="challan_no" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="bilty_no" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="bilty_date" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="no_of_bags" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="crt_no" attrs="{'invisible':[('orient','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="bl_number" attrs="{'invisible':[('orient','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="quantity" attrs="{'invisible':[('orient','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="product" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="region" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="code" invisible="1"/>
+                <field name="province" invisible="1"/>
+                <field name="dest_name" invisible="1"/>
+                <field name="reg_code" invisible="1"/>
+                <field name="route" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="via" attrs="{'invisible':[('dharki','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="party_name" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="types" attrs="{'invisible':[('gotmachi','=',False)]}"/>
+                <!-- ,'readonly':[('state','in',['bilty','done','paid'])]}"/> -->
+                <field name="additional_freight" attrs="{'invisible':[('dharki','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="Bill_No"/>
+                <field name="bill_date"/>
+                <field name="distance" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="pun_dist" attrs="{'invisible':[('engro','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="sin_dist" attrs="{'invisible':[('engro','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+              </group>
+
+              <group string="Accounting Details">
+                <field name="shipper_invoice_no" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="plan" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="plan_date" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <!-- <field name="new_plan_date" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/> -->
+                <field name="weight" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="relevant_purchase_invoice" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="sale_price"/>
+                <field name="add_per"/>
+                <field name="additional_freight_val" attrs="{'invisible':[('dharki','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="misc_charges" attrs="{'invisible':[('orient','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="purchase_price" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                <field name="tax2percent"/>
+                <field name="profit"/>
+                <field name="supplier" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="pun_amount" attrs="{'invisible':[('engro','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                <field name="sin_amount" attrs="{'invisible':[('engro','=',False)],'readonly':[('state','in',['bilty','done','paid'])]}"/>
+              </group>
+
+            </group> 
+
+            <group >
+
+              <group string="Shipment Details">
+                <field name="expected_company_price" />
+                <field name="expected_profit"/>
+                <field name="ean13" attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+              </group>
+
+              <group string="Accounting Details">
+                <field name="fc_paid_amount"/>
+                <field name="remaining"/>
+              </group>
+
+            </group>
+
+            <notebook>       
+
+              <page string="Photos">
+                                         
+                <group name="group_top">
+
+                  <group name="group_left">                    
+                    <field name="driver_photo" widget='image' attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                    <field name="billty_photo" widget='image' attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>
+                    <field name="payment_photo" widget='image' attrs="{'readonly':[('state','in',['bilty','done','paid'])]}"/>               
+                  </group>
+
+                  <group name="group_right">
+                  </group>
+
+                </group>
+                  
+              </page>
+
+              <page string="Driver Details">
+                                           
+                <group name="group_top">
+
+                  <group name="group_left">
+                    <field name="driver_name" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                    <field name="mobile_no" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                    <field name="cleander_name" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                    <field name="cnic" attrs="{'readonly':[('state','in',['done','paid'])]}"/>
+                    <field name="truck_no" attrs="{'required':[('state','not in',['draft','plan','cancel'])]}"/>
+                    <field name="licence_no" attrs="{'readonly':[('state','in',['done','paid'])]}"/>             
+                  </group>
+
+                  <group name="group_right">
+                  </group>
+
+                </group>
+                    
+              </page>
+
+              <page string="Supplier Payments">
+
+                <group name="group_top">
+                  <field name="driver_payment_id" nolabel='1'>
+                    <tree editable="bottom">
+                      <field name="name"/>
+                      <field name="description" />
+                      <field name="cnic" />
+                      <field name="date" />
+                      <field name="amount" />
+                      <field name="bank_id" invisible = "1"/>
+                    </tree>
+                  </field>
+                </group>
+                                
+              </page>
+                
+
+            </notebook>
+
+          </sheet>
+
+        </form> 
+
+      </field> 
+    </record>
+
+
+    <record id="view_tree_new_module" model="ir.ui.view"> 
+      <field name="name">ufc Form</field> 
+      <field name="model">ufc.auto</field> 
+      <field name="type">tree</field> 
+      <field name="arch" type="xml"> 
+      <tree string="Pre Invoices" default_order="order_no desc"> 
+       
+            <field name="customer"/>
+            <field name="invoice_date"/>
+            <field name="challan_no"/>
+            <field name="bilty_no"/>
+            <field name="no_of_bags"/>
+            <field name="region"/>
+            <field name="Bill_No"/>
+            <field name="distance"/>
+            <field name="shipper_invoice_no"/>
+            <field name="weight"/>
+            <field name="expected_company_price"/>
+            <field name="fc_paid_amount"/>
+            <field name="remaining"/>
+      
+
+
+      </tree> 
+      </field> 
+    </record>
+
+    <record id="ufc_sequence" model="ir.sequence">
+            <field name="name">ufc_sequence</field>
+            <field name="code">ufc.auto.seq</field>
+            <field name="prefix">S-</field>
+            <field name="padding">3</field>
+             
+        </record>
+
+
+
+
+    <record model="ir.actions.act_window" id="route_management_action">
+      <field name="name">Route Management</field>
+      <field name="res_model">route.management</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Route Management" id="route_managment_menu_item" parent="account.menu_finance_receivables" action="route_management_action" sequence="100"/>
+
+    <record id="view_form_rates_module" model="ir.ui.view"> 
+      <field name="name">Rates Form</field> 
+      <field name="model">rates</field> 
+      <field name="arch" type="xml"> 
+        <form> 
+
+          <sheet>
+
+            <group >
+
+              <group string="">
+
+                <field name="company_name" domain="[('customer','=',True)]"/>
+                <field name="dharki" invisible="1"/>
+                <field name="gotmachi" invisible="1"/>
+                <field name="mir" invisible="1"/>
+                
+              </group>
+
+              <group string="">
+
+                <field name="date_from"/>
+                <field name="date_to"/>
+                
+              </group>
+
+            </group>
+
+            <notebook>
+
+              <page string="Rates" attrs="{'invisible':[('gotmachi','=',False)]}">
+
+                <group name="group_top">
+
+                  <field name="rates_table" nolabel='1'>
+                    <tree editable="bottom">
+
+                      <field name="distance_from"/>
+                      <field name="distance_to"/>
+                      <field name="north_zone"/>
+                      <field name="center_zone"/>
+                      <field name="south_zone"/>
+                      <field name="quetta_zone"/>
+                      <field name="rahim_yar_khan"/>
+                      <field name="fixed"/>
+
+                    </tree>
+
+                  </field>
+                </group>
+              </page>
+
+              <page string="Rates" attrs="{'invisible':[('dharki','=',False)]}">
+
+                <group name="group_top">
+
+
+                  <field name="rates_table_dar" nolabel='1'>
+                    <tree editable="bottom">
+
+                      <field name="distance_from"/>
+                      <field name="distance_to"/>
+                      <field name="area"/>
+                      <field name="dharki_zone"/>
+                      <field name="faislabad_zone"/>
+                      <field name="hyderabad_zone"/>
+                      <field name="lahore_zone"/>
+                      <field name="multan_zone"/>
+                      <field name="fixed"/>
+
+                    </tree>
+
+                  </field>
+
+                </group>
+                              
+              </page>
+
+              <page string="Rates" attrs="{'invisible':[('mir','=',False)]}">
+
+                <group name="group_top">
+
+
+                  <field name="rates_table_mir" nolabel='1'>
+                    <tree editable="bottom">
+
+                      <field name="distance_from"/>
+                      <field name="distance_to"/>
+                      <field name="north_zone"/>
+                      <field name="center_zone"/>
+                      <field name="south_zone"/>
+                      <field name="quetta_zone"/>
+                      <field name="sukkur"/>
+                      <field name="fixed"/>
+
+                    </tree>
+
+                  </field>
+
+                </group>
+                              
+              </page>
+
+            </notebook>
+
+          </sheet>
+
+        </form>
+
+      </field>
+
+    </record>
+
+    <record id="view_tree_rates" model="ir.ui.view"> 
+      <field name="name">Rates Form</field> 
+      <field name="model">rates</field> 
+      <field name="type">tree</field> 
+      <field name="arch" type="xml"> 
+      <tree> 
+       
+            <field name="company_name"/>
+            <field name="date_from"/>
+            <field name="date_to"/>
+
+
+      </tree> 
+      </field> 
+    </record>
+
+
+    <record model="ir.actions.act_window" id="rate_table_action">
+      <field name="name">Rates Table</field>
+      <field name="res_model">rates</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Rates Table" id="rates_menu_item" parent="account.menu_finance_receivables" action="rate_table_action" sequence="101"/>
+
+
+    <record id="view_form_region_module" model="ir.ui.view"> 
+      <field name="name">Region</field> 
+      <field name="model">regions</field> 
+      <field name="arch" type="xml"> 
+        <form> 
+
+          <sheet>
+
+            <group >
+
+              <group string="">
+
+                <field name="name"/>
+                <field name="code"/>
+                <field name="province"/>
+                <field name="mir" attrs="{'invisible':['|',('got','=',True),('dar','=',True)]}"/>
+                <field name="dar" attrs="{'invisible':['|',('got','=',True),('mir','=',True)]}"/>
+                <field name="got" attrs="{'invisible':['|',('mir','=',True),('dar','=',True)]}"/>
+                
+
+              </group>
+
+              <group string="">
+
+                <field name="zone" attrs="{'invisible':[('got','=',False)]}" />
+                <field name="mir_zone" attrs="{'invisible':[('mir','=',False)]}"/>
+                <field name="dar_zone" attrs="{'invisible':[('dar','=',False)]}" />
+                <field name="area" attrs="{'invisible':[('dar','=',False)]}" />
+                
+              </group>
+
+            </group>
+
+          </sheet>
+
+        </form>
+
+      </field>
+
+    </record>
+
+
+
+  <act_window id="action_new_module" 
+  name="Pre Invoices" 
+  res_model="ufc.auto" 
+  view_mode="tree,form"
+  domain="[('state', 'in', ('bilty', 'done','paid'))]"
+  />
+
+    <record model="ir.actions.act_window" id="plan_menu_action">
+      <field name="name">Plan</field>
+      <field name="res_model">ufc.auto</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state', 'in', ('draft', 'plan'))]</field>
+    </record>
+
+  <menuitem id="menu_new_module" name="Pre Invoices" parent="account.menu_finance"  sequence="0"/>
+ 
+<menuitem id="menu_new_module_child0" name="Plan" parent="menu_new_module" action="plan_menu_action" sequence="0" />
+<menuitem id="menu_new_module_child1" name="Pre Invoices" parent="menu_new_module" action="action_new_module" sequence="1"/>
+
+  <record model="ir.rule" id="ir_values_active_branch">
+      <field name="name">Active User Branch Rule</field>
+      <field name="model_id" ref="ufc_automization_10.model_ufc_auto"/>
+      <field name="domain_force">[('branch','=',user.Branch.id)]</field>
+      <field name="perm_read" eval="True"/>
+      <field name="perm_write" eval="True"/>
+      <field name="perm_unlink" eval="True"/>
+      <field name="perm_create" eval="True"/>
+    </record>
+
+    
+
+
+</odoo>

@@ -1,0 +1,7 @@
+.custom .o_form_sheet_bg .o_form_sheet {
+	min-width: 1100px;
+	max-width: 1100px;
+}
+.custom .o_list_view.table th {
+    min-width: 75px;
+}

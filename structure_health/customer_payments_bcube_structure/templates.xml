@@ -200,9 +200,10 @@
 
 
      <menuitem id="sub_menu_customer_payments" 
-     name="Receipts" 
+     name="Customer Payments" 
      action="new_action_customer_payments" 
-     parent="account.menu_finance_receivables"/> 
+     parent="reg_form.reg_form_invoice"
+     sequence="2"/> 
 
 
     <menuitem id="sub_menu_supplier_payments" 

@@ -1,0 +1,224 @@
+                                <div class="report-head">
+                                    <div class="head-col-01">
+                                        
+                                        <t t-set="num" t-value="namer()" />
+                        
+
+                                        <t t-if = "num == 'FFC Mir Pur Mathelo'">
+                                            
+                                        </t>
+
+                                        <t t-if = "num == 'FFC Goth Machi'">
+                                            <img src="/region_bill_detail/static/src/img/03.jpg" alt="" />
+                                        </t>
+                           
+                                        <p>
+                                            <span>
+                                                <span class="solid">Bill Number:</span>
+                                                <span style="font-weight: bold;"></span>
+                                                    <span style="font-weight: bold;">
+                                                        <span class="liquid" t-esc="o.bill_no"></span>
+                                                    </span>
+                                                    <!-- /<span t-esc="number/10"></span> -->
+                                            </span>
+
+                                            <span style="float: right;"></span>
+                                                <span class="solid">From:</span>
+                                                <span style="font-weight: bold;">
+                                                    <span class="liquid" t-esc="form"></span>
+                                                </span>
+
+                                        </p>
+                                    </div>
+
+                                    <div class="head-col-02">
+                                        <img src="/region_bill_detail/static/src/img/02.jpg" alt="" />
+                           
+                                        <p>
+
+                                            <span style="float: left; margin: 0px 0px 0px 50px;">
+                                                <span class="solid">To: </span>
+                                                <span style="font-weight: bold;">
+                                                    <span class="liquid" t-esc="to"></span>
+                                                </span>
+                                            </span>
+
+                                            <span>
+                                                <span class="solid">Region: </span>
+                                                <span class="liquid" t-esc="region" style="font-weight: bold;"></span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <br class="clearfloat" />
+                                
+                                </div>
+
+                                <table class="marginer">
+                                    <tr>
+                                        <th rowspan="2" class="rower">Code</th>
+                                        <th>CS</th>
+                                        <th>Invoice No.</th>
+                                        <th>Date</th>
+                                        <th rowspan="2" class="rower">Bags</th>
+                                        <th colspan="2">M.Ton</th>
+                                        <th rowspan="2" class="rower">Destination</th>
+                                        <th>Distance</th>
+                                        <th>Truck no</th>
+                                        <th colspan="2">Rate/Ton</th>
+                                        <th colspan="2">Amount</th>
+                                        <th>For FFC use only</th>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>3-4</td>
+                                        <td>5-10</td>
+                                        <td>11-16</td>
+                                        <td>17-18</td>
+                                        <td>19-20</td>
+                                        <td>kilometers</td>
+                                        <td>21-27</td>
+                                        <td>28-30</td>
+                                        <td>31-32</td>
+                                        <td>33-38</td>
+                                        <td>39-40</td>
+                                        <td></td>
+                                        
+
+                                    </tr>
+
+                                    <t t-set="i" t-value="1"/>
+                                    <t t-set="wgt_total" t-value="0"/>
+                                    <t t-set="page_total" t-value="0"/>
+                                    <t t-foreach="sorted_records" t-as="data">
+
+                                        <tr>
+
+                                            <td>
+                                                <span t-esc="data.code"></span>
+                                            </td>
+                                            <td>
+                                                <t t-esc="i"/>
+                                                <t t-set="i" t-value="i+1"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="data.shipper_invoice_no"></span>
+                                            </td>
+                                            <td>
+                                                <sapn t-esc="datetime.datetime.strptime(data.invoice_date, '%Y-%m-%d').strftime('%d-%m-%Y')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="data.no_of_bags"></span>
+                                            </td>
+                                            <td>
+                                                <span t-esc="data.weight"></span>
+                                                <t t-set="wgt_total" t-value="wgt_total+float(data.weight)"/>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <span t-esc="data.dest_name"></span>
+                                            </td>
+                                            <td>
+                                                <span t-esc="data.distance"></span>
+                                            </td>
+                                            <td>
+                                                <span t-esc="data.truck_no"></span>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <span t-esc="'{:0,}'.format(int(float(data.sale_price)))"></span>
+                                                <t t-set="page_total" t-value="page_total+float(data.sale_price)"/>
+                                            </td>
+                                            <td></td>
+                                            <td></td>           
+
+                                        </tr>
+
+                                    </t>
+
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td colspan="2">Total Tons</td>
+                                        <td>
+                                           <span t-esc="'{:0,}'.format(int(float(wgt_total)))"></span> 
+                                        </td>
+                                        <td colspan="4"></td>
+                                        <td colspan="2">Page Total</td>
+                                        <td>
+                                            <span t-esc="'{:0,}'.format(int(float(page_total)))"></span> 
+                                        </td>
+                                        <td></td>
+                                        <td>Not to be Punc<br/> To be filled</td>
+
+                                    </tr>
+
+                                    <t t-set="i" t-value="i-1"/>
+
+                                    <tr class="finalar">
+                                        <td colspan="10">
+                                            <p>Receipted Copies From Dealer Attached(<span t-esc="i"></span>)</p>
+                                            <p>Contractors Signature ___________________</p>
+                                            <br class="clearfloat" />
+                                        </td>
+                                        <td colspan="2">Grand Total</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>On last sheet only</td>
+
+                                    </tr>
+
+                                </table>
+                                
+                            </div>
+
+                            <div class="report-footer">
+                                
+                                <div class="footer-col-01">
+                                    <p> <span class="text">Rate Amount Verified (Finance Office)</span> <span class="line">____________________</span> </p>
+
+                                    <table>
+
+                                        <tr>
+                                            <th colspan="2">Deduction</th>
+                                            <th colspan="2">Amount Paid</th>
+                                            <th>Voucher No</th>
+                                            <th>Date</th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>41-44</th>
+                                            <th>45-46</th>
+                                            <th>47-52</th>
+                                            <th>53-54</th>
+                                            <th>55-60</th>
+                                            <th>61-63</th>
+                                        </tr>
+
+                                        <tr>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                        </tr>
+
+                                    </table>
+
+                                </div>
+                                
+                                <div class="footer-col-02">
+                                    <p> 
+                                        <span class="text">Receipt of Consignment Verified</span> 
+                                        <span class="line">____________________</span>
+                                        <br></br>
+                                        <br></br>
+                                        <br></br>
+                                        <br></br>
+                                        <br></br>
+                                        <span t-esc="o.Customer.name"></span>
+                                    </p>
+                                </div>
+                                <br class="clearfloat" />
