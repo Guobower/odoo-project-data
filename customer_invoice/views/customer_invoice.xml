@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    
+    <data>   
+        
+        <template id="customer_invoice">
+            
+            <t t-call="report.html_container">
+
+                <!-- <t t-call="report.external_layout"> -->
+                
+                    <t t-foreach="docs" t-as="o">
+
+                        <div class="page">
+
+                            <style>
+                                .header,
+                                .footer {
+                                    display: none;
+                                }
+                                table {
+                                    width: 100%;
+                                    margin: 50px 0px 0px;
+                                }
+                                .totaler {
+                                    width: 50%;
+                                }
+                                table tr:first-child td {
+                                    border-bottom: 2px solid #565656;
+                                    font-weight: bold;
+                                }
+                                table tr.totals td {
+                                    border-top: 2px solid #565656;
+                                }
+                                table tr.totals td:first-child {
+                                    border-top: none;
+                                }
+                                table tr td {
+                                    padding: 10px 5px;
+                                }
+                                .contanier{
+                                    width: 100%;
+                                    margin: 0px auto;
+                                }
+                                .center-container{
+                                    width: 1000px;
+                                    margin: 0px auto;
+                                }
+                                .voice{
+                                    width: 100%;
+                                    margin: 0px auto;
+                                }
+                                .voice .solid {
+                                    font-weight: bold;
+                                }
+                                .voice .liquid {
+                                    
+                                }
+                                .invoice{
+                                    width: 18%;
+                                    margin: 0px auto;
+                                    float: right;
+                                }
+                                .invoice p{
+                                    width: 100%;
+                                }
+                                .name {
+                                    width: 50%;
+                                    float: left;
+                                }
+                                .clearfloat{
+                                    clear: both;
+                                    float: none;
+                                    display: block;
+                                }
+                                .other p{
+                                    font-weight: normal;
+                                    text-transform: uppercase;
+                                }
+                                .other {
+                                    margin: 30px 0px 0px;
+                                    width: 34%;
+                                    text-align: center;
+                                }
+                                .thanks {
+                                    margin: 30px 0px;
+                                }
+                                .thanks p {
+                                    text-align: center;
+                                    font-weight: bold;
+                                    font-size: 20px;
+                                }
+                                .behalf{
+                                    width: 31%;
+                                    float: right;
+                                    margin: 0px 0px 40px;
+                                    text-align: center;
+                                    border-top: 2px solid #565656;
+                                    padding: 20px 0px 0px;
+                                }
+                            </style>
+
+                            <div class="container">
+
+                                <div class="center-container">
+
+                                    <div class="voice">
+
+                                        <div class="name">
+
+                                            <h2>Bill to:</h2>
+                                            
+                                            <p>
+                                                <span class="solid">Name:</span> 
+                                                <span class="liquid" t-esc="o.partner_id.name"></span>
+                                            </p>
+
+                                            <p>
+                                                <span class="solid">NTN:</span> 
+                                                <span class="liquid" t-esc="o.partner_id.xxntn"></span>
+                                            </p>
+
+                                            <p>
+                                                <span class="solid">Address:</span> 
+                                                <span class="liquid">
+                                                    <span t-esc="o.partner_id.street"></span>
+                                                    <span t-esc="o.partner_id.street2"></span>
+                                                    <span t-esc="o.partner_id.city"></span>
+                                                    <span t-esc="o.partner_id.state_id.name"></span>
+                                                    <span t-esc="o.partner_id.zip"></span>
+                                                    <span t-esc="o.partner_id.country_id.name"></span>
+                                                </span>
+                                            </p>
+
+                                        </div>
+
+                                        <div class="invoice">
+
+                                            <h2>INVOICE:</h2>
+                                            <p>
+                                                <span class="solid">Date:</span> 
+                                                <span class="liquid" t-esc="o.invoice_date"></span>
+                                            </p>
+                                            <p>
+                                                <span class="solid">Invoice:</span> 
+                                                <span class="liquid" t-esc="o.number"></span> 
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+                                    <br class="clearfloat" />
+                                    <t t-set="tax" t-value="kam" />
+
+                                    <table>
+                                        
+                                        <tr>
+                                            <td>Description</td>
+                                            <td>Units</td>
+                                            <td>Units Price</td>
+                                            <td>Taxes</td>
+                                            <td>Amount</td>
+                                        </tr>
+                                        
+                                        <t t-foreach="o.invoice_line" t-as="data">
+                                            <tr>
+                                                <td><span t-esc="data.name"></span></td>
+                                                <td>
+                                                    <!-- <span t-esc="data.quantity"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.quantity)))"></span>
+                                                </td>
+
+                                                <td>
+                                                    <!-- <span t-esc="data.price_unit"></span> -->
+                                                     <span t-esc="'{:0,}'.format(int(float(data.price_unit)))"></span>
+                                                </td>
+                                                
+                                                <td>
+                                                    <t t-foreach="data.invoice_line_tax_id" t-as="taxer">
+                                                        <span t-esc="taxer.name"></span><br />
+                                                        <t t-set="tax" t-value="taxer.name" />
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <!-- <span t-esc="data.price_subtotal"></span> -->
+                                                    <span t-esc="'{:0,}'.format(int(float(data.price_subtotal)))"></span>
+
+                                                    Rs.</td>
+                                            </tr>
+                                        </t>
+
+                                        <tr class="totals">
+                                            <td colspan="3"></td>
+                                            <td><b>Total Exclusive Sales Tax</b></td>
+                                            <td>
+                                                <!-- <span t-esc="o.amount_untaxed"></span>  -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.amount_untaxed)))"></span>
+                                            Rs</td>
+                                        </tr>
+
+                                        <tr class="totals">
+                                            <td colspan="3"></td>
+                                            <td><b>Sales Tax</b></td>
+                                            <td>
+                                                <!-- <span t-esc="o.amount_tax"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.amount_tax)))"></span>
+                                             Rs</td>
+                                        </tr>
+
+                                        <tr class="totals">
+                                            <td colspan="3"></td>
+                                            <td><b>Total Inclusive Sales Tax</b></td>
+                                            <td>
+                                                <!-- <span t-esc="o.amount_total"></span>  -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.amount_total)))"></span>
+                                            Rs</td>
+                                        </tr>
+
+                                    </table>
+                                    <br class="clearfloat"/>
+
+                                    <table class="totaler">
+                                        
+                                        <tr>
+                                            <td>Tax</td>
+                                            <td>Base</td>
+                                            <td>Amount</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td><span t-esc="tax"></span></td>
+                                            <td>
+                                                <!-- <span t-esc="o.amount_untaxed"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.amount_untaxed)))"></span>
+                                            </td>
+                                            <td>
+                                                <!-- <span t-esc="o.amount_tax"></span> -->
+                                                <span t-esc="'{:0,}'.format(int(float(o.amount_tax)))"></span>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                    <br class="clearfloat"/>
+
+                                    <div class="other">
+                                        <p><b>Other Comments Or Special Instruction</b></p>
+                                        <p>Make all cheques payable to</p>
+                                        <p>
+                                            <b>
+                                                <t t-set="entited" t-value="o.tagm_entity.name" />
+                                                <span t-esc="entity(entited)"></span>
+                                            </b>
+                                        </p>
+                                    </div>
+
+                                    <br class="clearfloat"/>
+
+                                    <div class="thanks">
+                                        <p>Thank You for Your Business!</p>
+                                    </div>
+
+                                    <div class="behalf">
+                                        <p>For and on behalf of</p>
+                                        <t t-set="entited" t-value="o.tagm_entity.name" />
+                                        <p><b><span t-esc="entity(entited)"></span></b></p>
+                                        <p><b>CHARTERED ACCOUNTANTS</b></p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                                                    
+                        </div>
+
+                    </t>
+                <!-- </t> -->
+            </t>
+
+        </template>
+    
+    </data>
+
+</openerp>

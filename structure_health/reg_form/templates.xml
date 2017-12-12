@@ -18,8 +18,10 @@
                             <sheet>
                                 <group string="REGISTRATION FORM">
                                     <group>
+                                        <field name="service"/>
                                         <field name="package"/>
                                         <field name="joining"/>
+                                        <field name="expire_date"/>
                                         <field name="monthly"/>
                                         <field name="ref_no"/>
                                         
@@ -28,6 +30,9 @@
                                         <field name="branch"/>
                                         <field name="assesment"/>
                                         <field name="total"/>
+                                        <field name="discount_type"/>
+                                        <field name="discount"/>
+                                        <field name="discount_amt"/>
                                         <field name="advance"/>
                                         <field name="balance"/>
                                     </group>
@@ -166,6 +171,15 @@
                     <field name="res_model">reg.form</field>
                     <field name="view_type">form</field>
                     <field name="view_mode">tree,form</field>
+                    <field name="domain">[('stages', '!=', 'member',)]</field>
+                </record>
+
+                <record model="ir.actions.act_window" id="action_reg_form_member">
+                    <field name="name">Member</field>
+                    <field name="res_model">reg.form</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                    <field name="domain">[('stages', '=', 'member')]</field>
                 </record>
             <!--************************[Action-ENDS]*************************-->
 
@@ -189,6 +203,8 @@
                 <menuitem name="Configration" id="reg_form_config" parent="reg_form_parent" sequence="8"/>
 
                 <menuitem name="Registration Form" id="reg_form_child" parent="reg_form_heading" action="action_reg_form" sequence="1"/>
+
+                <menuitem name="Members" id="reg_form_child_member" parent="reg_form_heading" action="action_reg_form_member" sequence="2"/>
 
             <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
@@ -216,6 +232,7 @@
                                         
                                         <field name="training"/>
                                         <field name="end_date"/>
+                                        <field name="trainer" domain="[('trainer','=',True)]"/>
                                         
                                     </group>
                                 </group>
@@ -289,15 +306,15 @@
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 
 
-                <record id="customer_sale_action" model="ir.actions.act_window">
+                <!-- <record id="customer_sale_action" model="ir.actions.act_window">
                     <field name="name">Customers</field>
                     <field name="type">ir.actions.act_window</field>
                     <field name="res_model">res.partner</field>
                     <field name="view_type">form</field>
                     <field name="view_mode">tree,kanban,form</field>
                     <field name="domain" >[('customer', '=',True)]</field>
-                    <field name="context" eval="{'default_customer':1}"/>
-                    <!-- <field name="search_view_id" ref="view_res_partner_filter"/> -->
+                    <field name="context" eval="{'default_customer':1}"/> -->
+                    <!-- <field name="search_view_id" ref="view_res_partner_filter"/>
                     <field name="help" type="html">
                       <p class="oe_view_nocontent_create">
                         Click to add a contact in your address book.
@@ -309,8 +326,7 @@
                     </field>
                 </record>
 
-                <menuitem id="new_menu_partner" name="Members" parent="reg_form_heading" 
-                    action="customer_sale_action" sequence="2"/>
+                <menuitem id="new_menu_partner" name="Members" parent="reg_form_heading" action="customer_sale_action" sequence="3"/> -->
 
         <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
@@ -375,6 +391,73 @@
         <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 
+        <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+                <record id="status_form_view" model="ir.ui.view">
+                    <field name="name">status_form_view</field>
+                    <field name="model">training.status</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="TRAINING STATUS">
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="date"/>
+                                    </group>
+
+                                    <group>
+                                        <field name="trainer" domain="[('trainer','=',True)]"/>
+                                    </group>
+                                </group>
+
+                                <field name="status_id" nolabel='1'>
+                                    <tree editable="bottom">                                   
+                                        <field name="member_no"/>
+                                        <field name="member"/>
+                                        <field name="types"/>
+                                        <field name="start_time"/>
+                                        <field name="end_time"/>
+                                        <field name="assesment"/>
+                                        <field name="diet_plan"/>
+
+                                    </tree>
+                                </field>
+
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+
+
+                <record model="ir.actions.act_window" id="action_status">
+                    <field name="name">TRAINING STATUS</field>
+                    <field name="res_model">training.status</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                </record>
+
+                <menuitem name="Training Status" id="reg_status" parent="reg_form_train" action="action_status" sequence="3"/>
+
+                <record id="view_tree_status" model="ir.ui.view"> 
+                    <field name="name">view_tree_status</field> 
+                    <field name="model">training.status</field> 
+                    <field name="type">tree</field> 
+                    <field name="arch" type="xml"> 
+                        <tree> 
+                 
+                            <field name="date"/>
+                            <field name="trainer"/>
+
+                        </tree> 
+                    </field> 
+                
+                </record>
+
+        <!--************************[Menu-ENDS]***************************-->
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+
 
             <record id="appoint_form_view" model="ir.ui.view">
                 <field name="name">appoint_form_view</field>
@@ -386,14 +469,27 @@
                             <group>
                                 <group>
                                     <field name="name"/>
-                                    <field name="contact"/>
+                                    <field name="types"/>
+                                    <field name="member_no"/>
+                                    <field name="mamsus_name" domain="[('massus','=',True)]"/>
                                 </group>
 
                                 <group>
-                                    <field name="start_date"/>
-                                    <field name="end_date"/>
+                                    <field name="date"/>
+                                    <field name="time"/>
+                                    <field name="contact"/>
+                                    <field name="book_status"/>
                                 </group>
                             </group>
+
+                            <field name="appoint_id" nolabel='1'>
+                                <tree editable="bottom">                                   
+                                    <field name="types"/>
+                                    <field name="duration"/>
+                                    <field name="rates" sum="total"/>
+
+                                </tree>
+                            </field>
 
                         </sheet>
                     </form>
@@ -417,8 +513,7 @@
                     <tree> 
              
                         <field name="name"/>
-                        <field name="start_date"/>
-                        <field name="end_date"/>
+                        <field name="date"/>
 
                     </tree> 
                 </field> 
@@ -1022,17 +1117,19 @@
                         <sheet>
                             <group>
                                 <group>
-                                    <field name="name"/>
+                                    <field name="name"/>   
+                                    <field name="month"/>   
                                 </group>
 
                                 <group>
+                                    <field name="reg_fee"/>
                                 </group>
                             </group>
 
                             <field name="pakg_tree" nolabel='1'>
                                 <tree editable="bottom">                                   
                                     <field name="service"/>
-                                    <field name="amount"/>
+                                    <field name="amount" sum="total"/>
 
                                 </tree>
                             </field>
@@ -1094,7 +1191,7 @@
 
             <record model="ir.actions.act_window" id="action_trainer">
                 <field name="name">Personal Tranier</field>
-                <field name="res_model">struct.trainer</field>
+                <field name="res_model">hr.employee</field>
                 <field name="view_type">form</field>
                 <field name="view_mode">tree,form</field>
             </record>
@@ -1270,13 +1367,18 @@
                 parent="reg_form_invoice" 
                 sequence="1"/>
 
-                <!-- <menuitem action="customer_payments_bcube_structure.new_action_customer_payments" 
-                id="customer_payments_bcube_structure.sub_menu_customer_payments" 
-                name="Customer Payments" 
-                parent="reg_form_invoice" 
-                sequence="2"/> -->
+            <record id="hr_form_view" model="ir.ui.view"> 
+                <field name="name">hr_form_view</field> 
+                <field name="model">hr.employee</field> 
+                <field name="inherit_id" ref="hr.view_employee_form"/> 
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='parent_id']" position="after">
+                      <field name="massus" />
+                      <field name="trainer" />
+                    </xpath>
 
-
+                </field> 
+            </record>
 
 
     </data>

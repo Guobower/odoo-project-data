@@ -93,3 +93,31 @@ class account_bank_extension(models.Model):
 	_inherit = 'account.bank.statement'
 
 	proj	 = fields.Many2one('project.project',string='Project', required=True)
+
+class account_bank_extension_line(models.Model):
+	_inherit = 'account.bank.statement.line'
+
+
+	voucher_no  = fields.Char(string="Voucher No.")
+	payess_name = fields.Many2one('res.partner',string="Payees Name") 
+	employee = fields.Many2one('hr.employee',string="Employee")
+
+	@api.multi
+	def process_reconciliation(self,data,uid,id):
+		new_record = super(account_bank_extension_line, self).process_reconciliation(data,uid,id)
+		records = self.env['account.bank.statement.line'].search([('id','=',self.id)])
+		journal_entery =  self.env['account.move'].search([], order='id desc', limit=1)
+		for x in journal_entery.line_ids:
+			x.voucher_no = records.voucher_no
+			x.payess_name = records.payess_name.id
+			x.employee = records.employee.id
+		return new_record
+
+class account_move_line(models.Model):
+	_inherit = 'account.move.line'
+
+	voucher_no = fields.Char(string="Voucher No.")
+	payess_name = fields.Many2one('res.partner',string="Payees Name") 
+	employee = fields.Many2one('hr.employee',string="Employee")
+
+
