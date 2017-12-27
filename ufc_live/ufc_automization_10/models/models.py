@@ -643,14 +643,14 @@ class regions(models.Model):
 		('north','North Zone'),
 		('south','South Zone'),
 		('center','Center Zone'),
-		('queeta','Queeta Zone'),
+		('quetta','Quetta Zone'),
 		('rahim','Rahim Yar Khan'),
 		],string="Zone")
 	mir_zone = fields.Selection([
 		('north','North Zone'),
 		('south','South Zone'),
 		('center','Center Zone'),
-		('queeta','Queeta Zone'),
+		('quetta','Quetta Zone'),
 		('sukkur','Sukkur'),
 		],string="Zone")
 	dar_zone = fields.Selection([

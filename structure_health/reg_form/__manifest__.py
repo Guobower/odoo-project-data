@@ -3,14 +3,9 @@
     'name': "reg_form",
 
     'summary': """
-        Nayyab""",
-
-    'description': """
-        Long description of module's purpose
-    """,
-
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+        Ecube""",
+    'author': "Nayyab && Muhammad Awais",
+    'website': "http://www.ecube.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
@@ -19,7 +14,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account'],
+    'depends': ['base','account','hr'],
 
     # always loaded
     'data': [

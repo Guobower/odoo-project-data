@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data>   
+
+        <template id="module_report">
+
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <t t-foreach="docs" t-as="o">
+
+                        <div class="page">
+
+                            <style>
+
+                                @media (min-width: 992px) {
+                                    .container {
+                                        width: 100%;
+                                    }
+                                }
+
+                                @media (min-width: 768px)
+                                .container {
+                                    width: 100%;
+                                }
+                                .container {
+                                    width: 100%;
+                                }
+                                .english {
+                                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                                }
+                                body {
+                                    margin: 0px !important;
+                                }
+                                body.o_in_iframe {
+                                    margin-top: 0px!important;
+                                }
+                                .main-data {
+                                    width: 100%;
+                                }
+                                .center-data {
+                                    width: 1000px;
+                                    margin : 0px;
+                                    
+                                }
+                                .new-data {
+                                    width: 630px;
+                                    margin : 0px;
+
+                                }
+                                table, td, th {
+                                    border: 2px solid;
+                                    border-collapse: collapse;
+                                    padding: 10px;
+                                    text-align: center;
+                                    margin: 10px 0px 10px 0px;
+                                    border-color: #000;
+                                }
+                                table tr td:first-child,
+                                table tr th:first-child {
+                                    max-width: 260px;
+                                    width: 260px;
+                                    min-width: 260px;
+                                    text-align: left;
+                                    padding-left: 20px;
+                                }
+                                table tr td:nth-child(2),
+                                table tr th:nth-child(2) {
+                                    max-width: 165px;
+                                    width: 165px;
+                                    min-width: 165px;
+                                    text-align: left;
+                                    padding-left: 20px;
+                                }
+
+                                table tr td:nth-child(3),
+                                table tr th:nth-child(3) {
+                                    max-width: 165px;
+                                    width: 165px;
+                                    min-width: 165px;
+                                    text-align: left;
+                                    padding-left: 20px;
+                                }
+                                .clearfloat {
+                                    clear: both;
+                                    float: none;
+                                }
+                                h3 {
+                                text-align: right;
+                                margin-right: 30px;
+                                }
+                                .bill {
+                                    text-decoration: underline;
+                                    width: 90%;
+                                }
+                                .bill p {
+                                    margin-left: 15px;
+                                    font-size: 20px;
+                                }
+
+                            </style>
+      
+                            <div class="main-data">
+
+                                <div class="center-data">
+
+                                    <div class="new-data">
+                                        <h3>CLIENT BILL</h3>
+
+                                        <table width="50%" style="float: right;">
+                                            <tr>
+                                                <th colspan="2">
+                                                    <span t-esc="o.partner_id.name"></span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>5156</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Billing Month</th>
+                                                <th>
+                                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%B-%Y')"></span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Due Date</th>
+                                                <th>
+                                                    <span t-esc="time.strftime('%d-%m-%Y',time.strptime(o.due_date,'%Y-%m-%d'))"></span>
+                                                </th>
+                                            </tr>
+                                        </table>
+
+                                        <br class="clearfloat"/>
+                                        <span class="bill"><p><strong>Bill Summary:</strong></p></span>
+                                        <table width="100%">
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Previous</th>
+                                                <th>Current</th>
+                                            </tr>
+
+                                            <t t-foreach="o.invoice_line_ids" t-as="data">
+                                                <tr>
+                                                    <td>
+                                                        <span t-esc="data.name"></span>
+                                                    </td>
+                                                    <td>-</td>
+                                                    <td>7,000</td>
+                                                </tr>
+                                            </t>
+                                            <tr>
+                                                <td><strong>Sub Total</strong></td>
+                                                <td>245</td>
+                                                <td>7,000</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Total Payable</strong></td>
+                                                <td>-</td>
+                                                <td>7,245</td>
+                                            </tr>
+                                        </table>
+                                        <br class="clearfloat"/>
+                                        <span class="bill"><p><strong>Please make your payment on cash.</strong></p></span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+                </t>
+            </t>
+
+        </template>
+
+    </data>
+
+</openerp>

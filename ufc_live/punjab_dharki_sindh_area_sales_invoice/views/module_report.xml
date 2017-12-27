@@ -424,8 +424,8 @@
                                     <span style="display:none" t-esc="g_total"></span>
                                     <t t-set="deduct_t" t-value="o.sin_fuel_deduct"/>
                                     <t t-set="new_total" t-value="g_total-o.sin_fuel_deduct"/>
-                                    <span t-esc="g_total"></span>
-                                    <span t-esc="dist"></span>
+                                    <span style="display:none" t-esc="g_total"></span>
+                                    <span style="display:none" t-esc="dist"></span>
                                     <t t-set="calculate" t-value="g_total/dist"/>
                                     <t t-set="grand" t-value="calculate*via_t"/>
                                     <!-- <span t-esc="calculate"></span> -->

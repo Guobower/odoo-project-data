@@ -27,6 +27,7 @@
                     <field name = "amount" attrs="{'readonly':[('state','=','post')]}" />
                     <field name = "e_amount"  readonly = "True"/>
                     <field name = "t_amount" readonly = "True"  />
+                    <field name = "active_invoice" invisible="1"/>
                     <field name = "journal_id" attrs="{'readonly':[('state','=','post')]}"/>
                     <field name="taxes" widget="many2many_tags" attrs="{'readonly':[('state','=','post')]}" domain="[('with_holding', '=', True)]" />
 

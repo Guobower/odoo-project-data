@@ -12,29 +12,41 @@
                         <form string="Registration Form">
 
                             <header>
+                                <button name="create_member" type="object" string="Create Member" class="oe_highlight" attrs="{'invisible':[('stages','in','member')]}"/>
+
+                                <button name="create_invoice" type="object" string="Create Invoice" class="oe_highlight" attrs="{'invisible':[('stages','not in','member')]}"/>
+
                                 <field name="stages" widget="statusbar" statusbar_visible="leads,app_form,member,non_member" clickable="True"/>
                             </header>
                             
                             <sheet>
                                 <group string="REGISTRATION FORM">
                                     <group>
-                                        <field name="service"/>
+                                        <field name="seq_id"/>
+                                        <field name="memship_no"/>
+                                        <field name="service" widget="many2many_tags"/>
                                         <field name="package"/>
                                         <field name="joining"/>
+                                        <field name="rejoining"/>
                                         <field name="expire_date"/>
                                         <field name="monthly"/>
-                                        <field name="ref_no"/>
+                                        <!-- <field name="ref_no"/> -->
+                                        <field name="payment_terms"/>
                                         
                                     </group>
                                     <group>
                                         <field name="branch"/>
-                                        <field name="assesment"/>
+                                        <field name="status"/>
+                                        <!-- <field name="assesment"/> -->
                                         <field name="total"/>
                                         <field name="discount_type"/>
-                                        <field name="discount"/>
+                                        <field name="discount" attrs="{'invisible': [('discount_type','not in',('amt','per'))]}"/>
                                         <field name="discount_amt"/>
                                         <field name="advance"/>
                                         <field name="balance"/>
+                                        <field name="trainer"/>
+                                        <field name="current_trainer" attrs="{'invisible':[('trainer','!=','trainer')]}" domain="[('trainer','=',True)]"/>
+                                        <field name="invoice_link" invisible="1"/>
                                     </group>
                                 </group>
 
@@ -42,6 +54,7 @@
                                     <group>
                                         <field name="name"/>
                                         <field name="dob"/>
+                                        <field name="gender"/>
                                         <field name="cnic"/>
                                         <field name="home_addres"/>
                                         <field name="tel_home"/>
@@ -49,10 +62,12 @@
                                         
                                     </group>
                                     <group>
+                                        <field name="member_link" readonly="1"/>
                                         <field name="profession"/>
                                         <field name="organization"/>
                                         <field name="job_title"/>
                                         <field name="office_addres"/>
+                                        <field name="ntn"/>
                                         <field name="tel_office"/>
                                         <field name="email"/>
                                     </group>
@@ -65,9 +80,7 @@
                                         
                                     </group>
                                     <group>
-
                                         <field name="bol_email"/>
-                                 
                                     </group>
                                 </group>
 
@@ -92,13 +105,17 @@
                                     <group>
 
                                         <field name="morning"/>
+                                        <field name="m_time" attrs="{'invisible': [('morning','=', False)]}"/>
                                         <field name="afternoon"/>
+                                        <field name="a_time" attrs="{'invisible': [('afternoon','=', False)]}"/>
                                         
                                     </group>
                                     <group>
 
                                         <field name="noon"/>
+                                        <field name="a_time" attrs="{'invisible': [('noon','=', False)]}"/>
                                         <field name="evening"/>
+                                        <field name="e_time" attrs="{'invisible': [('evening','=', False)]}"/>
                                  
                                     </group>
                                 </group>
@@ -142,6 +159,14 @@
                         </form>
                     </field>
                 </record>
+
+                <record id="ufc_sequence" model="ir.sequence">
+                    <field name="name">struct_sequence</field>
+                    <field name="code">mem.seq</field>
+                    <field name="prefix">S-</field>
+                    <field name="padding">4</field>
+             
+                </record>
             <!--************************[Form View-ENDS]**********************-->
              <!--========================[Search View-START]===================-->
                 <record id="view_tree_reg_form" model="ir.ui.view"> 
@@ -162,7 +187,41 @@
             
                 </record>
 
-                
+                <!-- <record id="member_seq" model="ir.sequence">
+                  <field name="name">member_seq</field>
+                  <field name="code">mem.seq</field>
+                  <field name="prefix">SHF</field>
+                  <field name="padding">4</field>
+                </record> -->
+
+                <record id="customer_invoice_form_view"   model="ir.ui.view"> 
+                    <field name="name">customer_invoice_form_view</field> 
+                    <field name="model">account.invoice</field> 
+                    <field name="inherit_id" ref="account.invoice_form"/> 
+                    <field name="arch" type="xml">
+                        <xpath expr="//field[@name='partner_id']" position="attributes">
+                            <attribute name="string">Member</attribute>
+                        </xpath>
+                        <xpath expr="//field[@name='payment_term_id']" position="after">
+                          <field name="branch" />
+                          <field name="status" />
+                        </xpath>
+                        <xpath expr="//field[@name='user_id']" position="after">
+                            <field name="due_date"/>
+                        </xpath>
+                        <xpath expr="//field[@name='partner_id']" position="after">
+                            <field name="customer_name"/>
+                        </xpath>
+                        <xpath expr="//field[@name='amount_total']" position="after">
+                            <field name="discount_amt"/>
+                        </xpath>
+                        <xpath expr="//button[@name='137']" position="replace">
+                            <button name="reg_pay" type="object" string="Register Payment" class="oe_highlight" attrs="{'invisible':[('state','not in','open')]}"/>
+                        </xpath>
+                        
+                    </field>
+                </record>
+             
             <!--************************[Search View-ENDS]********************-->
 
             <!--========================[Action-START]========================-->
@@ -273,23 +332,24 @@
             <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 
-                <record id="account_reg_form_view"   model="ir.ui.view"> 
+                <!-- <record id="account_reg_form_view"   model="ir.ui.view"> 
                     <field name="name">account_reg_form_view</field> 
                     <field name="model">account.invoice</field> 
                     <field name="inherit_id" ref="account.invoice_form"/> 
                     <field name="arch" type="xml">
                         <xpath expr="//field[@name='payment_term_id']" position="after">
                           <field name="branch" />
+                          <field name="status" />
                         </xpath>
 
                     </field> 
-                </record>
+                </record> -->
 
         <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 
 
-                <record id="move_form_view"   model="ir.ui.view"> 
+                <!-- <record id="move_form_view"   model="ir.ui.view"> 
                     <field name="name">move_form_view</field> 
                     <field name="model">account.move</field> 
                     <field name="inherit_id" ref="account.view_move_form"/> 
@@ -300,7 +360,7 @@
                         </xpath>
 
                     </field> 
-                </record>
+                </record> -->
 
         <!--************************[Menu-ENDS]***************************-->
         <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
@@ -465,10 +525,17 @@
                 <field name="type">form</field>
                 <field name="arch" type="xml">
                     <form string="Appointment">
+                        <header>
+
+                            <button name="create_invoice" type="object" string="Create Invoice" class="oe_highlight" />
+
+                        </header>
                         <sheet>
                             <group>
                                 <group>
                                     <field name="name"/>
+                                    <field name="mem_name" attrs="{'invisible':[('types','!=','member')]}"/>
+                                    <field name="walkin_name" attrs="{'invisible':[('types','!=','walkin')]}" domain="[('walkin','=',True)]"/>
                                     <field name="types"/>
                                     <field name="member_no"/>
                                     <field name="mamsus_name" domain="[('massus','=',True)]"/>
@@ -479,18 +546,28 @@
                                     <field name="time"/>
                                     <field name="contact"/>
                                     <field name="book_status"/>
+                                    <field name="invoice_link" invisible="1"/>
                                 </group>
+                                
                             </group>
+                            <notebook>
+                                <page string=" ">
+                                    <field name="appoint_id" nolabel='1'>
+                                        <tree editable="bottom">                                   
+                                            <field name="types"/>
+                                            <field name="duration" widget="float_time" sum="total"/>
+                                            <field name="rates" sum="total"/>
 
-                            <field name="appoint_id" nolabel='1'>
-                                <tree editable="bottom">                                   
-                                    <field name="types"/>
-                                    <field name="duration"/>
-                                    <field name="rates" sum="total"/>
+                                        </tree>
+                                    </field>
 
-                                </tree>
-                            </field>
-
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <field name="discount_type"/>
+                                        <field name="discount"/>
+                                        <field name="total" class="oe_subtotal_footer_separator"/>
+                                    </group>
+                                </page>
+                            </notebook>
                         </sheet>
                     </form>
                 </field>
@@ -534,10 +611,24 @@
                         <sheet>
                             <group>
                                 <group>
-                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="attend_by"/>
+                                    <field name="ref"/>
+                                    <field name="contact"/>
+                                    <field name="interest_lvl"/>
+                                    <field name="approve"/>
+                                    <field name="remarks_on_call"/>
+                        
                                 </group>
 
                                 <group>
+                                    <field name="time"/>
+                                    <field name="name"/>
+                                    <field name="cmp_name"/>
+                                    <field name="designation"/>
+                                    <field name="profile_lvl"/>
+                                    <field name="remarks"/>
+
                                 </group>
                             </group>
 
@@ -823,13 +914,28 @@
                 <field name="type">form</field>
                 <field name="arch" type="xml">
                     <form string="New Joining">
+                        <header>
+
+                            <button name="create_invoice" type="object" string="Create Invoice" class="oe_highlight" attrs="{'invisible':[('stages','not in','draft')]}"/>
+
+                            <button name="validate" type="object" string="Validate" class="oe_highlight"/>
+
+                            <field name="stages" widget="statusbar" statusbar_visible="draft,paid,validate"/>
+
+                        </header>
                         <sheet>
                             <group>
                                 <group>
-                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="membership_no"/>
+                                    <field name="member"/>
+                                    <field name="invoice_link" invisible="1"/>
                                 </group>
 
                                 <group>
+                                    <field name="rejoining"/>
+                                    <field name="package"/>
+                                    <field name="service" widget="many2many_tags"/>
                                 </group>
                             </group>
 
@@ -854,7 +960,8 @@
                 <field name="arch" type="xml"> 
                     <tree> 
              
-                        <field name="name"/>
+                        <field name="rejoining"/>
+                        <field name="membership_no"/>
 
                     </tree> 
                 </field> 
@@ -1225,10 +1332,13 @@
                         <sheet>
                             <group>
                                 <group>
-                                    <field name="name"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
                                 </group>
 
                                 <group>
+                                    <field name="name"/>
+                                    <field name="training"/>
                                 </group>
                             </group>
 
@@ -1375,10 +1485,103 @@
                     <xpath expr="//field[@name='parent_id']" position="after">
                       <field name="massus" />
                       <field name="trainer" />
+                      <field name="branch" />
                     </xpath>
 
                 </field> 
             </record>
+
+
+            <record id="branch_form_view"   model="ir.ui.view"> 
+                <field name="name">branch_form_view</field> 
+                <field name="model">res.users</field> 
+                <field name="inherit_id" ref="base.view_users_form"/> 
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                      <field name="branch"/>   
+                    </xpath>
+                </field> 
+            </record>
+
+
+            <record id="journal_form_view"   model="ir.ui.view"> 
+                <field name="name">journal_form_view</field> 
+                <field name="model">account.journal</field> 
+                <field name="inherit_id" ref="account.view_account_journal_form"/> 
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='type']" position="after">
+                      <field name="branch" />
+                    </xpath>
+                </field> 
+            </record>
+
+
+            <record id="suppl_form_view"   model="ir.ui.view"> 
+                <field name="name">suppl_form_view</field> 
+                <field name="model">res.partner</field> 
+                <field name="inherit_id" ref="base.view_partner_form"/> 
+                <field name="arch" type="xml">
+
+                        <xpath expr="//field[@name='category_id']" position="after">
+
+                            <field name="walkin" />
+                            
+                        </xpath>
+                </field>
+            </record>
+
+
+            <!-- <record id="new_form_view"   model="ir.ui.view"> 
+                <field name="name">new_form_view</field> 
+                <field name="model">account.bank.statement</field> 
+                <field name="inherit_id" ref="account.view_bank_statement_form"/> 
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='date']" position="after">
+                      <field name="branch" />
+                    </xpath>
+                </field> 
+            </record> -->
+
+
+            <!-- <record id="move_form_view"   model="ir.ui.view"> 
+                <field name="name">move_form_view</field> 
+                <field name="model">account.move</field> 
+                <field name="inherit_id" ref="account.view_move_form"/> 
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='ref']" position="after">
+                      <field name="branch" />
+                    </xpath>
+                </field>                  
+            </record> -->
+
+
+
+            <!-- <record id="employee_form_extension" model="ir.ui.view"> 
+            <field name="name">employee_form_extension</field> 
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+ -->
+<!--                 <xpath expr="//field[@name='category_ids']" position="after">
+                    <group name="group_top">
+                        <group name="group_right">
+                            <field name="salaried_person" />
+                            <field name="rate_per_piece" />
+                        </group>
+                        <group name="group_left">
+                            <field name="employee_type" />
+                        </group>
+                    </group>                   
+                </xpath> -->
+
+              <!--   <xpath expr="//field[@name='name']" position="after">
+                    <label for="trainer" class="oe_edit_only" string="Tranier"/>
+                    <field name="trainer" />
+                </xpath>
+
+            </field>
+
+        </record> -->
 
 
     </data>
